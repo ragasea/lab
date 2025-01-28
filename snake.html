@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake and Ladder Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(10, 50px);
+            grid-template-rows: repeat(10, 50px);
+            margin: 20px auto;
+            width: 500px;
+            height: 500px;
+            border: 2px solid #333;
+            position: relative;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #fff;
+        }
+        .player {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            position: absolute;
+        }
+        #player1 {
+            background-color: red;
+        }
+        #player2 {
+            background-color: blue;
+        }
+        #dice {
+            font-size: 20px;
+            padding: 10px 20px;
+            margin: 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #dice:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1>Snake and Ladder Game</h1>
+    <div id="game-board"></div>
+    <div>
+        <button id="dice">Roll Dice</button>
+        <p id="info">Player 1's turn!</p>
+    </div>
+    <script>
+        const boardSize = 10;
+        const snakes = { 97: 78, 95: 56, 88: 24, 62: 18 };
+        const ladders = { 3: 22, 8: 26, 28: 84, 58: 77 };
+        let currentPlayer = 1;
+        let positions = { 1: 1, 2: 1 };
+
+        // Create the game board
+        const gameBoard = document.getElementById('game-board');
+        for (let i = 1; i <= 100; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.textContent = i;
+            gameBoard.appendChild(cell);
+        }
+
+        // Create players
+        const player1 = document.createElement('div');
+        player1.id = 'player1';
+        player1.className = 'player';
+        gameBoard.appendChild(player1);
+
+        const player2 = document.createElement('div');
+        player2.id = 'player2';
+        player2.className = 'player';
+        gameBoard.appendChild(player2);
+
+        const dice = document.getElementById('dice');
+        const info = document.getElementById('info');
+
+        // Roll Dice
+        dice.addEventListener('click', () => {
+            const roll = Math.floor(Math.random() * 6) + 1;
+            info.textContent = `Player ${currentPlayer} rolled a ${roll}!`;
+
+            positions[currentPlayer] += roll;
+
+            // Check for win
+            if (positions[currentPlayer] >= 100) {
+                positions[currentPlayer] = 100;
+                updatePlayerPosition();
+                info.textContent = `Player ${currentPlayer} wins!`;
+                dice.disabled = true;
+                return;
+            }
+
+            // Check for snakes or ladders
+            if (snakes[positions[currentPlayer]]) {
+                positions[currentPlayer] = snakes[positions[currentPlayer]];
+                info.textContent += ` Oh no, Player ${currentPlayer} got bitten by a snake!`;
+            } else if (ladders[positions[currentPlayer]]) {
+                positions[currentPlayer] = ladders[positions[currentPlayer]];
+                info.textContent += ` Yay, Player ${currentPlayer} climbed a ladder!`;
+            }
+
+            updatePlayerPosition();
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            info.textContent += ` It's now Player ${currentPlayer}'s turn.`;
+        });
+
+        // Update Player Positions
+        function updatePlayerPosition() {
+            const cells = document.querySelectorAll('.cell');
+            const player1Cell = cells[100 - positions[1]];
+            const player2Cell = cells[100 - positions[2]];
+
+            player1.style.left = player1Cell.offsetLeft + 'px';
+            player1.style.top = player1Cell.offsetTop + 'px';
+
+            player2.style.left = player2Cell.offsetLeft + 'px';
+            player2.style.top = player2Cell.offsetTop + 'px';
+        }
+
+        updatePlayerPosition();
+    </script>
+</body>
+</html>
