@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Board</title>
+    <style>
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-template-rows: repeat(8, 60px);
+            gap: 0;
+            border: 2px solid #333;
+            max-width: 480px;
+            margin: 20px auto;
+        }
+
+        .square {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            cursor: pointer;
+        }
+
+        .square.white {
+            background-color: #f0d9b5;
+        }
+
+        .square.black {
+            background-color: #b58863;
+        }
+
+        .piece {
+            width: 50px;
+            height: 50px;
+            transition: transform 0.2s;
+        }
+
+        .piece:hover {
+            transform: scale(1.1);
+        }
+
+        .square:hover {
+            background-color: #7b61ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="chess-board" id="board"></div>
+
+    <script>
+        const board = document.getElementById('board');
+        let squareColor = true;
+
+        // Chess piece Unicode characters
+        const pieces = {
+            white: {
+                king: '♔',
+                queen: '♕',
+                rook: '♖',
+                bishop: '♗',
+                knight: '♘',
+                pawn: '♙'
+            },
+            black: {
+                king: '♚',
+                queen: '♛',
+                rook: '♜',
+                bishop: '♝',
+                knight: '♞',
+                pawn: '♟'
+            }
+        };
+
+        // Create the chessboard
+        function createBoard() {
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const square = document.createElement('div');
+                    square.className = `square ${(squareColor = row + col % 2 === 0) ? 'white' : 'black'}`;
+                    square.dataset.row = row;
+                    square.dataset.col = col;
+
+                    if (row === 1) {
+                        square.innerHTML = `<button class="piece">${pieces.black.pawn}</button>`;
+                    } else if (row === 6) {
+                        square.innerHTML = `<button class="piece">${pieces.white.pawn}</button>`;
+                    } else if (row === 0) {
+                        switch (col) {
+                            case 0:
+                            case 7:
+                                square.innerHTML = `<button class="piece">${pieces.black.rook}</button>`;
+                                break;
+                            case 1:
+                            case 6:
+                                square.innerHTML = `<button class="piece">${pieces.black.knight}</button>`;
+                                break;
+                            case 2:
+                            case 5:
+                                square.innerHTML = `<button class="piece">${pieces.black.bishop}</button>`;
+                                break;
+                            case 3:
+                                square.innerHTML = `<button class="piece">${pieces.black.queen}</button>`;
+                                break;
+                            case 4:
+                                square.innerHTML = `<button class="piece">${pieces.black.king}</button>`;
+                                break;
+                        }
+                    } else if (row === 7) {
+                        switch (col) {
+                            case 0:
+                            case 7:
+                                square.innerHTML = `<button class="piece">${pieces.white.rook}</button>`;
+                                break;
+                            case 1:
+                            case 6:
+                                square.innerHTML = `<button class="piece">${pieces.white.knight}</button>`;
+                                break;
+                            case 2:
+                            case 5:
+                                square.innerHTML = `<button class="piece">${pieces.white.bishop}</button>`;
+                                break;
+                            case 3:
+                                square.innerHTML = `<button class="piece">${pieces.white.queen}</button>`;
+                                break;
+                            case 4:
+                                square.innerHTML = `<button class="piece">${pieces.white.king}</button>`;
+                                break;
+                        }
+                    }
+
+                    board.appendChild(square);
+                }
+            }
+        }
+
+        createBoard();
+
+        // Add click event listeners to all pieces
+        document.querySelectorAll('.piece').forEach(piece => {
+            piece.addEventListener('click', function() {
+                // You can add your piece click handling logic here
+                console.log(`Clicked on ${this.textContent} at position ${this.parentElement.dataset.row},${this.parentElement.dataset.col}`);
+            });
+        });
+    </script>
+</body>
+</html>
