@@ -1,0 +1,181 @@
+<html><head><base href="https://yogaanurag.websim.ai/poses">
+  <title>Yoga Anurag - Yoga Poses</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f7f7f7;
+    }
+    .header {
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1520&q=80') no-repeat center center;
+      background-size: cover;
+      color: white;
+      text-align: center;
+      padding: 100px 20px;
+    }
+    .header h1 {
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .pose-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    .pose-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .pose-card:hover {
+      transform: translateY(-5px);
+    }
+    .pose-image {
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+    }
+    .pose-info {
+      padding: 20px;
+    }
+    .pose-title {
+      font-size: 1.5em;
+      margin-top: 0;
+      color: #2d3436;
+    }
+    .pose-description {
+      color: #636e72;
+      margin-bottom: 15px;
+    }
+    .difficulty {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+    .beginner { background-color: #55efc4; color: #00b894; }
+    .intermediate { background-color: #ffeaa7; color: #fdcb6e; }
+    .advanced { background-color: #ff7675; color: #d63031; }
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+    .search-bar input {
+      width: 60%;
+      max-width: 400px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 25px;
+      font-size: 1em;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .search-bar input:focus {
+      outline: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2.5em;
+      }
+      .search-bar input {
+        width: 80%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>Yoga Poses</h1>
+    <p>Explore our collection of yoga asanas to enhance your practice</p>
+  </header>
+
+  <div class="container">
+    <div class="search-bar">
+      <input type="text" placeholder="Search yoga poses..." id="search-input">
+    </div>
+    <div class="pose-grid" id="pose-grid">
+      <div class="pose-card">
+        <div class="pose-image" style="background-image: url('https://images.unsplash.com/photo-1566501206188-5dd0cf160a0e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80');"></div>
+        <div class="pose-info">
+          <h3 class="pose-title">Downward Facing Dog (Adho Mukha Svanasana)</h3>
+          <p class="pose-description">A foundational yoga pose that stretches and strengthens the entire body.</p>
+          <span class="difficulty beginner">Beginner</span>
+        </div>
+      </div>
+      <div class="pose-card">
+        <div class="pose-image" style="background-image: url('https://images.unsplash.com/photo-1599447421321-6cf24f5a17a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');"></div>
+        <div class="pose-info">
+          <h3 class="pose-title">Warrior II (Virabhadrasana II)</h3>
+          <p class="pose-description">A standing pose that builds strength and stamina in the legs and core.</p>
+          <span class="difficulty intermediate">Intermediate</span>
+        </div>
+      </div>
+      <div class="pose-card">
+        <div class="pose-image" style="background-image: url('https://images.unsplash.com/photo-1510894347713-fc3ed6fdf539?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');"></div>
+        <div class="pose-info">
+          <h3 class="pose-title">Tree Pose (Vrikshasana)</h3>
+          <p class="pose-description">A balancing pose that improves focus and stability.</p>
+          <span class="difficulty beginner">Beginner</span>
+        </div>
+      </div>
+      <div class="pose-card">
+        <div class="pose-image" style="background-image: url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1499&q=80');"></div>
+        <div class="pose-info">
+          <h3 class="pose-title">Crow Pose (Bakasana)</h3>
+          <p class="pose-description">An arm balancing pose that strengthens the arms, wrists, and core.</p>
+          <span class="difficulty advanced">Advanced</span>
+        </div>
+      </div>
+      <div class="pose-card">
+        <div class="pose-image" style="background-image: url('https://images.unsplash.com/photo-1599447421272-83b36d86a994?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');"></div>
+        <div class="pose-info">
+          <h3 class="pose-title">Triangle Pose (Trikonasana)</h3>
+          <p class="pose-description">A standing pose that stretches and strengthens the legs, spine, and core.</p>
+          <span class="difficulty intermediate">Intermediate</span>
+        </div>
+      </div>
+      <div class="pose-card">
+        <div class="pose-image" style="background-image: url('https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1520&q=80');"></div>
+        <div class="pose-info">
+          <h3 class="pose-title">Corpse Pose (Savasana)</h3>
+          <p class="pose-description">A restorative pose that promotes deep relaxation and stress relief.</p>
+          <span class="difficulty beginner">Beginner</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('search-input');
+    const poseGrid = document.getElementById('pose-grid');
+    const poseCards = poseGrid.getElementsByClassName('pose-card');
+
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      
+      Array.from(poseCards).forEach(card => {
+        const title = card.querySelector('.pose-title').textContent.toLowerCase();
+        const description = card.querySelector('.pose-description').textContent.toLowerCase();
+        
+        if (title.includes(searchTerm) || description.includes(searchTerm)) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body></html>
