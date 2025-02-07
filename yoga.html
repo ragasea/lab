@@ -1,0 +1,215 @@
+<html><head><base href="https://yogaanurag.websim.ai" />
+  <title>Yoga Anurag - Transform Your Life Through Yoga</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      scroll-behavior: smooth;
+    }
+    .header {
+      background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1545205597-3d9d02c29597?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') no-repeat center center;
+      background-size: cover;
+      color: white;
+      text-align: center;
+      padding: 150px 20px;
+    }
+    .header h1 {
+      font-size: 3.5em;
+      margin-bottom: 20px;
+    }
+    .header p {
+      font-size: 1.2em;
+      max-width: 600px;
+      margin: 0 auto 30px;
+    }
+    .cta-button {
+      display: inline-block;
+      background-color: #ff6b6b;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+    .cta-button:hover {
+      background-color: #ff4757;
+    }
+    .section {
+      padding: 80px 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-title {
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 50px;
+      color: #2d3436;
+    }
+    .benefits {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+    .benefit-item {
+      flex-basis: calc(33% - 20px);
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .benefit-icon {
+      font-size: 3em;
+      color: #ff6b6b;
+      margin-bottom: 20px;
+    }
+    .classes {
+      background-color: #f9f9f9;
+    }
+    .class-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    .class-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .class-card:hover {
+      transform: translateY(-5px);
+    }
+    .class-image {
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+    }
+    .class-info {
+      padding: 20px;
+    }
+    .class-title {
+      font-size: 1.5em;
+      margin-top: 0;
+    }
+    .testimonials {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+    }
+    .testimonial-card {
+      background: rgba(255,255,255,0.1);
+      padding: 30px;
+      border-radius: 10px;
+      backdrop-filter: blur(10px);
+    }
+    .testimonial-text {
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+    .testimonial-author {
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      .benefit-item {
+        flex-basis: 100%;
+      }
+      .header h1 {
+        font-size: 2.5em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>Yoga Anurag</h1>
+    <p>Transform your mind, body, and soul through the ancient practice of yoga</p>
+    <a href="#classes" class="cta-button">Explore Our Classes</a>
+  </header>
+
+  <section id="benefits" class="section">
+    <div class="container">
+      <h2 class="section-title">Benefits of Yoga</h2>
+      <div class="benefits">
+        <div class="benefit-item">
+          <div class="benefit-icon">🧘</div>
+          <h3>Stress Reduction</h3>
+          <p>Find inner peace and reduce stress through mindful practices</p>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">💪</div>
+          <h3>Improved Strength</h3>
+          <p>Build strength and flexibility with regular yoga practice</p>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">🧠</div>
+          <h3>Mental Clarity</h3>
+          <p>Enhance focus and achieve mental clarity through meditation</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="classes" class="section classes">
+    <div class="container">
+      <h2 class="section-title">Our Classes</h2>
+      <div class="class-grid">
+        <div class="class-card">
+          <div class="class-image" style="background-image: url('https://images.unsplash.com/photo-1599447421416-3414500d18a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');"></div>
+          <div class="class-info">
+            <h3 class="class-title">Hatha Yoga</h3>
+            <p>Perfect for beginners, focus on basic postures and breathing</p>
+          </div>
+        </div>
+        <div class="class-card">
+          <div class="class-image" style="background-image: url('https://images.unsplash.com/photo-1593811167562-9cef47bfc4a7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');"></div>
+          <div class="class-info">
+            <h3 class="class-title">Vinyasa Flow</h3>
+            <p>Dynamic sequences linking breath with movement</p>
+          </div>
+        </div>
+        <div class="class-card">
+          <div class="class-image" style="background-image: url('https://images.unsplash.com/photo-1603988363607-e1e4a66962c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');"></div>
+          <div class="class-info">
+            <h3 class="class-title">Yin Yoga</h3>
+            <p>Slow-paced style with postures held for longer periods</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimonials" class="section testimonials">
+    <div class="container">
+      <h2 class="section-title">What Our Students Say</h2>
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <p class="testimonial-text">"Yoga Anurag has completely transformed my life. I feel more balanced, energized, and at peace."</p>
+          <p class="testimonial-author">- Sarah M.</p>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-text">"The instructors are knowledgeable and supportive. I've seen significant improvements in my flexibility and strength."</p>
+          <p class="testimonial-author">- Michael R.</p>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-text">"I love the variety of classes offered. There's something for everyone, regardless of your experience level."</p>
+          <p class="testimonial-author">- Emily L.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="background-color: #2d3436; color: white; text-align: center; padding: 20px;">
+    <p>&copy; 2023 Yoga Anurag. All rights reserved.</p>
+    <p>Contact us: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="056c6b636a457c6a6264646b707764622b666a68">[email&#160;protected]</a> | +91 1234567890</p>
+  </footer>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>
