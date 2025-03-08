@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Social Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+
+        .login-container, .post-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .post-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: #1a73e8;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1557b0;
+        }
+
+        .post {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        .reactions {
+            margin: 10px 0;
+        }
+
+        .emoji-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .comments-section {
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .comment {
+            background: #f5f6f5;
+            padding: 8px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="loginContainer" class="login-container">
+        <input type="password" id="password" placeholder="Enter password">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div id="mainContainer" style="display: none;">
+        <div class="post-container">
+            <textarea id="postInput" class="post-input" placeholder="What's on your mind?"></textarea>
+            <input type="url" id="linkInput" class="post-input" placeholder="Add a link (optional)">
+            <input type="file" id="imageInput" accept="image/*">
+            <button onclick="createPost()">Post</button>
+        </div>
+
+        <div id="postsContainer"></div>
+    </div>
+
+    <script>
+        const correctPassword = "yourpassword123"; // Change this to your desired password
+        let posts = [];
+
+        function login() {
+            const password = document.getElementById('password').value;
+            if (password === correctPassword) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'block';
+            } else {
+                alert('Incorrect password');
+            }
+        }
+
+        function createPost() {
+            const content = document.getElementById('postInput').value;
+            const link = document.getElementById('linkInput').value;
+            const imageInput = document.getElementById('imageInput');
+            const timestamp = new Date().toLocaleString();
+
+            if (!content) return;
+
+            let imageData = '';
+            if (imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageData = e.target.result;
+                    addPostToDOM(content, link, imageData, timestamp);
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                addPostToDOM(content, link, imageData, timestamp);
+            }
+
+            // Clear inputs
+            document.getElementById('postInput').value = '';
+            document.getElementById('linkInput').value = '';
+            imageInput.value = '';
+        }
+
+        function addPostToDOM(content, link, imageData, timestamp) {
+            const postId = Date.now();
+            const post = {
+                id: postId,
+                content,
+                link,
+                image: imageData,
+                timestamp,
+                reactions: { '👍': 0, '❤️': 0, '😂': 0, '😮': 0, '😢': 0 },
+                comments: []
+            };
+            posts.push(post);
+
+            const postsContainer = document.getElementById('postsContainer');
+            const postElement = document.createElement('div');
+            postElement.className = 'post';
+            postElement.id = `post-${postId}`;
+
+            let postHTML = `
+                <p>${content}</p>
+                ${link ? `<a href="${link}" target="_blank">${link}</a>` : ''}
+                ${imageData ? `<img src="${imageData}" style="max-width: 100%; margin-top: 10px;">` : ''}
+                <div class="timestamp">${timestamp}</div>
+                <button onclick="editPost(${postId})">Edit</button>
+                <button onclick="deletePost(${postId})">Delete</button>
+                <div class="reactions">
+                    <button class="emoji-btn" onclick="addReaction(${postId}, '👍')">👍 <span>0</span></button>
+                    <button class="emoji-btn" onclick="addReaction(${postId}, '❤️')">❤️ <span>0</span></button>
+                    <button class="emoji-btn" onclick="addReaction(${postId}, '😂')">😂 <span>0</span></button>
+                    <button class="emoji-btn" onclick="addReaction(${postId}, '😮')">😮 <span>0</span></button>
+                    <button class="emoji-btn" onclick="addReaction(${postId}, '😢')">😢 <span>0</span></button>
+                </div>
+                <div class="comments-section" id="comments-${postId}">
+                    <input type="text" placeholder="Add a comment" onkeypress="if(event.key === 'Enter') addComment(${postId}, this)">
+                    <button onclick="toggleComments(${postId})">Hide Comments</button>
+                </div>
+            `;
+
+            postElement.innerHTML = postHTML;
+            postsContainer.insertBefore(postElement, postsContainer.firstChild);
+        }
+
+        function editPost(postId) {
+            const post = posts.find(p => p.id === postId);
+            const newContent = prompt('Edit your post:', post.content);
+            if (newContent) {
+                post.content = newContent;
+                document.getElementById(`post-${postId}`).querySelector('p').textContent = newContent;
+            }
+        }
+
+        function deletePost(postId) {
+            posts = posts.filter(p => p.id !== postId);
+            document.getElementById(`post-${postId}`).remove();
+        }
+
+        function addReaction(postId, emoji) {
+            const post = posts.find(p => p.id === postId);
+            post.reactions[emoji]++;
+            const button = document.querySelector(`#post-${postId} .emoji-btn[onclick="addReaction(${postId}, '${emoji}')"]`);
+            button.querySelector('span').textContent = post.reactions[emoji];
+        }
+
+        function addComment(postId, input) {
+            const commentText = input.value;
+            if (!commentText) return;
+
+            const post = posts.find(p => p.id === postId);
+            const commentId = Date.now();
+            post.comments.push({ id: commentId, text: commentText });
+
+            const commentsSection = document.getElementById(`comments-${postId}`);
+            const commentElement = document.createElement('div');
+            commentElement.className = 'comment';
+            commentElement.id = `comment-${commentId}`;
+            commentElement.innerHTML = `
+                ${commentText}
+                <button onclick="deleteComment(${postId}, ${commentId})">Delete</button>
+            `;
+            commentsSection.insertBefore(commentElement, commentsSection.lastChild);
+            input.value = '';
+        }
+
+        function deleteComment(postId, commentId) {
+            const post = posts.find(p => p.id === postId);
+            post.comments = post.comments.filter(c => c.id !== commentId);
+            document.getElementById(`comment-${commentId}`).remove();
+        }
+
+        function toggleComments(postId) {
+            const commentsSection = document.getElementById(`comments-${postId}`);
+            const button = commentsSection.querySelector('button');
+            commentsSection.style.display = 
+                commentsSection.style.display === 'none' ? 'block' : 'none';
+            button.textContent = 
+                commentsSection.style.display === 'none' ? 'Show Comments' : 'Hide Comments';
+        }
+    </script>
+</body>
+</html>
