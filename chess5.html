@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Board - Notion Style</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+            background-color: #ffffff;
+            color: #37352f;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-title {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .chess-board {
+            width: 480px;
+            height: 480px;
+            margin: 0 auto;
+            border: 1px solid #e0e0e0;
+            box-shadow: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 2px 4px;
+            border-radius: 3px;
+            user-select: none;
+        }
+
+        .row {
+            display: flex;
+            height: 60px;
+        }
+
+        .cell {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+        }
+
+        .white {
+            background-color: #f7f6f3;
+        }
+
+        .black {
+            background-color: #e9e5e3;
+        }
+
+        .coordinates {
+            display: flex;
+            justify-content: space-between;
+            width: 480px;
+            margin: 5px auto;
+            padding: 0 30px;
+            box-sizing: border-box;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .row-coordinates {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            height: 480px;
+            position: absolute;
+            margin-left: -25px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .board-container {
+            position: relative;
+            margin: 0 auto;
+            width: 480px;
+        }
+
+        .controls {
+            margin: 30px auto;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button {
+            background-color: #f7f6f3;
+            border: 1px solid #e0e0e0;
+            border-radius: 3px;
+            padding: 8px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #e9e5e3;
+        }
+
+        .move-history {
+            margin-top: 30px;
+            border: 1px solid #e0e0e0;
+            border-radius: 3px;
+            padding: 15px;
+            max-width: 480px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .move-history h3 {
+            margin-top: 0;
+            font-weight: 600;
+            font-size: 16px;
+            color: #37352f;
+        }
+
+        .moves {
+            font-family: monospace;
+            font-size: 14px;
+            color: #37352f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-title">Chess Board</div>
+        
+        <div class="board-container">
+            <div class="row-coordinates">
+                <div>8</div>
+                <div>7</div>
+                <div>6</div>
+                <div>5</div>
+                <div>4</div>
+                <div>3</div>
+                <div>2</div>
+                <div>1</div>
+            </div>
+            
+            <div class="chess-board">
+                <!-- Row 8 -->
+                <div class="row">
+                    <div class="cell white">♜</div>
+                    <div class="cell black">♞</div>
+                    <div class="cell white">♝</div>
+                    <div class="cell black">♛</div>
+                    <div class="cell white">♚</div>
+                    <div class="cell black">♝</div>
+                    <div class="cell white">♞</div>
+                    <div class="cell black">♜</div>
+                </div>
+                <!-- Row 7 -->
+                <div class="row">
+                    <div class="cell black">♟</div>
+                    <div class="cell white">♟</div>
+                    <div class="cell black">♟</div>
+                    <div class="cell white">♟</div>
+                    <div class="cell black">♟</div>
+                    <div class="cell white">♟</div>
+                    <div class="cell black">♟</div>
+                    <div class="cell white">♟</div>
+                </div>
+                <!-- Row 6 -->
+                <div class="row">
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                </div>
+                <!-- Row 5 -->
+                <div class="row">
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                </div>
+                <!-- Row 4 -->
+                <div class="row">
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                </div>
+                <!-- Row 3 -->
+                <div class="row">
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                    <div class="cell black"></div>
+                    <div class="cell white"></div>
+                </div>
+                <!-- Row 2 -->
+                <div class="row">
+                    <div class="cell white">♙</div>
+                    <div class="cell black">♙</div>
+                    <div class="cell white">♙</div>
+                    <div class="cell black">♙</div>
+                    <div class="cell white">♙</div>
+                    <div class="cell black">♙</div>
+                    <div class="cell white">♙</div>
+                    <div class="cell black">♙</div>
+                </div>
+                <!-- Row 1 -->
+                <div class="row">
+                    <div class="cell black">♖</div>
+                    <div class="cell white">♘</div>
+                    <div class="cell black">♗</div>
+                    <div class="cell white">♕</div>
+                    <div class="cell black">♔</div>
+                    <div class="cell white">♗</div>
+                    <div class="cell black">♘</div>
+                    <div class="cell white">♖</div>
+                </div>
+            </div>
+            
+            <div class="coordinates">
+                <div>a</div>
+                <div>b</div>
+                <div>c</div>
+                <div>d</div>
+                <div>e</div>
+                <div>f</div>
+                <div>g</div>
+                <div>h</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="resetBtn">Reset Board</button>
+            <button id="flipBtn">Flip Board</button>
+        </div>
+        
+        <div class="move-history">
+            <h3>Move History</h3>
+            <div class="moves">
+                1. e4
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            location.reload();
+        });
+        
+        document.getElementById('flipBtn').addEventListener('click', function() {
+            const board = document.querySelector('.chess-board');
+            const rows = Array.from(board.querySelectorAll('.row'));
+            
+            // Remove all rows
+            rows.forEach(row => board.removeChild(row));
+            
+            // Add them back in reverse order
+            rows.reverse().forEach(row => board.appendChild(row));
+            
+            // Reverse the cells within each row
+            rows.forEach(row => {
+                const cells = Array.from(row.querySelectorAll('.cell'));
+                cells.forEach(cell => row.removeChild(cell));
+                cells.reverse().forEach(cell => row.appendChild(cell));
+            });
+            
+            // Flip the coordinates
+            const fileCoords = document.querySelector('.coordinates');
+            const files = Array.from(fileCoords.children);
+            files.forEach(file => fileCoords.removeChild(file));
+            files.reverse().forEach(file => fileCoords.appendChild(file));
+            
+            const rankCoords = document.querySelector('.row-coordinates');
+            const ranks = Array.from(rankCoords.children);
+            ranks.forEach(rank => rankCoords.removeChild(rank));
+            ranks.reverse().forEach(rank => rankCoords.appendChild(rank));
+        });
+    </script>
+</body>
+</html>
