@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Navigation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #24292e;
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+        }
+        .site-description {
+            font-style: italic;
+            margin-top: 10px;
+            color: #c9d1d9;
+        }
+        .navigation-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .nav-section {
+            background: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2 {
+            border-bottom: 2px solid #0366d6;
+            padding-bottom: 10px;
+            color: #0366d6;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        a {
+            color: #0366d6;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        a:hover {
+            color: #0550ae;
+            text-decoration: underline;
+        }
+        .tag {
+            font-size: 12px;
+            background: #e1e4e8;
+            padding: 3px 8px;
+            border-radius: 3px;
+            margin-left: 5px;
+            color: #555;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e4e8;
+            color: #666;
+        }
+        .update-info {
+            font-style: italic;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .navigation-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>My GitHub Website</h1>
+        <p class="site-description">Complete site navigation with links to all pages</p>
+    </header>
+
+    <div class="navigation-container">
+        <!-- Main Pages Section -->
+        <section class="nav-section">
+            <h2>Main Pages</h2>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="blog/index.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </section>
+
+        <!-- Projects Section -->
+        <section class="nav-section">
+            <h2>Projects</h2>
+            <ul>
+                <li><a href="projects/project1.html">Project 1</a> <span class="tag">Web Dev</span></li>
+                <li><a href="projects/project2.html">Project 2</a> <span class="tag">Data Science</span></li>
+                <li><a href="projects/project3.html">Project 3</a> <span class="tag">Machine Learning</span></li>
+                <li><a href="projects/project4.html">Project 4</a> <span class="tag">Mobile App</span></li>
+                <li><a href="projects/archive.html">Project Archive</a></li>
+            </ul>
+        </section>
+
+        <!-- Blog Posts Section -->
+        <section class="nav-section">
+            <h2>Blog Posts</h2>
+            <ul>
+                <li><a href="blog/post1.html">Latest Post Title</a> <span class="tag">New</span></li>
+                <li><a href="blog/post2.html">Second Post Title</a></li>
+                <li><a href="blog/post3.html">Third Post Title</a></li>
+                <li><a href="blog/post4.html">Fourth Post Title</a></li>
+                <li><a href="blog/archive.html">Blog Archive</a></li>
+            </ul>
+        </section>
+
+        <!-- Resources Section -->
+        <section class="nav-section">
+            <h2>Resources</h2>
+            <ul>
+                <li><a href="resources/downloads.html">Downloads</a></li>
+                <li><a href="resources/tutorials.html">Tutorials</a></li>
+                <li><a href="resources/documentation.html">Documentation</a></li>
+                <li><a href="resources/links.html">Useful Links</a></li>
+            </ul>
+        </section>
+
+        <!-- Other Pages Section -->
+        <section class="nav-section">
+            <h2>Other Pages</h2>
+            <ul>
+                <li><a href="resume.html">Resume/CV</a></li>
+                <li><a href="gallery.html">Photo Gallery</a></li>
+                <li><a href="publications.html">Publications</a></li>
+                <li><a href="speaking.html">Speaking Engagements</a></li>
+            </ul>
+        </section>
+
+        <!-- Meta Pages Section -->
+        <section class="nav-section">
+            <h2>Site Information</h2>
+            <ul>
+                <li><a href="sitemap.html">Site Map</a></li>
+                <li><a href="privacy.html">Privacy Policy</a></li>
+                <li><a href="terms.html">Terms of Use</a></li>
+                <li><a href="accessibility.html">Accessibility</a></li>
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+        <p>© <span id="current-year">2025</span> - My GitHub Website</p>
+        <p class="update-info">Last updated: <span id="last-updated">March 8, 2025</span></p>
+        <script>
+            // Update the current year automatically
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // If you want to automate the last updated date based on when the file changes
+            // You would need to implement that server-side or through your build process
+            // For now, we'll use the static date provided above
+        </script>
+    </footer>
+</body>
+</html>
