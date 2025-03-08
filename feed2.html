@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Posting App</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f7f9fa;
+            margin: 0;
+            padding: 0;
+            color: #0f1419;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .login-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .app-container {
+            display: none;
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .compose-box {
+            border-bottom: 1px solid #eff3f4;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+        }
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cfd9de;
+            border-radius: 4px;
+            resize: none;
+            font-size: 16px;
+            font-family: inherit;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .button {
+            background-color: #1da1f2;
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            padding: 10px 16px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .button:hover {
+            background-color: #1a91da;
+        }
+        .button:disabled {
+            background-color: #8ed0f9;
+            cursor: default;
+        }
+        .post-button {
+            float: right;
+        }
+        .logout-button {
+            background-color: #f4212e;
+        }
+        .logout-button:hover {
+            background-color: #d01c27;
+        }
+        .posts-container {
+            margin-top: 20px;
+        }
+        .post {
+            border-bottom: 1px solid #eff3f4;
+            padding: 15px 0;
+            position: relative;
+        }
+        .post-content {
+            font-size: 16px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+        .post-footer {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .post-time {
+            font-size: 14px;
+            color: #536471;
+        }
+        .post-actions {
+            display: flex;
+            gap: 15px;
+            margin-left: auto;
+        }
+        .post-action {
+            color: #536471;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .post-action:hover {
+            color: #1da1f2;
+        }
+        .post-date {
+            font-size: 14px;
+            color: #536471;
+            margin-top: 4px;
+        }
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cfd9de;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        .char-count {
+            float: left;
+            color: #536471;
+            padding: 10px 0;
+        }
+        .error {
+            color: #f4212e;
+            text-align: center;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .edit-mode textarea {
+            margin-top: 10px;
+        }
+        .edit-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .cancel-edit {
+            background-color: #e6e9ea;
+            color: #0f1419;
+        }
+        .comments-container {
+            margin-top: 10px;
+            margin-left: 20px;
+            border-left: 2px solid #eff3f4;
+            padding-left: 15px;
+        }
+        .comment {
+            padding: 10px 0;
+            position: relative;
+        }
+        .comment-content {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .comment-footer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .comment-time {
+            font-size: 12px;
+            color: #536471;
+        }
+        .comment-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 10px;
+        }
+        .comment-action {
+            color: #536471;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .comment-action:hover {
+            color: #1da1f2;
+        }
+        .add-comment {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        .add-comment textarea {
+            flex-grow: 1;
+            height: 36px;
+            padding: 8px;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+        .comment-button {
+            padding: 6px 12px;
+            font-size: 14px;
+            align-self: flex-end;
+        }
+        .like-count {
+            font-size: 14px;
+            color: #536471;
+        }
+        .liked {
+            color: #f91880;
+        }
+        .hidden-comment {
+            opacity: 0.5;
+        }
+        .hidden-comment-message {
+            font-style: italic;
+            color: #536471;
+        }
+        .blocked-user-message {
+            font-style: italic;
+            color: #536471;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container" id="loginSection">
+            <h1>Welcome to Simple Posts</h1>
+            <p>Enter your password to continue</p>
+            <div class="error" id="loginError">Incorrect password. Please try again.</div>
+            <input type="password" id="passwordInput" placeholder="Enter your password">
+            <button class="button" id="loginButton">Log In</button>
+        </div>
+
+        <div class="app-container" id="appSection">
+            <div class="header">
+                <h1>Simple Posts</h1>
+                <button class="button logout-button" id="logoutButton">Log Out</button>
+            </div>
+            
+            <div class="compose-box">
+                <textarea id="postText" placeholder="What's happening?" rows="4" maxlength="280"></textarea>
+                <div class="char-count"><span id="charCount">0</span>/280</div>
+                <button class="button post-button" id="postButton" disabled>Post</button>
+                <div style="clear: both;"></div>
+            </div>
+            
+            <div class="posts-container" id="postsContainer">
+                <!-- Posts will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set the password here
+        const CORRECT_PASSWORD = "mypassword123";
+        
+        // Elements
+        const loginSection = document.getElementById('loginSection');
+        const appSection = document.getElementById('appSection');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginButton = document.getElementById('loginButton');
+        const loginError = document.getElementById('loginError');
+        const logoutButton = document.getElementById('logoutButton');
+        const postText = document.getElementById('postText');
+        const charCount = document.getElementById('charCount');
+        const postButton = document.getElementById('postButton');
+        const postsContainer = document.getElementById('postsContainer');
+        
+        // Load data from localStorage
+        let posts = JSON.parse(localStorage.getItem('posts') || '[]');
+        let comments = JSON.parse(localStorage.getItem('comments') || '[]');
+        let likes = JSON.parse(localStorage.getItem('likes') || '[]');
+        let hiddenComments = JSON.parse(localStorage.getItem('hiddenComments') || '[]');
+        let blockedUsers = JSON.parse(localStorage.getItem('blockedUsers') || '[]');
+
+        // Current editing state
+        let currentlyEditing = null;
+        
+        // Check for logged in state
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        
+        // Initialize the app
+        function init() {
+            if (isLoggedIn) {
+                showApp();
+            } else {
+                showLogin();
+            }
+            
+            renderPosts();
+            updateCharCount();
+        }
+        
+        // Show login section
+        function showLogin() {
+            loginSection.style.display = 'block';
+            appSection.style.display = 'none';
+        }
+        
+        // Show app section
+        function showApp() {
+            loginSection.style.display = 'none';
+            appSection.style.display = 'block';
+        }
+        
+        // Login function
+        loginButton.addEventListener('click', () => {
+            if (passwordInput.value === CORRECT_PASSWORD) {
+                localStorage.setItem('isLoggedIn', 'true');
+                showApp();
+                loginError.style.display = 'none';
+                passwordInput.value = '';
+            } else {
+                loginError.style.display = 'block';
+            }
+        });
+        
+        // Allow pressing Enter to login
+        passwordInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                loginButton.click();
+            }
+        });
+        
+        // Logout function
+        logoutButton.addEventListener('click', () => {
+            localStorage.setItem('isLoggedIn', 'false');
+            showLogin();
+        });
+        
+        // Update character count
+        postText.addEventListener('input', updateCharCount);
+        
+        function updateCharCount() {
+            const count = postText.value.length;
+            charCount.textContent = count;
+            
+            if (count > 0 && count <= 280) {
+                postButton.disabled = false;
+            } else {
+                postButton.disabled = true;
+            }
+        }
+        
+        // Post function
+        postButton.addEventListener('click', () => {
+            const content = postText.value.trim();
+            
+            if (content) {
+                const newPost = {
+                    id: Date.now(),
+                    content: content,
+                    timestamp: new Date().toISOString(),
+                    author: 'owner'  // Mark as owner post
+                };
+                
+                posts.unshift(newPost);
+                saveData();
+                renderPosts();
+                
+                postText.value = '';
+                updateCharCount();
+            }
+        });
+
+        // Like a post
+        function likePost(postId) {
+            const existingLike = likes.find(like => like.postId === postId);
+            
+            if (existingLike) {
+                // Unlike
+                likes = likes.filter(like => like.postId !== postId);
+            } else {
+                // Like
+                likes.push({
+                    id: Date.now(),
+                    postId: postId,
+                    timestamp: new Date().toISOString()
+                });
+            }
+            
+            saveData();
+            renderPosts();
+        }
+
+        // Edit post
+        function editPost(postId) {
+            currentlyEditing = postId;
+            renderPosts();
+        }
+
+        // Cancel edit
+        function cancelEdit() {
+            currentlyEditing = null;
+            renderPosts();
+        }
+
+        // Save edit
+        function saveEdit(postId) {
+            const editTextarea = document.getElementById(`edit-${postId}`);
+            const content = editTextarea.value.trim();
+            
+            if (content) {
+                const postIndex = posts.findIndex(post => post.id === postId);
+                if (postIndex !== -1) {
+                    posts[postIndex].content = content;
+                    posts[postIndex].edited = true;
+                    currentlyEditing = null;
+                    saveData();
+                    renderPosts();
+                }
+            }
+        }
+
+        // Delete post
+        function deletePost(postId) {
+            if (confirm('Are you sure you want to delete this post?')) {
+                posts = posts.filter(post => post.id !== postId);
+                comments = comments.filter(comment => comment.postId !== postId);
+                likes = likes.filter(like => like.postId !== postId);
+                saveData();
+                renderPosts();
+            }
+        }
+
+        // Add comment
+        function addComment(postId) {
+            const commentInput = document.getElementById(`comment-input-${postId}`);
+            const content = commentInput.value.trim();
+            
+            if (content) {
+                const newComment = {
+                    id: Date.now(),
+                    postId: postId,
+                    content: content,
+                    timestamp: new Date().toISOString(),
+                    author: 'guest' + Math.floor(Math.random() * 10000) // Random guest ID
+                };
+                
+                comments.push(newComment);
+                saveData();
+                renderPosts();
+                commentInput.value = '';
+            }
+        }
+
+        // Hide/show comment
+        function toggleHideComment(commentId) {
+            if (hiddenComments.includes(commentId)) {
+                hiddenComments = hiddenComments.filter(id => id !== commentId);
+            } else {
+                hiddenComments.push(commentId);
+            }
+            saveData();
+            renderPosts();
+        }
+
+        // Delete comment
+        function deleteComment(commentId) {
+            if (confirm('Are you sure you want to delete this comment?')) {
+                comments = comments.filter(comment => comment.id !== commentId);
+                saveData();
+                renderPosts();
+            }
+        }
+
+        // Block user
+        function blockUser(userId) {
+            if (confirm('Are you sure you want to block this user?')) {
+                if (!blockedUsers.includes(userId)) {
+                    blockedUsers.push(userId);
+                    saveData();
+                    renderPosts();
+                }
+            }
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('posts', JSON.stringify(posts));
+            localStorage.setItem('comments', JSON.stringify(comments));
+            localStorage.setItem('likes', JSON.stringify(likes));
+            localStorage.setItem('hiddenComments', JSON.stringify(hiddenComments));
+            localStorage.setItem('blockedUsers', JSON.stringify(blockedUsers));
+        }
+        
+        // Format timestamp
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffInSeconds = Math.floor((now - date) / 1000);
+            
+            if (diffInSeconds < 60) {
+                return `${diffInSeconds}s`;
+            } else if (diffInSeconds < 3600) {
+                return `${Math.floor(diffInSeconds / 60)}m`;
+            } else if (diffInSeconds < 86400) {
+                return `${Math.floor(diffInSeconds / 3600)}h`;
+            } else {
+                return date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric' 
+                });
+            }
+        }
+
+        // Format full date
+        function formatFullDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('en-US', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true,
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        }
+        
+        // Format post content (convert URLs to links, detect hashtags, etc.)
+        function formatPostContent(content) {
+            // Convert URLs to clickable links
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            content = content.replace(urlRegex, url => `<a href="${url}" target="_blank" style="color: #1da1f2; text-decoration: none;">${url}</a>`);
+            
+            // Convert hashtags
+            const hashtagRegex = /#(\w+)/g;
+            content = content.replace(hashtagRegex, hashtag => `<span style="color: #1da1f2;">${hashtag}</span>`);
+            
+            // Convert mentions
+            const mentionRegex = /@(\w+)/g;
+            content = content.replace(mentionRegex, mention => `<span style="color: #1da1f2;">${mention}</span>`);
+            
+            return content;
+        }
+        
+        // Render posts
+        function renderPosts() {
+            postsContainer.innerHTML = '';
+            
+            if (posts.length === 0) {
+                postsContainer.innerHTML = '<p style="text-align: center; color: #536471;">No posts yet. Be the first to post!</p>';
+                return;
+            }
+            
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.className = 'post';
+                postElement.id = `post-${post.id}`;
+                
+                const isOwner = post.author === 'owner';
+                const isEditing = currentlyEditing === post.id;
+                const isLiked = likes.some(like => like.postId === post.id);
+                const likeCount = likes.filter(like => like.postId === post.id).length;
+                const postComments = comments.filter(comment => comment.postId === post.id);
+                
+                if (isEditing) {
+                    // Edit mode
+                    postElement.innerHTML = `
+                        <div class="edit-mode">
+                            <textarea id="edit-${post.id}" rows="4" maxlength="280">${post.content}</textarea>
+                            <div class="edit-actions">
+                                <button class="button cancel-edit" onclick="cancelEdit()">Cancel</button>
+                                <button class="button" onclick="saveEdit(${post.id})">Save</button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // View mode
+                    let postHTML = `
+                        <div class="post-content">${formatPostContent(post.content)}</div>
+                        <div class="post-date">${formatFullDate(post.timestamp)}</div>
+                        ${post.edited ? '<span style="font-size: 12px; color: #536471; margin-left: 5px;">(edited)</span>' : ''}
+                        <div class="post-footer">
+                            <button class="post-action ${isLiked ? 'liked' : ''}" onclick="likePost(${post.id})">
+                                ♥ <span class="like-count">${likeCount || ''}</span>
+                            </button>
+                            <button class="post-action" onclick="document.getElementById('comment-input-${post.id}').focus()">
+                                💬 <span class="like-count">${postComments.length || ''}</span>
+                            </button>
+                    `;
+                    
+                    if (isOwner) {
+                        postHTML += `
+                            <div class="post-actions">
+                                <button class="post-action" onclick="editPost(${post.id})">Edit</button>
+                                <button class="post-action" onclick="deletePost(${post.id})">Delete</button>
+                            </div>
+                        `;
+                    }
+                    
+                    postHTML += `</div>`;
+                    
+                    // Add comments section
+                    postHTML += `
+                        <div class="comments-container">
+                    `;
+                    
+                    if (postComments.length > 0) {
+                        postComments.forEach(comment => {
+                            const isCommentHidden = hiddenComments.includes(comment.id);
+                            const isUserBlocked = blockedUsers.includes(comment.author);
+                            
+                            if (isUserBlocked) {
+                                postHTML += `
+                                    <div class="comment">
+                                        <div class="blocked-user-message">Comment from blocked user</div>
+                                    </div>
+                                `;
+                            } else {
+                                postHTML += `
+                                    <div class="comment ${isCommentHidden ? 'hidden-comment' : ''}" id="comment-${comment.id}">
+                                `;
+                                
+                                if (isCommentHidden) {
+                                    postHTML += `
+                                        <div class="hidden-comment-message">
+                                            Comment hidden - <a href="#" onclick="toggleHideComment(${comment.id}); return false;">Show</a>
+                                        </div>
+                                    `;
+                                } else {
+                                    postHTML += `
+                                        <div class="comment-content">${formatPostContent(comment.content)}</div>
+                                        <div class="comment-footer">
+                                            <div class="comment-time">${formatDate(comment.timestamp)}</div>
+                                            <div class="comment-actions">
+                                                <button class="comment-action" onclick="toggleHideComment(${comment.id})">Hide</button>
+                                                <button class="comment-action" onclick="deleteComment(${comment.id})">Delete</button>
+                                                <button class="comment-action" onclick="blockUser('${comment.author}')">Block User</button>
+                                            </div>
+                                        </div>
+                                    `;
+                                }
+                                
+                                postHTML += `</div>`;
+                            }
+                        });
+                    }
+                    
+                    // Add comment input
+                    postHTML += `
+                        <div class="add-comment">
+                            <textarea id="comment-input-${post.id}" placeholder="Add a comment..." maxlength="140"></textarea>
+                            <button class="button comment-button" onclick="addComment(${post.id})">Reply</button>
+                        </div>
+                    `;
+                    
+                    postHTML += `</div>`;
+                    
+                    postElement.innerHTML = postHTML;
+                }
+                
+                postsContainer.appendChild(postElement);
+            });
+        }
+        
+        // Expose functions to window for onclick handlers
+        window.likePost = likePost;
+        window.editPost = editPost;
+        window.cancelEdit = cancelEdit;
+        window.saveEdit = saveEdit;
+        window.deletePost = deletePost;
+        window.addComment = addComment;
+        window.toggleHideComment = toggleHideComment;
+        window.deleteComment = deleteComment;
+        window.blockUser = blockUser;
+        
+        // Initialize app
+        init();
+    </script>
+</body>
+</html>
