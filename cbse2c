@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBSE NCERT Self-Study Platform</title>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #7209b7;
+            --success-color: #4cc9f0;
+            --warning-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --background-color: #f0f2f5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--success-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--success-color);
+        }
+        
+        .main-content {
+            padding: 2rem 0;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/api/placeholder/1200/400');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-img {
+            height: 150px;
+            background-color: var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 3rem;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        .card-content h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-content p {
+            margin-bottom: 1rem;
+            color: #6c757d;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 15px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 1rem;
+            color: var(--success-color);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-column ul li a {
+            color: #adb5bd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid #495057;
+            margin-top: 1.5rem;
+        }
+        
+        /* Learning content styles */
+        .learning-content {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chapter-navigation {
+            display: flex;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            overflow-x: auto;
+        }
+        
+        .chapter-navigation button {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin-right: 1rem;
+            cursor: pointer;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        
+        .chapter-navigation button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .step-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .concept-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .formula-card {
+            background-color: #e9ecef;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--accent-color);
+        }
+        
+        .example-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid var(--success-color);
+        }
+        
+        .quiz-card {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quiz-options {
+            margin-top: 1rem;
+        }
+        
+        .quiz-option {
+            display: block;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .quiz-option:hover {
+            background-color: #e9ecef;
+        }
+        
+        .quiz-option.selected {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .reward-badge {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .reward-badge img {
+            width: 40px;
+            height: 40px;
+            margin-right: 1rem;
+        }
+        
+        .reward-badge .reward-text {
+            font-weight: 500;
+        }
+        
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .achievement-item {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .achievement-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+        
+        .achievement-locked {
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+            }
+            
+            nav ul li {
+                margin-left: 1rem;
+                margin-right: 1rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <a href="#" class="logo">Learn<span>CBSE</span></a>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#">Subjects</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Progress</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <div class="container">
+            <section class="hero">
+                <h1>Interactive Learning for CBSE Students</h1>
+                <p>Comprehensive self-study platform for all CBSE NCERT subjects from Class 1 to 12</p>
+                <a href="#" class="btn">Get Started</a>
+            </section>
+            
+            <section>
+                <h2 class="section-title">Select Your Class</h2>
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-img">1</div>
+                        <div class="card-content">
+                            <h3>Class 1</h3>
+                            <p>Foundation learning for young minds</p>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: 0%;"></div>
+                            </div>
+                            <span>Coming Soon</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Classes 2-9 would be listed here -->
+                    
+                    <div class="card">
+                        <div class="card-img">10</div>
+                        <div class="card-content">
+                            <h3>Class 10</h3>
+                            <p>Comprehensive board exam preparation</p>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: 25%;"></div>
+                            </div>
+                            <a href="#class10" class="btn">Start Learning</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Classes 11-12 would be listed here -->
+                </div>
+            </section>
+            
+            <section id="class10">
+                <h2 class="section-title">Class 10 Subjects</h2>
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-img" style="background-color: #4361ee;">
+                            <span>M</span>
+                        </div>
+                        <div class="card-content">
+                            <h3>Mathematics</h3>
+                            <p>Algebra, Geometry, Trigonometry and more</p>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: 25%;"></div>
+                            </div>
+                            <a href="#class10" class="btn">Start Learning</a>
+                        </div>
+                    </div>
+
+</html>
