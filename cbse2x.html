@@ -1,0 +1,179 @@
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCERT Self-Study Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+        .header {
+            text-align: center;
+            background-color: #4a90e2;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .class-grid, .subject-grid, .chapter-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .content-area {
+            margin-top: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            height: 20px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .progress {
+            height: 100%;
+            background-color: #4caf50;
+            width: 0%;
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+        .step {
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #357abd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>NCERT Self-Study Portal</h1>
+            <p>Learn at your own pace, step by step!</p>
+        </div>
+
+        <!-- Class Selection -->
+        <div class="class-grid" id="classGrid">
+            <div class="card" onclick="showSubjects(10)">Class 10</div>
+            <!-- Other classes can be added later -->
+            <div class="card">Class 1 (Coming Soon)</div>
+            <div class="card">Class 12 (Coming Soon)</div>
+        </div>
+
+        <!-- Subject Selection -->
+        <div class="subject-grid" id="subjectGrid" style="display: none;">
+            <div class="card" onclick="showChapters('Mathematics')">Mathematics</div>
+            <div class="card">Science (Coming Soon)</div>
+            <div class="card">English (Coming Soon)</div>
+        </div>
+
+        <!-- Chapter Selection -->
+        <div class="chapter-grid" id="chapterGrid" style="display: none;">
+            <div class="card" onclick="showContent('Trigonometry')">Trigonometry</div>
+            <div class="card">Algebra (Coming Soon)</div>
+            <div class="card">Geometry (Coming Soon)</div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area" id="contentArea">
+            <h2 id="contentTitle"></h2>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div id="steps"></div>
+            <button onclick="nextStep()">Next Step</button>
+        </div>
+    </div>
+
+    <script>
+        let currentClass = null;
+        let currentSubject = null;
+        let currentChapter = null;
+        let stepIndex = 0;
+        let steps = [];
+
+        function showSubjects(classNum) {
+            currentClass = classNum;
+            document.getElementById('classGrid').style.display = 'none';
+            document.getElementById('subjectGrid').style.display = 'flex';
+        }
+
+        function showChapters(subject) {
+            currentSubject = subject;
+            document.getElementById('subjectGrid').style.display = 'none';
+            document.getElementById('chapterGrid').style.display = 'flex';
+        }
+
+        function showContent(chapter) {
+            currentChapter = chapter;
+            document.getElementById('chapterGrid').style.display = 'none';
+            document.getElementById('contentArea').style.display = 'block';
+            document.getElementById('contentTitle').innerText = chapter;
+
+            // Sample Trigonometry content
+            if (chapter === 'Trigonometry') {
+                steps = [
+                    "Introduction: Trigonometry is the study of angles and their relationships in triangles.",
+                    "Key Formula: sin(θ) = Opposite / Hypotenuse",
+                    "Example: If θ = 30°, sin(30°) = 1/2",
+                    "Practice: Solve sin(θ) = 0.5, find θ.",
+                    "Completed! You’ve mastered the basics of Trigonometry."
+                ];
+                stepIndex = 0;
+                updateStep();
+            }
+        }
+
+        function updateStep() {
+            const stepArea = document.getElementById('steps');
+            stepArea.innerHTML = `<div class="step">${steps[stepIndex]}</div>`;
+            const progress = document.getElementById('progress');
+            progress.style.width = `${((stepIndex + 1) / steps.length) * 100}%`;
+        }
+
+        function nextStep() {
+            if (stepIndex < steps.length - 1) {
+                stepIndex++;
+                updateStep();
+            } else {
+                alert("Congratulations! You've completed this chapter!");
+            }
+        }
+    </script>
+</body>
+</html>
