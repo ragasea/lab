@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CBSE NCERT Self-Study</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+
+    .header {
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    .header h1 {
+      margin: 0;
+    }
+
+    .navigation {
+      background-color: #333;
+      padding: 0.5rem 0;
+    }
+
+    .navigation ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navigation ul li {
+      margin: 0 1rem;
+    }
+
+    .navigation ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .navigation ul li a:hover {
+      text-decoration: underline;
+    }
+
+    .subjects {
+      display: flex;
+      justify-content: space-around;
+      margin: 2rem;
+    }
+
+    .subject-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      width: 30%;
+      text-align: center;
+    }
+
+    .subject-card h3 {
+      margin: 0.5rem 0;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #4CAF50;
+      color: white;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    .disabled {
+      background-color: #ccc;
+      pointer-events: none;
+    }
+
+    .footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    /* Mathematics Page Styles */
+    .progress-section {
+      margin: 2rem;
+      text-align: center;
+    }
+
+    progress {
+      width: 80%;
+      height: 20px;
+      margin: 1rem auto;
+      display: block;
+    }
+
+    .content-section {
+      margin: 2rem;
+    }
+
+    .topic {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .next-btn {
+      display: inline-block;
+      background-color: #4CAF50;
+      color: white;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .next-btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <h1>CBSE NCERT Self-Study Portal</h1>
+    <p>Interactive Learning for Students</p>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="navigation">
+    <ul>
+      <li><a href="#class10">Class 10</a></li>
+      <li><a href="#">Class 9 (Coming Soon)</a></li>
+      <li><a href="#">Class 8 (Coming Soon)</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <section id="class10">
+      <h2>Class 10</h2>
+      <div class="subjects">
+        <div class="subject-card">
+          <h3>Mathematics</h3>
+          <p>Explore detailed lessons on Trigonometry.</p>
+          <button onclick="showMathematicsPage()" class="btn">Start Learning</button>
+        </div>
+        <div class="subject-card">
+          <h3>Science (Coming Soon)</h3>
+          <p>Physics, Chemistry, and Biology.</p>
+          <button class="btn disabled">Coming Soon</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mathematics Page -->
+    <section id="mathematicsPage" style="display: none;">
+      <header class="header">
+        <h1>Trigonometry - Class 10 Mathematics</h1>
+      </header>
+
+      <section class="progress-section">
+        <h2>Progress</h2>
+        <progress value="0" max="100" id="progressBar"></progress>
+        <p id="progressText">0% Completed</p>
+      </section>
+
+      <section class="content-section">
+        <h2>Topics</h2>
+        <div class="topic" id="topic1">
+          <h3>Introduction to Trigonometric Ratios</h3>
+          <p>Learn about sine, cosine, and tangent.</p>
+          <button class="next-btn" onclick="nextTopic()">Next</button>
+        </div>
+
+        <div class="topic" id="topic2" style="display: none;">
+          <h3>Trigonometric Identities</h3>
+          <p>Understand the fundamental identities.</p>
+          <button class="next-btn" onclick="nextTopic()">Next</button>
+        </div>
+
+        <div class="topic" id="topic3" style="display: none;">
+          <h3>Solving Trigonometric Equations</h3>
+          <p>Practice solving equations step-by-step.</p>
+          <button class="next-btn" onclick="nextTopic()">Finish</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2023 CBSE NCERT Self-Study Portal. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Function to switch to the Mathematics page
+    function showMathematicsPage() {
+      document.getElementById("class10").style.display = "none";
+      document.getElementById("mathematicsPage").style.display = "block";
+    }
+
+    // Progress tracking
+    let currentTopic = 1;
+    const totalTopics = 3;
+
+    function nextTopic() {
+      const currentElement = document.getElementById(`topic${currentTopic}`);
+      currentElement.style.display = "none";
+
+      currentTopic++;
+      if (currentTopic <= totalTopics) {
+        const nextElement = document.getElementById(`topic${currentTopic}`);
+        nextElement.style.display = "block";
+      } else {
+        alert("Congratulations! You've completed the Trigonometry chapter.");
+      }
+
+      // Update progress bar
+      const progress = (currentTopic / totalTopics) * 100;
+      document.getElementById("progressBar").value = progress;
+      document.getElementById("progressText").textContent = `${Math.round(progress)}% Completed`;
+    }
+  </script>
+</body>
+</html>
