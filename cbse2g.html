@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>CBSE NCERT Self-Study</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 80%;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2, h3 {
+  color: #333;
+}
+
+.class-selector, .subject-selector {
+  margin-bottom: 20px;
+}
+
+.class-selector button, .subject-selector button {
+  padding: 10px 15px;
+  margin-right: 10px;
+  border: none;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.class-selector button:hover, .subject-selector button:hover {
+  background-color: #0056b3;
+}
+
+#content-area {
+  margin-top: 20px;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+/* Trigonometry Styles */
+.trig-topic {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.step {
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px dashed #ccc;
+    border-radius: 3px;
+    background-color: #fefefe;
+}
+
+.next-button {
+  padding: 8px 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: block;
+  margin-top: 10px; /* Added margin for spacing */
+}
+
+.next-button:hover {
+  background-color: #218838;
+}
+
+.progress-bar {
+  width: 100%;
+  background-color: #e9ecef;
+  border-radius: 5px;
+  height: 20px;
+  margin-bottom: 15px;
+}
+
+.progress-bar-fill {
+  background-color: #28a745;
+  height: 100%;
+  border-radius: 5px;
+  width: 0%; /* Initial width */
+}
+
+.completed-message {
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+  display: none; /* Initially hidden */
+}
+
+.formula {
+  font-style: italic;
+  color: blue;
+  display: block; /* Ensures spacing below the formula */
+  margin-bottom: 5px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>CBSE NCERT Self-Study Portal</h1>
+
+  <div class="class-selector">
+    <h2>Select Class:</h2>
+    <button onclick="loadClass(10)">Class 10</button>
+    <!-- Add buttons for other classes later -->
+  </div>
+
+  <div class="subject-selector" id="subject-selector" style="display:none;">
+    <h2>Select Subject:</h2>
+    <button onclick="loadSubject('Mathematics')">Mathematics</button>
+    <!-- Add buttons for other subjects later -->
+  </div>
+
+  <div id="content-area">
+    <!-- Content will be loaded here dynamically -->
+    <p>Select a class and subject to begin.</p>
+  </div>
+</div>
+
+<script>
+let currentClass = null;
+let currentSubject = null;
+
+function loadClass(classNumber) {
+  currentClass = classNumber;
+  document.getElementById('subject-selector').style.display = 'block';
+  document.getElementById('content-area').innerHTML = "<p>Please select a subject.</p>";
+
+  // You can add logic here to fetch subjects available for the selected class
+}
+
+function loadSubject(subjectName) {
+  currentSubject = subjectName;
+  let content = '';
+
+  if (currentClass === 10 && currentSubject === 'Mathematics') {
+    content = `
+      <h2>Class 10 Mathematics - Trigonometry</h2>
+      <div class="trig-topic">
+        <h3>Introduction to Trigonometry</h3>
+        <div class="progress-bar">
+          <div class="progress-bar-fill" id="trig-intro-progress"></div>
+        </div>
+        <p id="trig-intro-completed" class="completed-message">Topic Completed!</p>
+        <div id="trig-intro-steps">
+          <div class="step">
+            <p><strong>Step 1:</strong> Understand the basic trigonometric ratios: Sine (sin), Cosine (cos), and Tangent (tan).</p>
+            <p class="formula">sin(θ) = Opposite / Hypotenuse</p>
+            <p class="formula">cos(θ) = Adjacent / Hypotenuse</p>
+            <p class="formula">tan(θ) = Opposite / Adjacent</p>
+            <button class="next-button" onclick="nextStep('trig-intro-steps', 1, 'trig-intro-progress', 'trig-intro-completed')">Next Step</button>
+          </div>
+          <div class="step" style="display:none;">
+            <p><strong>Step 2:</strong>  Learn the reciprocals of these ratios: Cosecant (cosec), Secant (sec), and Cotangent (cot).</p>
+            <p class="formula">cosec(θ) = 1 / sin(θ)</p>
+            <p class="formula">sec(θ) = 1 / cos(θ)</p>
+            <p class="formula">cot(θ) = 1 / tan(θ)</p>
+            <button class="next-button" onclick="nextStep('trig-intro-steps', 2, 'trig-intro-progress', 'trig-intro-completed')">Next Step</button>
+          </div>
+          <div class="step" style="display:none;">
+            <p><strong>Step 3:</strong>  Practice identifying Opposite, Adjacent, and Hypotenuse in right-angled triangles.</p>
+            <p><strong>Example:</strong>  In a triangle ABC, right-angled at B, if angle A is θ, then BC is Opposite, AB is Adjacent, and AC is Hypotenuse.</p>
+            <button class="next-button" onclick="nextStep('trig-intro-steps', 3, 'trig-intro-progress', 'trig-intro-completed')">Complete Topic</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="trig-topic">
+        <h3>Trigonometric Ratios of Specific Angles (0°, 30°, 45°, 60°, 90°)</h3>
+        <div class="progress-bar">
+          <div class="progress-bar-fill" id="trig-angles-progress"></div>
+        </div>
+        <p id="trig-angles-completed" class="completed-message">Topic Completed!</p>
+        <div id="trig-angles-steps">
+          <div class="step">
+            <p><strong>Step 1:</strong> Memorize the values of sin, cos, and tan for the specific angles.</p>
+            <p>sin(0°) = 0, sin(30°) = 1/2, sin(45°) = 1/√2, sin(60°) = √3/2, sin(90°) = 1</p>
+             <button class="next-button" onclick="nextStep('trig-angles-steps', 1, 'trig-angles-progress', 'trig-angles-completed')">Next Step</button>
+          </div>
+          <div class="step" style="display:none;">
+            <p><strong>Step 2:</strong> Understand how to derive the other trigonometric ratios using the reciprocal relationships.</p>
+            <p>For example, cosec(30°) = 1 / sin(30°) = 2</p>
+            <button class="next-button" onclick="nextStep('trig-angles-steps', 2, 'trig-angles-progress', 'trig-angles-completed')">Complete Topic</button>
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    content = `<p>Content for ${subjectName} is not yet available.</p>`;
+  }
+
+  document.getElementById('content-area').innerHTML = content;
+}
+
+
+function nextStep(topicId, stepNumber, progressBarId, completedMessageId) {
+  const stepsContainer = document.getElementById(topicId);
+  const steps = stepsContainer.children;
+  const progressBar = document.getElementById(progressBarId);
+  const completedMessage = document.getElementById(completedMessageId);
+
+  // Hide the current step
+  steps[stepNumber - 1].style.display = 'none';
+
+  if (stepNumber < steps.length) {
+    // Show the next step
+    steps[stepNumber].style.display = 'block';
+
+    // Update the progress bar
+    const progressPercentage = (stepNumber / (steps.length - 1)) * 100; // Calculate percentage based on visible steps
+    progressBar.style.width = progressPercentage + '%';
+  } else {
+      // Topic Complete
+      progressBar.style.width = '100%';
+      completedMessage.style.display = 'block';
+  }
+}
+
+
+</script>
+
+</body>
+</html>
