@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Touch Color Change with Clear</title>
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+#canvas {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+#clearButton {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: none;
+  cursor: pointer;
+  z-index: 10; /* Ensure button is on top */
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+<button id="clearButton">Clear Screen</button>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const clearButton = document.getElementById('clearButton');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function getRandomColor() {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
+function drawCircle(x, y, color) {
+  ctx.beginPath();
+  ctx.arc(x, y, 50, 0, 2 * Math.PI);
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+function handleTouch(event) {
+  const touches = event.changedTouches;
+
+  for (let i = 0; i < touches.length; i++) {
+    const touch = touches[i];
+    const x = touch.clientX;
+    const y = touch.clientY;
+    const color = getRandomColor();
+    drawCircle(x, y, color);
+  }
+}
+
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+canvas.addEventListener('touchstart', handleTouch);
+canvas.addEventListener('touchmove', handleTouch);
+clearButton.addEventListener('click', clearCanvas);
+
+</script>
+
+</body>
+</html>
