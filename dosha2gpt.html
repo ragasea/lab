@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dosha Test - Yoga Anurag</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d4f4d2;
+            text-align: center;
+            margin: 20px;
+        }
+        h1 {
+            color: #2d6a4f;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            margin: 15px 0;
+        }
+        .progress-container {
+            width: 100%;
+            background: #ccc;
+            border-radius: 5px;
+        }
+        .progress-bar {
+            height: 20px;
+            width: 0%;
+            background: #2d6a4f;
+            border-radius: 5px;
+        }
+        .btn {
+            background: #2d6a4f;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background: #225a3b;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .branding {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #2d6a4f;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Dosha Test - Yoga Anurag</h1>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <form id="doshaForm">
+            <div id="questions">
+                <!-- Questions will be inserted here dynamically -->
+            </div>
+            <button type="button" class="btn" onclick="calculateDosha()">Get Results</button>
+        </form>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <div class="branding">
+        Powered by <strong>Yoga Anurag</strong> | <a href="https://yogaanurag.blogspot.com/" target="_blank">yogaanurag.blogspot.com</a>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "Physique", a: "Slender, hard to gain weight", b: "Medium build", c: "Well built, gain weight easily" },
+            { q: "Skin", a: "Dry, thin, cracks easily", b: "Flushed, freckles", c: "Smooth, soft, pale" },
+            { q: "Hair", a: "Dry, thin, brittle", b: "Neither dry nor oily", c: "Thick, lustrous, slightly oily" },
+            { q: "Face", a: "Oval", b: "Triangular (pointed chin)", c: "Round" },
+            { q: "Eyes", a: "Small, dry, dull", b: "Medium, sharp", c: "Big, round, full eyelashes" },
+            { q: "Sleep", a: "Restless, wake up often", b: "Light sleeper", c: "Deep sleeper, hard to wake" },
+            { q: "Appetite", a: "Irregular", b: "Strong, hungry often", c: "Low, can skip meals" },
+            { q: "Memory", a: "Quick to learn, quick to forget", b: "Sharp, remembers important things", c: "Slow to learn, but never forgets" },
+            { q: "Stamina", a: "Low, gets tired easily", b: "Medium stamina", c: "High stamina, can work long hours" },
+            { q: "Mind", a: "Restless, overthinks", b: "Impatient", c: "Calm but slow to react" }
+        ];
+
+        const form = document.getElementById("questions");
+
+        questions.forEach((item, index) => {
+            let div = document.createElement("div");
+            div.classList.add("question");
+            div.innerHTML = `
+                <p><strong>${index + 1}. ${item.q}</strong></p>
+                <label><input type="radio" name="q${index}" value="a" onclick="updateProgress()"> ${item.a}</label><br>
+                <label><input type="radio" name="q${index}" value="b" onclick="updateProgress()"> ${item.b}</label><br>
+                <label><input type="radio" name="q${index}" value="c" onclick="updateProgress()"> ${item.c}</label>
+            `;
+            form.appendChild(div);
+        });
+
+        function updateProgress() {
+            const totalQuestions = questions.length;
+            const answered = document.querySelectorAll("input[type='radio']:checked").length;
+            const progressBar = document.getElementById("progress-bar");
+            progressBar.style.width = (answered / totalQuestions) * 100 + "%";
+        }
+
+        function calculateDosha() {
+            let counts = { a: 0, b: 0, c: 0 };
+            let inputs = document.querySelectorAll("input[type='radio']:checked");
+
+            inputs.forEach(input => {
+                counts[input.value]++;
+            });
+
+            let resultText = "";
+            if (counts.a > counts.b && counts.a > counts.c) {
+                resultText = "Your dominant Dosha is **Vata** (Air & Space).";
+            } else if (counts.b > counts.a && counts.b > counts.c) {
+                resultText = "Your dominant Dosha is **Pitta** (Fire & Water).";
+            } else if (counts.c > counts.a && counts.c > counts.b) {
+                resultText = "Your dominant Dosha is **Kapha** (Earth & Water).";
+            } else {
+                resultText = "You have a mixed Dosha type.";
+            }
+
+            document.getElementById("result").innerHTML = resultText;
+        }
+    </script>
+
+</body>
+</html>
