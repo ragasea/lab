@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Clock</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #222;
+            color: white;
+        }
+        .clock-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            gap: 20px;
+        }
+        .player {
+            width: 40%;
+            padding: 30px;
+            border-radius: 10px;
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            background-color: #444;
+            transition: 0.3s;
+        }
+        .active {
+            background-color: #28a745;
+            color: white;
+        }
+        button {
+            padding: 15px;
+            font-size: 1.2rem;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-start { background-color: #007bff; color: white; }
+        .btn-pause { background-color: #ffc107; }
+        .btn-reset { background-color: #dc3545; color: white; }
+        input {
+            width: 60px;
+            padding: 5px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Chess Clock</h1>
+    <div>
+        Set Time (Minutes): <input type="number" id="timeInput" value="5" min="1"> 
+        <button class="btn-start" onclick="startGame()">Start Game</button>
+    </div>
+
+    <div class="clock-container">
+        <div id="player1" class="player active" onclick="switchTurn(1)">5:00</div>
+        <div id="player2" class="player" onclick="switchTurn(2)">5:00</div>
+    </div>
+
+    <div>
+        <button class="btn-pause" onclick="pauseGame()">Pause</button>
+        <button class="btn-reset" onclick="resetGame()">Reset</button>
+    </div>
+
+    <script>
+        let time1, time2, interval;
+        let activePlayer = 1;
+        let running = false;
+
+        function startGame() {
+            let timeInput = document.getElementById("timeInput").value;
+            let seconds = timeInput * 60;
+            time1 = time2 = seconds;
+            document.getElementById("player1").textContent = formatTime(time1);
+            document.getElementById("player2").textContent = formatTime(time2);
+            document.getElementById("player1").classList.add("active");
+            document.getElementById("player2").classList.remove("active");
+            clearInterval(interval);
+            running = true;
+            interval = setInterval(updateTime, 1000);
+        }
+
+        function updateTime() {
+            if (!running) return;
+            if (activePlayer === 1) {
+                time1--;
+                document.getElementById("player1").textContent = formatTime(time1);
+                if (time1 <= 0) { stopGame("Player 1 loses!"); }
+            } else {
+                time2--;
+                document.getElementById("player2").textContent = formatTime(time2);
+                if (time2 <= 0) { stopGame("Player 2 loses!"); }
+            }
+        }
+
+        function switchTurn(player) {
+            if (!running) return;
+            if (player === 1 && activePlayer !== 1) {
+                activePlayer = 1;
+            } else if (player === 2 && activePlayer !== 2) {
+                activePlayer = 2;
+            }
+            document.getElementById("player1").classList.toggle("active", activePlayer === 1);
+            document.getElementById("player2").classList.toggle("active", activePlayer === 2);
+        }
+
+        function pauseGame() {
+            running = !running;
+            if (running) {
+                interval = setInterval(updateTime, 1000);
+            } else {
+                clearInterval(interval);
+            }
+        }
+
+        function resetGame() {
+            clearInterval(interval);
+            running = false;
+            document.getElementById("player1").classList.remove("active");
+            document.getElementById("player2").classList.remove("active");
+            document.getElementById("player1").textContent = "5:00";
+            document.getElementById("player2").textContent = "5:00";
+        }
+
+        function stopGame(message) {
+            clearInterval(interval);
+            running = false;
+            alert(message);
+        }
+
+        function formatTime(seconds) {
+            let min = Math.floor(seconds / 60);
+            let sec = seconds % 60;
+            return `${min}:${sec.toString().padStart(2, '0')}`;
+        }
+    </script>
+
+</body>
+</html>
