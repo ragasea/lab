@@ -1,0 +1,368 @@
+import React, { useState } from 'react';
+
+const DoshaTest = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [showResults, setShowResults] = useState(false);
+  
+  const questions = [
+    {
+      id: 1,
+      title: "Physique",
+      options: [
+        { value: "a", text: "I am a slender person and hard to gain weight" },
+        { value: "b", text: "I am medium build" },
+        { value: "c", text: "I am well built and I gain weight easily" }
+      ]
+    },
+    {
+      id: 2,
+      title: "Skin",
+      options: [
+        { value: "a", text: "My skin is dry, thin, and easily cracks" },
+        { value: "b", text: "My skin looks flushed, I have lots of moles and freckles on my body" },
+        { value: "c", text: "My skin is smooth and soft, it looks pale sometimes" }
+      ]
+    },
+    {
+      id: 3,
+      title: "Hair",
+      options: [
+        { value: "a", text: "My hair is dry, thin and brittle" },
+        { value: "b", text: "My hair is neither dry nor oily (non-receding hairline)" },
+        { value: "c", text: "My hair is thick, full, lustrous, and slightly oily" }
+      ]
+    },
+    {
+      id: 4,
+      title: "Face",
+      options: [
+        { value: "a", text: "My face is oval" },
+        { value: "b", text: "My face is triangular (pointed chin, prominent jaw line)" },
+        { value: "c", text: "My face is round" }
+      ]
+    },
+    {
+      id: 5,
+      title: "Eyes",
+      options: [
+        { value: "a", text: "My eyes are small; they feel dry often and have a bit of dullness" },
+        { value: "b", text: "My eyes are medium in shape, sharp & penetrating" },
+        { value: "c", text: "My eyes are big and round in shape, full eyelashes" }
+      ]
+    },
+    {
+      id: 6,
+      title: "Hands",
+      options: [
+        { value: "a", text: "My hands are generally dry, rough; slender fingers; dry nails" },
+        { value: "b", text: "My hands are generally moist, pink; medium fingers; soft nails" },
+        { value: "c", text: "My hands are generally firm, thick; thick fingers; strong & smooth nails" }
+      ]
+    },
+    {
+      id: 7,
+      title: "Joints",
+      options: [
+        { value: "a", text: "My joints are small, prominent bones, and often crack" },
+        { value: "b", text: "My joints are medium and loose" },
+        { value: "c", text: "My joints are large, sturdy, with lots of muscle surrounding" }
+      ]
+    },
+    {
+      id: 8,
+      title: "Activities",
+      options: [
+        { value: "a", text: "I am a very active person (always on the go, mind constantly thinking)" },
+        { value: "b", text: "I like to think before I do anything" },
+        { value: "c", text: "I am steady and graceful (I don't like to rush)" }
+      ]
+    },
+    {
+      id: 9,
+      title: "Actions",
+      options: [
+        { value: "a", text: "I walk fast and talk fast" },
+        { value: "b", text: "My actions are very thoughtful and precise" },
+        { value: "c", text: "I like a slower pace and I take my time to accomplish things" }
+      ]
+    },
+    {
+      id: 10,
+      title: "Sleep",
+      options: [
+        { value: "a", text: "I do not sleep soundly at night. I tend to toss and turn. I wake up on my own." },
+        { value: "b", text: "I am a light sleeper but if something wakes me up, I can go back to sleep easily" },
+        { value: "c", text: "I love to sleep; it is difficult to wake me up" }
+      ]
+    },
+    {
+      id: 11,
+      title: "Appetite",
+      options: [
+        { value: "a", text: "Varies, sometimes I feel hungry, sometimes not. I feel anxious if I don't eat" },
+        { value: "b", text: "I always feel hungry. If I don't eat I get irritable and angry" },
+        { value: "c", text: "I don't feel very hungry. I can go without food easily for a day" }
+      ]
+    },
+    {
+      id: 12,
+      title: "Bowel Movement",
+      options: [
+        { value: "a", text: "I tend to have constipation and can go a day or two without a bowel movement" },
+        { value: "b", text: "I am regular and sometimes stools are loose (tend to get diarrhea)" },
+        { value: "c", text: "I have no problem. I wake up to go to the bathroom." }
+      ]
+    },
+    {
+      id: 13,
+      title: "Voice",
+      options: [
+        { value: "a", text: "My voice tends to be weak or hoarse" },
+        { value: "b", text: "I have a strong voice, I may get loud sometimes" },
+        { value: "c", text: "My voice is deep, has good tone" }
+      ]
+    },
+    {
+      id: 14,
+      title: "Emotions",
+      options: [
+        { value: "a", text: "I am a born worrier, I often feel anxious and nervous" },
+        { value: "b", text: "If things don't happen my way, I feel irritable and angry" },
+        { value: "c", text: "I am a happy person, very caring and loving" }
+      ]
+    },
+    {
+      id: 15,
+      title: "Weather Preference",
+      options: [
+        { value: "a", text: "I love warm and humid weather" },
+        { value: "b", text: "I enjoy cool weather, I dislike a warm climate" },
+        { value: "c", text: "I like warm but dry weather" }
+      ]
+    },
+    {
+      id: 16,
+      title: "Sweating",
+      options: [
+        { value: "a", text: "I sweat little but not much" },
+        { value: "b", text: "I sweat profusely and it might have an unpleasant odor" },
+        { value: "c", text: "I never sweat, unless working very hard" }
+      ]
+    },
+    {
+      id: 17,
+      title: "Memory",
+      options: [
+        { value: "a", text: "I remember quickly and forget quickly" },
+        { value: "b", text: "I remember what I want to remember and never forget" },
+        { value: "c", text: "It takes me a while to remember, but once I do I never forget" }
+      ]
+    },
+    {
+      id: 18,
+      title: "Learning",
+      options: [
+        { value: "a", text: "I learn things easily but forget also easily" },
+        { value: "b", text: "I select and learn & never forget" },
+        { value: "c", text: "I am slow to learn but have an excellent memory" }
+      ]
+    },
+    {
+      id: 19,
+      title: "Stamina",
+      options: [
+        { value: "a", text: "I like to do things in spurts and I get tired very easily" },
+        { value: "b", text: "I have medium stamina" },
+        { value: "c", text: "I can work long hours and maintain good stamina" }
+      ]
+    },
+    {
+      id: 20,
+      title: "Mind",
+      options: [
+        { value: "a", text: "My mind gets restless easily (it starts wandering)" },
+        { value: "b", text: "I get impatient easily" },
+        { value: "c", text: "It takes a lot to make me mad. But I get dull easily." }
+      ]
+    }
+  ];
+
+  const handleAnswer = (questionId, value) => {
+    setAnswers({
+      ...answers,
+      [questionId]: value
+    });
+  };
+
+  const handleNext = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setShowResults(true);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+    }
+  };
+
+  const calculateResults = () => {
+    const counts = { a: 0, b: 0, c: 0 };
+    
+    Object.values(answers).forEach(value => {
+      counts[value]++;
+    });
+    
+    return {
+      vata: counts.a,
+      pitta: counts.b,
+      kapha: counts.c,
+      total: Object.values(counts).reduce((acc, curr) => acc + curr, 0),
+      primaryDosha: counts.a > counts.b && counts.a > counts.c ? 'Vata' :
+                   counts.b > counts.a && counts.b > counts.c ? 'Pitta' : 'Kapha'
+    };
+  };
+  
+  const resetTest = () => {
+    setAnswers({});
+    setCurrentQuestion(0);
+    setShowResults(false);
+  };
+
+  const progressPercentage = (Object.keys(answers).length / questions.length) * 100;
+  
+  const currentQuestionObj = questions[currentQuestion];
+  const results = calculateResults();
+
+  return (
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <h1 className="text-2xl font-bold text-center mb-6">Ayurvedic Dosha Test</h1>
+      <p className="text-center mb-4 text-gray-600">
+        "There are no 'good types' and 'bad types' — Each type has its own path to excellence, and its own pitfalls."
+      </p>
+      
+      {!showResults ? (
+        <div>
+          <div className="mb-4 bg-gray-200 rounded-full h-2.5">
+            <div 
+              className="bg-blue-600 h-2.5 rounded-full" 
+              style={{ width: `${progressPercentage}%` }}
+            ></div>
+          </div>
+          <p className="text-right text-sm text-gray-500 mb-4">
+            Question {currentQuestion + 1} of {questions.length} ({Math.round(progressPercentage)}% complete)
+          </p>
+          
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold mb-3">{currentQuestion + 1}. {currentQuestionObj.title}</h2>
+            <div className="space-y-3">
+              {currentQuestionObj.options.map((option) => (
+                <div 
+                  key={option.value}
+                  className={`p-3 border rounded-lg cursor-pointer transition-colors duration-200 ${
+                    answers[currentQuestionObj.id] === option.value 
+                      ? 'bg-blue-100 border-blue-500' 
+                      : 'hover:bg-gray-50'
+                  }`}
+                  onClick={() => handleAnswer(currentQuestionObj.id, option.value)}
+                >
+                  {option.text}
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="flex justify-between">
+            <button 
+              onClick={handlePrevious}
+              disabled={currentQuestion === 0}
+              className={`px-4 py-2 rounded ${
+                currentQuestion === 0 
+                  ? 'bg-gray-300 cursor-not-allowed' 
+                  : 'bg-gray-500 text-white hover:bg-gray-600'
+              }`}
+            >
+              Previous
+            </button>
+            
+            <button 
+              onClick={handleNext}
+              disabled={!answers[currentQuestionObj.id]}
+              className={`px-4 py-2 rounded ${
+                !answers[currentQuestionObj.id] 
+                  ? 'bg-gray-300 cursor-not-allowed' 
+                  : 'bg-blue-500 text-white hover:bg-blue-600'
+              }`}
+            >
+              {currentQuestion === questions.length - 1 ? 'Finish' : 'Next'}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-6">Your Dosha Profile</h2>
+          
+          <div className="mb-8 flex justify-center">
+            <div className="flex flex-col items-center">
+              <div className="relative pt-1 w-64">
+                <div className="mb-6">
+                  <div className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200 mb-1">
+                    Vata ({Math.round((results.vata / results.total) * 100)}%)
+                  </div>
+                  <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+                    <div style={{ width: `${(results.vata / results.total) * 100}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"></div>
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <div className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-red-600 bg-red-200 mb-1">
+                    Pitta ({Math.round((results.pitta / results.total) * 100)}%)
+                  </div>
+                  <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-red-200">
+                    <div style={{ width: `${(results.pitta / results.total) * 100}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-red-500"></div>
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <div className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-green-600 bg-green-200 mb-1">
+                    Kapha ({Math.round((results.kapha / results.total) * 100)}%)
+                  </div>
+                  <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-green-200">
+                    <div style={{ width: `${(results.kapha / results.total) * 100}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mb-8 p-6 bg-gray-50 rounded-lg">
+            <h3 className="text-xl font-bold mb-3">Your Primary Dosha is: {results.primaryDosha}</h3>
+            <p className="mb-4">
+              {results.primaryDosha === 'Vata' && 
+                "You are primarily Vata dominant. Vata types are creative, quick-thinking, and energetic when in balance. When out of balance, they may experience anxiety, dryness, and irregular habits."}
+              {results.primaryDosha === 'Pitta' && 
+                "You are primarily Pitta dominant. Pitta types are driven, focused, and intelligent when in balance. When out of balance, they may experience irritability, inflammation, and excessive competitiveness."}
+              {results.primaryDosha === 'Kapha' && 
+                "You are primarily Kapha dominant. Kapha types are calm, grounded, and loving when in balance. When out of balance, they may experience lethargy, weight gain, and resistance to change."}
+            </p>
+            <p className="text-sm text-gray-600">
+              Remember that everyone has all three doshas in different proportions. This test gives you insight into your natural tendencies.
+            </p>
+          </div>
+          
+          <button 
+            onClick={resetTest}
+            className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            Take Test Again
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default DoshaTest;
