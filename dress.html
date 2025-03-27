@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realistic Dress Up Game</title>
+    <style>
+        /* Basic Styling */
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .game-container {
+            display: flex;
+            gap: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Character Area */
+        .character-area {
+            position: relative; /* Crucial for positioning clothes */
+            width: 350px; /* Adjust to your character image width */
+            height: 550px; /* Adjust to your character image height */
+            border: 1px solid #ccc;
+            background-color: #e9e9e9;
+            overflow: hidden; /* Hide parts of clothes outside the area if needed */
+        }
+
+        #base-character {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Or 'cover', depending on your image */
+        }
+
+        /* Container for worn items */
+        .worn-items-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Allows clicks to pass through to items if needed */
+        }
+
+        /* Styling for items WHEN WORN */
+        .worn-item {
+            position: absolute;
+            pointer-events: auto; /* Worn items should be clickable to remove */
+            cursor: pointer; /* Indicate they can be clicked */
+            /* Width, height, top, left will be set by JS */
+        }
+
+        /* Item Selection Area */
+        .item-selection {
+            width: 300px;
+            height: 550px; /* Match character area height */
+            overflow-y: auto; /* Allow scrolling if many items */
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #f8f8f8;
+        }
+
+        .item-category h3 {
+            margin-top: 15px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            font-size: 1.1em;
+        }
+         .item-category:first-child h3 {
+             margin-top: 0;
+         }
+
+        .items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .item {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+            object-fit: contain;
+            transition: transform 0.2s ease;
+        }
+
+        .item:hover {
+            transform: scale(1.1);
+            border-color: #aaa;
+        }
+
+        /* Example Placeholder Image (Replace with your Base64) */
+        /* A simple grey box for the base character */
+        .placeholder-character {
+             background-color: #cccccc;
+             /* If using a real image, set src in the <img> tag instead */
+        }
+
+        /* Example Placeholder Item Images (Replace with your Base64) */
+        /* You would replace the background-color/content with background-image: url(YOUR_BASE64_STRING); */
+        /* Or set the src directly in the <img> tag */
+
+        #item-top1 { background-color: #ffcccc; } /* Placeholder Red Top */
+        #item-top2 { background-color: #ccccff; } /* Placeholder Blue Top */
+        #item-bottom1 { background-color: #ccffcc; } /* Placeholder Green Pants */
+        #item-bottom2 { background-color: #ffffcc; } /* Placeholder Yellow Skirt */
+        #item-dress1 { background-color: #ffccff; } /* Placeholder Pink Dress */
+        #item-shoes1 { background-color: #8B4513; } /* Placeholder Brown Shoes */
+        #item-hat1 { background-color: #a0a0a0; } /* Placeholder Grey Hat */
+
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+
+        <!-- Character Display Area -->
+        <div class="character-area">
+            <!-- *** REPLACE THIS BASE CHARACTER IMAGE *** -->
+            <!-- Option 1: Use background on the div (if simple) -->
+            <!-- <div id="base-character" class="placeholder-character"></div> -->
+            <!-- Option 2: Use an img tag (Recommended for complex character) -->
+             <img id="base-character" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUoAAAIkCAQAAABfEcG+AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAABSqADAAQAAAABAAACJAAAAAAXRCHaAAAB1ElEQVR42u3BMQEAAADCoPVPbQ0PoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMCNDt8AAT4u5j8AAAAASUVORK5CYII=" alt="Base Character">
+            <!-- Container where worn items will be added -->
+            <div class="worn-items-container"></div>
+        </div>
+
+        <!-- Item Selection Area -->
+        <div class="item-selection">
+            <button id="reset-button" style="width: 100%; padding: 8px; margin-bottom: 15px; cursor: pointer;">Remove All</button>
+
+            <div class="item-category">
+                <h3>Tops</h3>
+                <div class="items">
+                    <!-- *** REPLACE PLACEHOLDERS & ADJUST DATA ATTRIBUTES *** -->
+                    <img class="item" id="item-top1"
+                         data-item-id="top1"
+                         data-type="top"
+                         data-src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/N6MAAAAAXNSR0IArs4c6QAAADRJREFUaEPt0AERAAAIhECvf2l7gJQCSDEAwLq3/+cAAIAAIAAIAAIAAIAAIAACAAgAAgAIwA4kFADVR+zWAAAAAElFTkSuQmCC" /* Replace with Base64 */
+                         data-zindex="5"
+                         data-pos-top="30%"
+                         data-pos-left="30%"
+                         data-width="40%"
+                         data-height="auto" /* Adjust */
+                         alt="Red Top">
+                    <img class="item" id="item-top2"
+                         data-item-id="top2"
+                         data-type="top"
+                         data-src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/N6MAAAAAXNSR0IArs4c6QAAADRJREFUaEPt0AERAAAIhECvf2l7gJQCSDEAwLq3/+cAAIAAIAAIAAIAAIAAIAACAAgAAgAIwA4kFADVR+zWAAAAAElFTkSuQmCC" /* Replace with Base64 */
+                         data-zindex="5"
+                         data-pos-top="32%"
+                         data-pos-left="31%"
+                         data-width="38%"
+                         data-height="auto" /* Adjust */
+                         alt="Blue Top">
+                </div>
+            </div>
+
+            <div class="item-category">
+                <h3>Bottoms</h3>
+                 <div class="items">
+                    <img class="item" id="item-bottom1"
+                         data-item-id="bottom1"
+                         data-type="bottom"
+                         data-src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/N6MAAAAAXNSR0IArs4c6QAAADRJREFUaEPt0AERAAAIhECvf2l7gJQCSDEAwLq3/+cAAIAAIAAIAAIAAIAAIAACAAgAAgAIwA4kFADVR+zWAAAAAElFTkSuQmCC" /* Replace with Base64 */
+                         data-zindex="4" /* Lower than tops */
+                         data-pos-top="50%"
+                         data-pos-left="30%"
+                         data-width="40%"
+                         data-height="auto" /* Adjust */
+                         alt="Green Pants">
+                     <img class="item" id="item-bottom2"
+                         data-item-id="bottom2"
+                         data-type="bottom"
+                         data-src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/N6MAAAAAXNSR0IArs4c6QAAADRJREFUaEPt0AERAAAIhECvf2l7gJQCSDEAwLq3/+cAAIAAIAAIAAIAAIAAIAACAAgAAgAIwA4kFADVR+zWAAAAAElFTkSuQmCC" /* Replace with Base64 */
+                         data-zindex="4"
+                         data-pos-top="52%"
+                         data-pos-left="28%"
+                         data-width="44%"
+                         data-height="auto" /* Adjust */
+                         alt="Yellow Skirt">
+                 </div>
+            </div>
+
+             <div class="item-category">
+                <h3>Dresses</h3>
+                 <div class="items">
+                    <img class="item" id="item-dress1"
+                         data-item-id="dress1"
+                         data-type="dress" /* Special type, might remove top/bottom */
+                         data-src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/N6MAAAAAXNSR0IArs4c6QAAADRJREFUaEPt0AERAAAIhECvf2l7gJQCSDEAwLq3/+cAAIAAIAAIAAIAAIAAIAACAAgAAgAIwA4kFADVR+zWAAAAAElFTkSuQmCC" /* Replace with Base64 */
+                         data-zindex="6" /* Covers top and bottom */
+                         data-pos-top="30%"
+                         data-pos-left="25%"
+                         data-width="50%"
+                         data-height="auto" /* Adjust */
+                         alt="Pink Dress">
+                 </div>
+            </div>
+
+             <div class="item-category">
+                <h3>Shoes</h3>
+                 <div class="items">
+                    <img class="item" id="item-shoes1"
+                         data-item-id="shoes1"
+                         data-type="shoes"
+                         data-src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/N6MAAAAAXNSR0IArs4c6QAAADRJREFUaEPt0AERAAAIhECvf2l7gJQCSDEAwLq3/+cAAIAAIAAIAAIAAIAAIAACAAgAAgAIwA4kFADVR+zWAAAAAElFTkSuQmCC" /* Replace with Base64 */
+                         data-zindex="7" /* Usually on top */
+                         data-pos-top="85%"
+                         data-pos-left="30%"
+                         data-width="40%"
+                         data-height="auto" /* Adjust */
+                         alt="Brown Shoes">
+                 </div>
+            </div>
+
+             <div class="item-category">
+                <h3>Hats</h3>
+                 <div class="items">
+                    <img class="item" id="item-hat1"
+                         data-item-id="hat1"
+                         data-type="hat"
+                         data-src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAYAAAA6/N6MAAAAAXNSR0IArs4c6QAAADRJREFUaEPt0AERAAAIhECvf2l7gJQCSDEAwLq3/+cAAIAAIAAIAAIAAIAAIAACAAgAAgAIwA4kFADVR+zWAAAAAElFTkSuQmCC" /* Replace with Base64 */
+                         data-zindex="10" /* Usually highest */
+                         data-pos-top="5%"
+                         data-pos-left="35%"
+                         data-width="30%"
+                         data-height="auto" /* Adjust */
+                         alt="Grey Hat">
+                 </div>
+            </div>
+            <!-- Add more categories and items here -->
+
+        </div>
+    </div>
+
+    <script>
+        const itemSelectionArea = document.querySelector('.item-selection');
+        const wornItemsContainer = document.querySelector('.worn-items-container');
+        const resetButton = document.getElementById('reset-button');
+
+        // --- Event Listener for Clicking Items in the Selection Area ---
+        itemSelectionArea.addEventListener('click', function(event) {
+            // Check if the clicked element is an item image
+            if (event.target.classList.contains('item')) {
+                const item = event.target;
+                const itemId = item.dataset.itemId;
+                const itemType = item.dataset.type;
+                const itemSrc = item.dataset.src || item.src; // Get Base64 source
+                const itemZindex = item.dataset.zindex || '1'; // Default z-index
+                const itemTop = item.dataset.posTop || '0%';
+                const itemLeft = item.dataset.posLeft || '0%';
+                const itemWidth = item.dataset.width || 'auto';
+                const itemHeight = item.dataset.height || 'auto';
+
+                // --- Handle Item Conflicts ---
+                // Remove existing item of the same type (e.g., replace old hat with new hat)
+                removeWornItemByType(itemType);
+
+                // If putting on a dress, remove existing top and bottom
+                if (itemType === 'dress') {
+                    removeWornItemByType('top');
+                    removeWornItemByType('bottom');
+                }
+                // If putting on a top or bottom, remove existing dress
+                else if (itemType === 'top' || itemType === 'bottom') {
+                    removeWornItemByType('dress');
+                }
+
+                // --- Add the New Item ---
+                addWornItem({
+                    id: itemId,
+                    type: itemType,
+                    src: itemSrc,
+                    zIndex: itemZindex,
+                    top: itemTop,
+                    left: itemLeft,
+                    width: itemWidth,
+                    height: itemHeight
+                });
+            }
+        });
+
+        // --- Function to Add an Item to the Character ---
+        function addWornItem(itemData) {
+            const newWornItem = document.createElement('img');
+            newWornItem.src = itemData.src;
+            newWornItem.classList.add('worn-item');
+            newWornItem.dataset.itemId = itemData.id; // Store ID for potential removal
+            newWornItem.dataset.type = itemData.type; // Store type for replacement logic
+            newWornItem.alt = "Worn " + itemData.type;
+            newWornItem.style.position = 'absolute';
+            newWornItem.style.top = itemData.top;
+            newWornItem.style.left = itemData.left;
+            newWornItem.style.width = itemData.width;
+            newWornItem.style.height = itemData.height;
+            newWornItem.style.zIndex = itemData.zIndex;
+            newWornItem.style.pointerEvents = 'auto'; // Make sure it's clickable
+
+            // Add event listener to remove the item when clicked
+            newWornItem.addEventListener('click', function() {
+                newWornItem.remove();
+            });
+
+            wornItemsContainer.appendChild(newWornItem);
+        }
+
+        // --- Function to Remove Worn Item(s) by Type ---
+        function removeWornItemByType(typeToRemove) {
+            const existingItems = wornItemsContainer.querySelectorAll(`.worn-item[data-type="${typeToRemove}"]`);
+            existingItems.forEach(item => item.remove());
+        }
+
+         // --- Event Listener for Reset Button ---
+         resetButton.addEventListener('click', function() {
+            wornItemsContainer.innerHTML = ''; // Remove all children
+         });
+
+        // --- Optional: Add listener for clicking worn items directly (alternative to function above) ---
+        // wornItemsContainer.addEventListener('click', function(event) {
+        //     if (event.target.classList.contains('worn-item')) {
+        //         event.target.remove();
+        //     }
+        // });
+
+        console.log("Dress up game initialized. Remember to replace placeholder images and adjust positioning data!");
+
+    </script>
+
+</body>
+</html>
