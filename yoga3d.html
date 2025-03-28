@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Yoga Pose Viewer</title>
+    <style>
+        body { margin: 0; font-family: sans-serif; background-color: #f0f0f0; color: #333; }
+        #info {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
+            display: block;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+        #info label {
+            margin-right: 5px;
+        }
+        #info input {
+            padding: 8px;
+            margin-right: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #info button {
+            padding: 8px 15px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        #info button:hover {
+            background-color: #45a049;
+        }
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+            position: relative; /* Needed for absolute positioning of info */
+        }
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5em;
+            color: #555;
+            z-index: 101; /* Above canvas, potentially below info if needed */
+        }
+    </style>
+    <!-- Import map for Three.js modules -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.162.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.162.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div id="info">
+        <label for="poseInput">Enter Yoga Pose:</label>
+        <input type="text" id="poseInput" list="yoga-poses" placeholder="e.g., T Pose, Idle...">
+        <datalist id="yoga-poses">
+            <!-- Add suggestions here - these MUST match keys in animationMap below -->
+            <option value="Idle">
+            <option value="T Pose">
+            <option value="Walking"> <!-- Example generic animation -->
+            <option value="Running"> <!-- Example generic animation -->
+            <option value="Stretch"> <!-- Example potentially yoga-like -->
+            <!-- Add more options IF your model has corresponding animations -->
+        </datalist>
+        <button id="poseButton">Show Pose</button>
+        <p style="font-size: 0.8em; margin-top: 5px;">Note: Only a limited set of poses/animations are available based on the loaded model.</p>
+    </div>
+
+    <div id="loading">Loading 3D Model and Scene...</div>
+    <div id="canvas-container"></div>
+
+    <script type="module">
+        // Import Three.js core and necessary loaders/controls
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        let scene, camera, renderer, model, mixer, clock, controls;
+        let animationsMap = new Map(); // To store animations by name
+        let currentAction = null;
+        const loadingManager = new THREE.LoadingManager();
+        const loadingElement = document.getElementById('loading');
+        const canvasContainer = document.getElementById('canvas-container');
+        const poseInput = document.getElementById('poseInput');
+        const poseButton = document.getElementById('poseButton');
+
+        // --- Loading Manager ---
+        loadingManager.onStart = function ( url, itemsLoaded, itemsTotal ) {
+            console.log( 'Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+            loadingElement.style.display = 'block'; // Show loading text
+        };
+
+        loadingManager.onLoad = function ( ) {
+            console.log( 'Loading complete!');
+            loadingElement.style.display = 'none'; // Hide loading text
+            // Default to Idle animation if available
+            playAnimation('Idle');
+        };
+
+        loadingManager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+            console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+             loadingElement.innerText = `Loading: ${Math.round((itemsLoaded / itemsTotal) * 100)}%`;
+        };
+
+        loadingManager.onError = function ( url ) {
+            console.error( 'There was an error loading ' + url );
+            loadingElement.innerText = 'Error loading model. Please check console.';
+        };
+
+
+        // --- Initialization ---
+        function init() {
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xeeeeee);
+            scene.fog = new THREE.Fog(0xeeeeee, 10, 50); // Add fog for depth
+
+            // Clock for animation updates
+            clock = new THREE.Clock();
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(0, 1.5, 5); // Position the camera
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true; // Enable shadows
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            canvasContainer.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); // Soft white light
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+            directionalLight.position.set(5, 10, 7.5);
+            directionalLight.castShadow = true;
+            // Configure shadow properties for quality/performance
+            directionalLight.shadow.mapSize.width = 1024;
+            directionalLight.shadow.mapSize.height = 1024;
+            directionalLight.shadow.camera.near = 0.5;
+            directionalLight.shadow.camera.far = 50;
+            directionalLight.shadow.camera.left = -10;
+            directionalLight.shadow.camera.right = 10;
+            directionalLight.shadow.camera.top = 10;
+            directionalLight.shadow.camera.bottom = -10;
+            scene.add(directionalLight);
+            // Optional: Add a light helper for debugging
+            // const lightHelper = new THREE.DirectionalLightHelper(directionalLight, 1);
+            // scene.add(lightHelper);
+
+
+            // Ground Plane
+            const groundGeometry = new THREE.PlaneGeometry(50, 50);
+            const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x999999, side: THREE.DoubleSide });
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2; // Rotate to be horizontal
+            ground.receiveShadow = true; // Allow ground to receive shadows
+            scene.add(ground);
+
+            // Controls
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true; // Smooth camera movement
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 2;
+            controls.maxDistance = 20;
+            controls.target.set(0, 1, 0); // Point camera towards the model's center
+            controls.update();
+
+            // Load Model
+            loadModel();
+
+            // Handle Window Resize
+            window.addEventListener('resize', onWindowResize, false);
+
+            // Handle Input
+            poseButton.addEventListener('click', handlePoseInput);
+            poseInput.addEventListener('keypress', (event) => {
+                 if (event.key === 'Enter') {
+                    handlePoseInput();
+                 }
+            });
+        }
+
+        // --- Load GLTF Model ---
+        function loadModel() {
+            const loader = new GLTFLoader(loadingManager); // Use loading manager
+
+            // !! IMPORTANT !!: Replace this URL with a working GLB/GLTF model URL.
+            // This example uses a model from the Three.js repository. Find models on Sketchfab (check licenses!), Mixamo, etc.
+            // Make sure the model IS RIGGED and ideally CONTAINS ANIMATIONS.
+            const modelUrl = 'https://unpkg.com/three@0.162.0/examples/models/gltf/RobotExpressive/RobotExpressive.glb';
+
+            loader.load(modelUrl, (gltf) => {
+                model = gltf.scene;
+                model.scale.set(0.5, 0.5, 0.5); // Adjust scale if needed
+                model.position.y = 0; // Place model on the ground plane
+
+                // Enable shadows for all meshes in the model
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true; // Sometimes parts of model cast shadow on itself
+                    }
+                });
+
+                scene.add(model);
+                console.log("Model loaded successfully.");
+                console.log("Available animations:", gltf.animations); // Log available animations
+
+                // Animation Setup
+                mixer = new THREE.AnimationMixer(model);
+                animationsMap.clear(); // Clear previous map if any
+
+                // Process and store animations - Use names from gltf.animations
+                // We need to map the SUGGESTION names to the ACTUAL animation names found in the model
+                const animationNameMapping = {
+                    // Input Suggestion Name : Actual Animation Name in GLB
+                    "Idle": "Idle",
+                    "Walking": "Walking",
+                    "Running": "Running",
+                    "Dance": "Dance", // Example if model has 'Dance'
+                    "T Pose": "TPose", // Example if model has 'TPose' - Check console log!
+                    "Stretch": "Jump" // !! Re-mapping example: Using 'Jump' if no 'Stretch' exists !!
+                    // Add more mappings based on the console log of gltf.animations
+                };
+
+                gltf.animations.forEach((clip) => {
+                     // Find which input suggestion name maps to this clip's actual name
+                     for (const [suggestionName, actualName] of Object.entries(animationNameMapping)) {
+                         if (clip.name === actualName) {
+                            animationsMap.set(suggestionName, clip); // Store by suggestion name
+                            console.log(`Mapped input "${suggestionName}" to animation clip "${clip.name}"`);
+                            break; // Found mapping, move to next clip
+                         }
+                     }
+                     // If no mapping found, maybe store by actual name as fallback?
+                     if (![...animationsMap.values()].includes(clip)) {
+                         console.log(`Animation clip "${clip.name}" has no input mapping defined.`);
+                         // Optionally add it by its actual name if you want direct access
+                         // animationsMap.set(clip.name, clip);
+                     }
+                });
+
+                // Update datalist dynamically based on loaded/mapped animations
+                updateDatalist();
+
+                // Start animation loop *after* model is loaded
+                animate();
+
+            }, undefined, (error) => {
+                console.error("An error occurred loading the model:", error);
+                loadingElement.innerText = 'Error loading model. Check console.';
+            });
+        }
+
+        // --- Update Datalist Suggestions ---
+        function updateDatalist() {
+            const datalist = document.getElementById('yoga-poses');
+            datalist.innerHTML = ''; // Clear existing options
+            animationsMap.forEach((clip, name) => {
+                 const option = document.createElement('option');
+                 option.value = name;
+                 datalist.appendChild(option);
+            });
+             console.log("Updated datalist with mapped animations.");
+        }
+
+        // --- Handle Pose Input ---
+        function handlePoseInput() {
+            const poseName = poseInput.value.trim(); // Get input value, remove whitespace
+            playAnimation(poseName);
+        }
+
+        // --- Play Animation ---
+        function playAnimation(name) {
+            const requestedClip = animationsMap.get(name);
+
+            if (!mixer || !requestedClip) {
+                console.warn(`Animation "${name}" not found or mixer not ready.`);
+                // Optional: Provide user feedback on the page
+                // You could display a message near the input box
+                return; // Exit if animation name is invalid or mixer isn't set up
+            }
+
+            // Fade out the current action
+            if (currentAction) {
+                currentAction.fadeOut(0.5); // Fade out over 0.5 seconds
+            }
+
+            // Get the new action
+            const newAction = mixer.clipAction(requestedClip);
+
+            // Reset, fade in, and play the new action
+            newAction.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(0.5).play();
+
+            currentAction = newAction; // Store the new action as the current one
+            console.log(`Playing animation: "${name}"`);
+        }
+
+
+        // --- Animation Loop ---
+        function animate() {
+            requestAnimationFrame(animate); // Loop
+
+            const delta = clock.getDelta(); // Get time difference since last frame
+
+            if (mixer) {
+                mixer.update(delta); // Update the animation mixer
+            }
+
+            controls.update(); // Update camera controls
+
+            renderer.render(scene, camera); // Render the scene
+        }
+
+        // --- Window Resize Handler ---
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // --- Start Everything ---
+        init();
+
+    </script>
+
+</body>
+</html>
