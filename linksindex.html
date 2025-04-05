@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Index Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a73e8;
+            margin-bottom: 30px;
+        }
+
+        .submit-form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #1a73e8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #1557b0;
+        }
+
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        .category-title {
+            color: #333;
+            border-bottom: 2px solid #1a73e8;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .link-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .link-card a {
+            color: #1a73e8;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .quality {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .admin-panel {
+            background-color: #fff3e0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Link Index Hub</h1>
+
+        <!-- Submission Form -->
+        <div class="submit-form">
+            <h3>Submit a Link</h3>
+            <div class="form-group">
+                <label>Link URL:</label>
+                <input type="text" id="linkUrl" placeholder="https://example.com">
+            </div>
+            <div class="form-group">
+                <label>Category:</label>
+                <select id="category">
+                    <option value="youtube">YouTube</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="blog">Blog</option>
+                    <option value="website">Website</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Quality:</label>
+                <select id="quality">
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+            <button onclick="submitLink()">Submit for Approval</button>
+        </div>
+
+        <!-- Link Display Sections -->
+        <div class="category-section" id="youtube">
+            <h2 class="category-title">YouTube Videos</h2>
+            <div class="link-grid" id="youtube-links"></div>
+        </div>
+
+        <div class="category-section" id="instagram">
+            <h2 class="category-title">Instagram Posts</h2>
+            <div class="link-grid" id="instagram-links"></div>
+        </div>
+
+        <div class="category-section" id="blog">
+            <h2 class="category-title">Blogs</h2>
+            <div class="link-grid" id="blog-links"></div>
+        </div>
+
+        <div class="category-section" id="website">
+            <h2 class="category-title">Websites</h2>
+            <div class="link-grid" id="website-links"></div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div class="admin-panel" id="adminPanel">
+            <h3>Admin Approval Queue</h3>
+            <div id="pending-links"></div>
+            <button onclick="toggleAdmin()">Hide Admin Panel</button>
+        </div>
+    </div>
+
+    <script>
+        // IndexedDB Setup
+        let db;
+        const request = indexedDB.open('LinkIndexDB', 1);
+
+        request.onerror = function(event) {
+            console.error('Database error:', event.target.errorCode);
+        };
+
+        request.onsuccess = function(event) {
+            db = event.target.result;
+            loadLinksFromDB();
+        };
+
+        request.onupgradeneeded = function(event) {
+            db = event.target.result;
+            db.createObjectStore('pendingLinks', { autoIncrement: true });
+            db.createObjectStore('approvedLinks', { autoIncrement: true });
+        };
+
+        // Main Functions
+        function submitLink() {
+            const url = document.getElementById('linkUrl').value;
+            const category = document.getElementById('category').value;
+            const quality = document.getElementById('quality').value;
+
+            if (url) {
+                const transaction = db.transaction(['pendingLinks'], 'readwrite');
+                const store = transaction.objectStore('pendingLinks');
+                store.add({ url, category, quality, timestamp: Date.now() });
+                
+                transaction.oncomplete = function() {
+                    alert('Link submitted for admin approval!');
+                    document.getElementById('linkUrl').value = '';
+                    updateAdminPanel();
+                };
+            }
+        }
+
+        function loadLinksFromDB() {
+            const pendingTransaction = db.transaction(['pendingLinks'], 'readonly');
+            const pendingStore = pendingTransaction.objectStore('pendingLinks');
+            const pendingRequest = pendingStore.getAll();
+
+            pendingRequest.onsuccess = function() {
+                updateAdminPanel(pendingRequest.result);
+            };
+
+            const approvedTransaction = db.transaction(['approvedLinks'], 'readonly');
+            const approvedStore = approvedTransaction.objectStore('approvedLinks');
+            const approvedRequest = approvedStore.getAll();
+
+            approvedRequest.onsuccess = function() {
+                updateLinkDisplay(approvedRequest.result);
+            };
+        }
+
+        function updateAdminPanel(pendingLinks = []) {
+            const panel = document.getElementById('pending-links');
+            panel.innerHTML = '';
+            
+            const transaction = db.transaction(['pendingLinks'], 'readonly');
+            const store = transaction.objectStore('pendingLinks');
+            const request = store.openCursor();
+
+            request.onsuccess = function(event) {
+                const cursor = event.target.result;
+                if (cursor) {
+                    const div = document.createElement('div');
+                    div.innerHTML = `
+                        <p>${cursor.value.url} (${cursor.value.category}, ${cursor.value.quality})</p>
+                        <button onclick="approveLink(${cursor.key})">Approve</button>
+                        <button onclick="rejectLink(${cursor.key})">Reject</button>
+                    `;
+                    panel.appendChild(div);
+                    cursor.continue();
+                }
+                document.getElementById('adminPanel').style.display = panel.children.length ? 'block' : 'none';
+            };
+        }
+
+        function approveLink(key) {
+            const pendingTransaction = db.transaction(['pendingLinks'], 'readwrite');
+            const pendingStore = pendingTransaction.objectStore('pendingLinks');
+            const request = pendingStore.get(key);
+
+            request.onsuccess = function() {
+                const link = request.result;
+                const approvedTransaction = db.transaction(['approvedLinks'], 'readwrite');
+                const approvedStore = approvedTransaction.objectStore('approvedLinks');
+                approvedStore.add(link);
+
+                pendingStore.delete(key);
+                
+                approvedTransaction.oncomplete = function() {
+                    loadLinksFromDB();
+                };
+            };
+        }
+
+        function rejectLink(key) {
+            const transaction = db.transaction(['pendingLinks'], 'readwrite');
+            const store = transaction.objectStore('pendingLinks');
+            store.delete(key);
+            
+            transaction.oncomplete = function() {
+                updateAdminPanel();
+            };
+        }
+
+        function updateLinkDisplay(approvedLinks = []) {
+            const categories = {
+                youtube: document.getElementById('youtube-links'),
+                instagram: document.getElementById('instagram-links'),
+                blog: document.getElementById('blog-links'),
+                website: document.getElementById('website-links')
+            };
+
+            // Clear existing links
+            for (const category in categories) {
+                categories[category].innerHTML = '';
+            }
+
+            // Load from DB if no links provided
+            if (approvedLinks.length === 0) {
+                const transaction = db.transaction(['approvedLinks'], 'readonly');
+                const store = transaction.objectStore('approvedLinks');
+                const request = store.getAll();
+
+                request.onsuccess = function() {
+                    request.result.forEach(link => {
+                        addLinkToDisplay(link);
+                    });
+                };
+            } else {
+                approvedLinks.forEach(link => {
+                    addLinkToDisplay(link);
+                });
+            }
+
+            function addLinkToDisplay(link) {
+                const container = categories[link.category];
+                if (container) {
+                    const card = document.createElement('div');
+                    card.className = 'link-card';
+                    card.innerHTML = `
+                        <a href="${link.url}" target="_blank">${link.url}</a>
+                        <div class="quality">Quality: ${link.quality}</div>
+                    `;
+                    container.appendChild(card);
+                }
+            }
+        }
+
+        function toggleAdmin() {
+            const panel = document.getElementById('adminPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
