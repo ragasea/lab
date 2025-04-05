@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Anurag Academy - Master the Game of Kings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+        }
+        .chess-board {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="50" height="50" x="0" y="0" fill="%23f0d9b5"/><rect width="50" height="50" x="50" y="0" fill="%23b58863"/><rect width="50" height="50" x="0" y="50" fill="%23b58863"/><rect width="50" height="50" x="50" y="50" fill="%23f0d9b5"/></svg>');
+            background-size: 100px 100px;
+        }
+        .move-in {
+            animation: moveIn 0.8s ease-out forwards;
+        }
+        @keyframes moveIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-chess-queen text-blue-800 text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-blue-800">Chess Anurag Academy</span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="#home" class="text-blue-800 hover:text-blue-600 px-3 py-2 font-medium">Home</a>
+                    <a href="#about" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">About</a>
+                    <a href="#programs" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Programs</a>
+                    <a href="#coaches" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Coaches</a>
+                    <a href="#contact" class="text-gray-700 hover:text-blue-600 px-3 py-2 font-medium">Contact</a>
+                    <a href="#register" class="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition duration-300">Register Now</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button class="text-gray-700 hover:text-blue-600 focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-gradient text-white py-20 md:py-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="md:flex items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0 move-in" style="animation-delay: 0.2s;">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6">Master the Game of <span class="text-yellow-300">Kings</span></h1>
+                    <p class="text-xl mb-8 text-blue-100">Join India's premier chess academy and elevate your game with our world-class training programs.</p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <a href="#register" class="bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold py-3 px-6 rounded-lg text-center transition duration-300 pulse">Start Learning Today</a>
+                        <a href="#programs" class="bg-transparent hover:bg-blue-800 text-white font-bold py-3 px-6 border-2 border-white rounded-lg text-center transition duration-300">Explore Programs</a>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center move-in" style="animation-delay: 0.4s;">
+                    <div class="relative w-80 h-80 md:w-96 md:h-96 bg-white rounded-xl shadow-2xl overflow-hidden chess-board flex items-center justify-center">
+                        <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                            <i class="fas fa-chess-knight text-white text-8xl opacity-80"></i>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white p-4 text-center">
+                            <p class="font-bold">"Chess is the gymnasium of the mind."</p>
+                            <p class="text-sm">- Blaise Pascal</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-blue-800 mb-4">About Chess Anurag Academy</h2>
+                <div class="w-20 h-1 bg-yellow-400 mx-auto"></div>
+            </div>
+            <div class="md:flex items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
+                    <img src="https://images.unsplash.com/photo-1543092587-d8b8feaf3622?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Chess players" class="rounded-lg shadow-xl w-full h-auto">
+                </div>
+                <div class="md:w-1/2">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Developing Champions Since 2010</h3>
+                    <p class="text-gray-600 mb-4">Chess Anurag Academy was founded with a vision to nurture chess talent and create world-class players. Our academy has produced numerous national and international champions who have brought glory to our country.</p>
+                    <p class="text-gray-600 mb-6">We believe in a holistic approach to chess training that combines technical skills with psychological preparation, physical fitness, and tournament strategy.</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-trophy text-yellow-500 mr-2"></i>
+                                <h4 class="font-bold text-blue-800">50+ Champions</h4>
+                            </div>
+                            <p class="text-sm text-gray-600">National and international title holders trained at our academy</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-user-graduate text-yellow-500 mr-2"></i>
+                                <h4 class="font-bold text-blue-800">1000+ Students</h4>
+                            </div>
+                            <p class="text-sm text-gray-600">From beginners to grandmasters in our alumni network</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-chess-board text-yellow-500 mr-2"></i>
+                                <h4 class="font-bold text-blue-800">10+ Centers</h4>
+                            </div>
+                            <p class="text-sm text-gray-600">Across major cities with world-class facilities</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-award text-yellow-500 mr-2"></i>
+                                <h4 class="font-bold text-blue-800">5 Awards</h4>
+                            </div>
+                            <p class="text-sm text-gray-600">Recognized as India's best chess academy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section id="programs" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-blue-800 mb-4">Our Training Programs</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Tailored programs for every skill level, from absolute beginners to tournament players</p>
+                <div class="w-20 h-1 bg-yellow-400 mx-auto"></div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Program 1 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <div class="h-48 bg-blue-800 flex items-center justify-center">
+                        <i class="fas fa-chess-pawn text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Beginner Program</h3>
+                        <p class="text-gray-600 mb-4">Learn the fundamentals of chess, piece movements, basic tactics and strategies.</p>
+                        <ul class="mb-4 text-gray-600">
+                            <li class="flex items-center mb-2"><i class="fas fa-check text-green-500 mr-2"></i> 12-week course</li>
+                            <li class="flex items-center mb-2"><i class="fas fa-check text-green-500 mr-2"></i> Interactive sessions</li>
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Certificate upon completion</li>
+                        </ul>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-blue-800">₹3,999/month</span>
+                            <a href="#register" class="text-blue-600 hover:text-blue-800 font-medium">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Program 2 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <div class="h-48 bg-blue-700 flex items-center justify-center">
+                        <i class="fas fa-chess-knight text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Intermediate Program</h3>
+                        <p class="text-gray-600 mb-4">Advance your skills with complex tactics, positional play and tournament preparation.</p>
+                        <ul class="mb-4 text-gray-600">
+                            <li class="flex items-center mb-2"><i class="fas fa-check text-green-500 mr-2"></i> 6-month intensive</li>
+                            <li class="flex items-center mb-2"><i class="fas fa-check text-green-500 mr-2"></i> Weekly tournaments</li>
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Personalized coaching</li>
+                        </ul>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-blue-800">₹6,999/month</span>
+                            <a href="#register" class="text-blue-600 hover:text-blue-800 font-medium">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Program 3 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105">
+                    <div class="h-48 bg-blue-600 flex items-center justify-center">
+                        <i class="fas fa-chess-queen text-white text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Advanced Program</h3>
+                        <p class="text-gray-600 mb-4">Master-level training with grandmasters, advanced strategies and international exposure.</p>
+                        <ul class="mb-4 text-gray-600">
+                            <li class="flex items-center mb-2"><i class="fas fa-check text-green-500 mr-2"></i> 1-year mentorship</li>
+                            <li class="flex items-center mb-2"><i class="fas fa-check text-green-500 mr-2"></i> International tournaments</li>
+                            <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i> Sponsorship opportunities</li>
+                        </ul>
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-blue-800">₹12,999/month</span>
+                            <a href="#register" class="text-blue-600 hover:text-blue-800 font-medium">Enroll Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-16 text-center">
+                <h3 class="text-2xl font-bold text-blue-800 mb-6">Specialized Training Modules</h3>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <i class="fas fa-brain text-blue-600 text-3xl mb-3"></i>
+                        <h4 class="font-bold mb-2">Opening Theory</h4>
+                        <p class="text-sm text-gray-600">Master various openings and their variations</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <i class="fas fa-chess-rook text-blue-600 text-3xl mb-3"></i>
+                        <h4 class="font-bold mb-2">Endgame Techniques</h4>
+                        <p class="text-sm text-gray-600">Learn essential endgame principles and techniques</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <i class="fas fa-chess-bishop text-blue-600 text-3xl mb-3"></i>
+                        <h4 class="font-bold mb-2">Tactical Training</h4>
+                        <p class="text-sm text-gray-600">Sharpen your tactical vision with daily puzzles</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <i class="fas fa-chess-clock text-blue-600 text-3xl mb-3"></i>
+                        <h4 class="font-bold mb-2">Time Management</h4>
+                        <p class="text-sm text-gray-600">Strategies for effective clock management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coaches Section -->
+    <section id="coaches" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-blue-800 mb-4">Meet Our Grandmasters</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Learn from the best minds in Indian chess</p>
+                <div class="w-20 h-1 bg-yellow-400 mx-auto"></div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Coach 1 -->
+                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-64 bg-blue-800 relative">
+                        <img src="https://images.unsplash.com/photo-1557862921-37829c790f19?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Coach Anurag Sharma" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-bold text-xl">GM Anurag Sharma</h3>
+                            <p class="text-blue-200">Founder & Head Coach</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">FIDE Rating: 2650</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Former national champion with 20+ years of coaching experience. Specializes in positional play and endgame techniques.</p>
+                        <div class="flex space-x-2">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Opening Expert</span>
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Endgame Specialist</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Coach 2 -->
+                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-64 bg-blue-800 relative">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Coach Priya Patel" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-bold text-xl">WGM Priya Patel</h3>
+                            <p class="text-blue-200">Senior Coach</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">FIDE Rating: 2480</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Women's Grandmaster with expertise in tactical training and psychological preparation for tournaments.</p>
+                        <div class="flex space-x-2">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Tactics Trainer</span>
+                            <span class="bg-pink-100 text-pink-800 text-xs font-medium px-2.5 py-0.5 rounded">Women's Chess</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Coach 3 -->
+                <div class="bg-gray-50 rounded-xl overflow-hidden shadow-lg">
+                    <div class="h-64 bg-blue-800 relative">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Coach Rajiv Mehta" class="w-full h-full object-cover">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                            <h3 class="text-white font-bold text-xl">IM Rajiv Mehta</h3>
+                            <p class="text-blue-200">Junior Program Director</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">FIDE Rating: 2420</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">International Master with a passion for developing young talent. Creator of our popular junior chess curriculum.</p>
+                        <div class="flex space-x-2">
+                            <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">Junior Development</span>
+                            <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">Speed Chess</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-16 text-center">
+                <h3 class="text-2xl font-bold text-blue-800 mb-6">Our Coaching Methodology</h3>
+                <div class="grid md:grid-cols-3 gap-8 text-left">
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-user-friends text-blue-600 text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-blue-800">Personalized Training</h4>
+                        </div>
+                        <p class="text-gray-600">Each student receives a customized training plan based on their strengths, weaknesses, and goals.</p>
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-chart-line text-blue-600 text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-blue-800">Progress Tracking</h4>
+                        </div>
+                        <p class="text-gray-600">Regular assessments and analytics to measure improvement and adjust training accordingly.</p>
+                    </div>
+                    <div class="bg-blue-50 p-6 rounded-lg">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-100 p-3 rounded-full mr-4">
+                                <i class="fas fa-trophy text-blue-600 text-xl"></i>
+                            </div>
+                            <h4 class="font-bold text-blue-800">Tournament Support</h4>
+                        </div>
+                        <p class="text-gray-600">Comprehensive preparation and support for local, national and international tournaments.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-blue-800 mb-4">Success Stories</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">What our students and their parents say about us</p>
+                <div class="w-20 h-1 bg-yellow-400 mx-auto"></div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Rahul Verma" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Rahul Verma</h4>
+                            <p class="text-blue-600">National Under-16 Champion</p>
+                            <div class="flex mt-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">"Training at Chess Anurag Academy transformed my game completely. The systematic approach to openings and the intensive tactical training helped me win the national championship. The coaches don't just teach chess, they teach you how to think."</p>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Neha Kapoor" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Neha Kapoor</h4>
+                            <p class="text-blue-600">Parent of Under-12 Player</p>
+                            <div class="flex mt-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">"My daughter joined the academy as a beginner and within a year she was competing at state level tournaments. The coaches are incredibly patient and know exactly how to bring out the best in each child. The academy's focus on both chess skills and mental development is remarkable."</p>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Arjun Malhotra" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Arjun Malhotra</h4>
+                            <p class="text-blue-600">International Master</p>
+                            <div class="flex mt-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">"I credit my IM title to the rigorous training I received at Chess Anurag Academy. The grandmasters here have an incredible ability to identify and correct subtle weaknesses in your game. The academy's tournament preparation program is second to none."</p>
+                </div>
+                
+                <!-- Testimonial 4 -->
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <div class="flex items-center mb-6">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="Sunita Reddy" class="w-16 h-16 rounded-full object-cover mr-4">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Sunita Reddy</h4>
+                            <p class="text-blue-600">Women's Candidate Master</p>
+                            <div class="flex mt-1">
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star text-yellow-400"></i>
+                                <i class="fas fa-star-half-alt text-yellow-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic">"As a female player, I particularly appreciate the academy's efforts to promote women's chess. WGM Priya's mentorship helped me overcome psychological barriers in tournament play. The academy's women-only training sessions create a supportive environment for female players."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-blue-800 mb-4">Contact Us</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Get in touch to start your chess journey</p>
+                <div class="w-20 h-1 bg-yellow-400 mx-auto"></div>
+            </div>
+            <div class="md:flex">
+                <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Our Headquarters</h3>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md mb-8">
+                        <div class="flex items-start mb-4">
+                            <i class="fas fa-map-marker-alt text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-1">Address</h4>
+                                <p class="text-gray-600">Chess Anurag Academy, 24 Chess Square, Connaught Place, New Delhi - 110001</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start mb-4">
+                            <i class="fas fa-phone-alt text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-1">Phone</h4>
+                                <p class="text-gray-600">+91 98765 43210</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fas fa-envelope text-blue-600 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-bold text-gray-800 mb-1">Email</h4>
+                                <p class="text-gray-600">info@chessanuragacademy.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="font-bold text-gray-800 mb-4">Branch Locations</h4>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h5 class="font-bold text-blue-800 mb-2">Mumbai</h5>
+                            <p class="text-sm text-gray-600">Level 5, Chess Tower, Bandra Kurla Complex</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h5 class="font-bold text-blue-800 mb-2">Bangalore</h5>
+                            <p class="text-sm text-gray-600">32 King's Road, Koramangala</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h5 class="font-bold text-blue-800 mb-2">Hyderabad</h5>
+                            <p class="text-sm text-gray-600">Chess Plaza, Banjara Hills</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <h5 class="font-bold text-blue-800 mb-2">Chennai</h5>
+                            <p class="text-sm text-gray-600">8 Pawn Street, Nungambakkam</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Send Us a Message</h3>
+                    <form class="bg-gray-50 p-6 rounded-lg shadow-md">
+                        <div class="mb-4">
+                            <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
+                            <input type="text" id="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="phone" class="block text-gray-700 font-medium mb-2">Phone</label>
+                            <input type="tel" id="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="mb-4">
+                            <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Section -->
+    <section id="register" class="py-20 hero-gradient text-white">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4">Ready to Begin Your Chess Journey?</h2>
+                <p class="text-xl text-blue-200 max-w-2xl mx-auto">Join India's most successful chess academy today</p>
+                <div class="w-20 h-1 bg-yellow-400 mx-auto"></div>
+            </div>
+            <div class="bg-white rounded-xl shadow-2xl overflow-hidden">
+                <div class="md:flex">
+                    <div class="md:w-1/2 bg-blue-800 p-8 flex items-center">
+                        <div>
+                            <h3 class="text-2xl font-bold mb-6">Why Register With Us?</h3>
+                            <ul class="space-y-4">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-yellow-300 mt-1 mr-3"></i>
+                                    <span>Free initial assessment and personalized training plan</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-yellow-300 mt-1 mr-3"></i>
+                                    <span>Access to our exclusive online training portal</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-yellow-300 mt-1 mr-3"></i>
+                                    <span>Priority registration for tournaments and events</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-yellow-300 mt-1 mr-3"></i>
+                                    <span>Monthly progress reports and coach feedback</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-yellow-300 mt-1 mr-3"></i>
+                                    <span>Discounts on chess equipment and books</span>
+                                </li>
+                            </ul>
+                            <div class="mt-8 bg-blue-900 p-4 rounded-lg">
+                                <p class="text-sm">Limited seats available! Our batches fill up quickly. Register now to secure your spot.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 p-8 text-gray-800">
+                        <h3 class="text-2xl font-bold mb-6">Registration Form</h3>
+                        <form>
+                            <div class="mb-4">
+                                <label for="reg-name" class="block text-gray-700 font-medium mb-2">Full Name</label>
+                                <input type="text" id="reg-name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="mb-4">
+                                <label for="reg-email" class="block text-gray-700 font-medium mb-2">Email</label>
+                                <input type="email" id="reg-email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="mb-4">
+                                <label for="reg-phone" class="block text-gray-700 font-medium mb-2">Phone</label>
+                                <input type="tel" id="reg-phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="mb-4">
+                                <label for="reg-level" class="block text-gray-700 font-medium mb-2">Current Chess Level</label>
+                                <select id="reg-level" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select your level</option>
+                                    <option value="beginner">Beginner (Just learning the rules)</option>
+                                    <option value="novice">Novice (Knows rules, occasional player)</option>
+                                    <option value="intermediate">Intermediate (Club player, knows basic tactics)</option>
+                                    <option value="advanced">Advanced (Tournament player, rating 1400+)</option>
+                                    <option value="expert">Expert (Rating 1800+)</option>
+                                </select>
+                            </div>
+                            <div class="mb-6">
+                                <label for="reg-program" class="block text-gray-700 font-medium mb-2">Program Interested In</label>
+                                <select id="reg-program" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="">Select a program</option>
+                                    <option value="beginner">Beginner Program</option>
+                                    <option value="intermediate">Intermediate Program</option>
+                                    <option value="advanced">Advanced Program</option>
+                                    <option value="private">Private Coaching</option>
+                                    <option value="junior">Junior Development Program</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold py-3 px-4 rounded-lg transition duration-300">Submit Registration</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-blue-800 mb-4">Frequently Asked Questions</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Find answers to common questions about our academy</p>
+                <div class="w-20 h-1 bg-yellow-400 mx-auto"></div>
+            </div>
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <button class="flex justify-between items-center w-full text-left focus:outline-none">
+                        <h3 class="font-bold text-blue-800">What age groups do you accept?</h3>
+                        <i class="fas fa-chevron-down text-blue-600 transition-transform duration-300"></i>
+                    </button>
+                    <div class="mt-4 text-gray-600 hidden">
+                        <p>We accept students from 5 years old upwards with no upper age limit. Our junior program is specifically designed for ages 5-16, while our adult program caters to players 17 and above. We've had successful students in their 60s who've achieved significant rating improvements!</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 2 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <button class="flex justify-between items-center w-full text-left focus:outline-none">
+                        <h3 class="font-bold text-blue-800">Do I need to know chess to join?</h3>
+                        <i class="fas fa-chevron-down text-blue-600 transition-transform duration-300"></i>
+                    </button>
+                    <div class="mt-4 text-gray-600 hidden">
+                        <p>Not at all! Our beginner program starts from absolute basics - teaching the rules, piece movements, and fundamental concepts. About 30% of our students join with no prior chess knowledge. We assess each student's level during the orientation session to place them in the appropriate group.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 3 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <button class="flex justify-between items-center w-full text-left focus:outline-none">
+                        <h3 class="font-bold text-blue-800">How often are classes held?</h3>
+                        <i class="fas fa-chevron-down text-blue-600 transition-transform duration-300"></i>
+                    </button>
+                    <div class="mt-4 text-gray-600 hidden">
+                        <p>Our standard programs include:</p>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Beginner: Twice a week (1.5 hours per session)</li>
+                            <li>Intermediate: Three times a week (2 hours per session)</li>
+                            <li>Advanced: Daily training (flexible hours)</li>
+                        </ul>
+                        <p class="mt-2">We also offer weekend batches for working professionals and school students.</p>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 4 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <button class="flex justify-between items-center w-full text-left focus:outline-none">
+                        <h3 class="font-bold text-blue-800">Do you offer online classes?</h3>
+                        <i class="fas fa-chevron-down text-blue-600 transition-transform duration-300"></i>
+                    </button>
+                    <div class="mt-4 text-gray-600 hidden">
+                        <p>Yes! We have a comprehensive online training program with live interactive classes, video lessons, and personalized coaching sessions. Our online platform includes:</p>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Live classes with grandmasters</li>
+                            <li>Interactive training modules</li>
+                            <li>Daily puzzle challenges</li>
+                            <li>Game analysis portal</li>
+                            <li>Online tournament participation</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- FAQ Item 5 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <button class="flex justify-between items-center w-full text-left focus:outline-none">
+                        <h3 class="font-bold text-blue-800">What's your student-to-coach ratio?</h3>
+                        <i class="fas fa-chevron-down text-blue-600 transition-transform duration-300"></i>
+                    </button>
+                    <div class="mt-4 text-gray-600 hidden">
+                        <p>We maintain an excellent student-to-coach ratio to ensure personalized attention:</p>
+                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                            <li>Beginner groups: 8 students per coach</li>
+                            <li>Intermediate groups: 6 students per coach</li>
+                            <li>Advanced groups: 4 students per coach</li>
+                            <li>Private coaching: 1-on-1 sessions available</li>
+                        </ul>
+                        <p class="mt-2">Additionally, each student gets monthly one-on-one feedback sessions with their primary coach.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-gray-600 mb-6">Still have questions? We're happy to help!</p>
+                <a href="#contact" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg inline-block transition duration-300">Contact Us</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-chess-queen text-yellow-400 mr-2"></i>
+                        Chess Anurag Academy
+                    </h3>
+                    <p class="text-gray-400 mb-4">India's premier chess training institution developing champions since 2010.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-yellow-400 transition">Home</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-yellow-400 transition">About Us</a></li>
+                        <li><a href="#programs" class="text-gray-400 hover:text-yellow-400 transition">Programs</a></li>
+                        <li><a href="#coaches" class="text-gray-400 hover:text-yellow-400 transition">Coaches</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-yellow-400 transition">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Programs</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition">Beginner Program</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition">Intermediate Program</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition">Advanced Program</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition">Junior Development</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-yellow-400 transition">Online Training</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-4">Subscribe to get updates on tournaments, training tips, and special offers.</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Your email" class="px-4 py-2 rounded-l-lg focus:outline-none text-gray-800 w-full">
+                        <button type="submit" class="bg-yellow-400 hover:bg-yellow-300 text-blue-900 font-bold px-4 py-2 rounded-r-lg transition duration-300">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0">© 2023 Chess Anurag Academy. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white transition">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple animation for FAQ accordion
+        document.querySelectorAll('#contact form button, #register form button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                alert('Thank you for your submission! We will contact you shortly.');
+            });
+        });
+
+        // FAQ accordion functionality
+        document.querySelectorAll('.bg-white.shadow-md button').forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('i');
+                
+                content.classList.toggle('hidden');
+                icon.classList.toggle('transform');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Animation on scroll
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.move-in');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (elementPosition < screenPosition) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+
+        window.addEventListener('load', animateOnScroll);
+        window.addEventListener('scroll', animateOnScroll);
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=Team9in/chess-website" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>
