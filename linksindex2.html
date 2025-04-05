@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curated Link Index</title>
+    <style>
+        /* --- Basic Styling & Layout --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #007bff;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        /* --- Controls / Filtering --- */
+        .controls {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+
+        .controls label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .controls select, .controls input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        /* --- Link Display --- */
+        #link-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive grid */
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .link-card {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .link-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .link-card h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.15rem;
+            color: #343a40;
+            word-break: break-word; /* Prevent long titles from overflowing */
+        }
+
+        .link-card p {
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            color: #6c757d;
+            flex-grow: 1; /* Make description take available space */
+            word-break: break-word;
+        }
+
+        .link-card a {
+            display: inline-block; /* Allows padding and margin */
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            text-align: center;
+            transition: background-color 0.2s ease;
+            margin-top: auto; /* Push link to bottom */
+        }
+
+        .link-card a:hover {
+            background-color: #0056b3;
+        }
+
+        .link-category {
+            display: inline-block;
+            background-color: #6c757d;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            text-transform: capitalize;
+        }
+        /* Category-specific colors */
+        .link-category.youtube { background-color: #ff0000; }
+        .link-category.instagram { background-color: #e4405f; }
+        .link-category.blog { background-color: #fd7e14; }
+        .link-category.website { background-color: #17a2b8; }
+        .link-category.github { background-color: #333; }
+        .link-category.other { background-color: #6c757d; }
+
+
+        /* --- Submission Form --- */
+        .submission-form {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f1f3f5;
+            border-radius: 5px;
+        }
+
+        .submission-form h2 {
+            margin-top: 0;
+            color:#28a745;
+        }
+
+        .submission-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .submission-form input[type="text"],
+        .submission-form input[type="url"],
+        .submission-form select,
+        .submission-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box; /* Include padding in width */
+            font-size: 1rem;
+        }
+
+         .submission-form textarea {
+            resize: vertical; /* Allow vertical resize */
+            min-height: 80px;
+         }
+
+        .submission-form button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .submission-form button:hover {
+            background-color: #218838;
+        }
+
+        /* --- Admin / Messages --- */
+        #submission-message {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none; /* Hidden by default */
+        }
+        #submission-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        #submission-message.error {
+             background-color: #f8d7da;
+             color: #721c24;
+             border: 1px solid #f5c6cb;
+        }
+
+        #admin-approval-area {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 5px;
+            display: none; /* Hidden until a submission happens */
+        }
+        #admin-approval-area h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+         #admin-approval-area code {
+            display: block;
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            white-space: pre-wrap; /* Wrap long code lines */
+            word-break: break-all; /* Break long words/urls */
+            font-family: monospace;
+         }
+
+         /* --- Simple Responsive Adjustments --- */
+         @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .controls select, .controls input[type="text"] {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            #link-container {
+                grid-template-columns: 1fr; /* Stack cards on small screens */
+            }
+         }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Curated Link Index</h1>
+
+        <!-- Filtering Controls -->
+        <div class="controls">
+            <label for="category-filter">Category:</label>
+            <select id="category-filter">
+                <option value="all">All Categories</option>
+                <!-- Options will be populated by JavaScript -->
+            </select>
+
+            <label for="search-filter">Search Title:</label>
+            <input type="text" id="search-filter" placeholder="Enter keywords...">
+        </div>
+
+        <!-- Link Display Area -->
+        <div id="link-container">
+            <!-- Links will be dynamically inserted here -->
+            <p>Loading links...</p>
+        </div>
+
+        <!-- Submission Form -->
+        <div class="submission-form">
+            <h2>Submit a New Link for Approval</h2>
+            <form id="submissionForm">
+                <label for="link-url">Link URL *</label>
+                <input type="url" id="link-url" name="url" required placeholder="https://example.com">
+
+                <label for="link-title">Title *</label>
+                <input type="text" id="link-title" name="title" required placeholder="Brief & Descriptive Title">
+
+                <label for="link-category">Category *</label>
+                <select id="link-category" name="category" required>
+                    <option value="" disabled selected>-- Select a Category --</option>
+                    <option value="youtube">YouTube</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="blog">Blog Post</option>
+                    <option value="website">Website/Tool</option>
+                    <option value="github">GitHub Repo</option>
+                    <option value="other">Other</option>
+                </select>
+
+                <label for="link-description">Description (Optional)</label>
+                <textarea id="link-description" name="description" placeholder="Short description of the link's content"></textarea>
+
+                <button type="submit">Submit for Approval</button>
+            </form>
+
+            <div id="submission-message"></div> <!-- For success/error messages -->
+
+            <!-- IMPORTANT: Admin Approval Instructions -->
+            <div id="admin-approval-area">
+                <h3>Admin Action Required for Approval</h3>
+                <p><strong>To approve the submitted link:</strong></p>
+                <ol>
+                    <li><strong>Copy</strong> the entire code block shown below.</li>
+                    <li><strong>Open this HTML file (`index.html` or whatever you named it) in a text editor.</strong></li>
+                    <li>Locate the `linksData` JavaScript array within the `<script>` tag near the end of the file.</li>
+                    <li><strong>Paste</strong> the copied code block as a new item inside the `linksData` array (usually add a comma after the previous item, then paste).</li>
+                    <li><strong>Save</strong> the modified HTML file.</li>
+                    <li><strong>Upload/Deploy</strong> the updated HTML file to your web server/hosting.</li>
+                </ol>
+                <p><strong>Generated Code to Add:</strong></p>
+                <code id="code-to-add">
+                    { /* Code will appear here after submission */ }
+                </code>
+            </div>
+        </div>
+
+    </div> <!-- End Container -->
+
+    <script>
+        // --- DATA STORE (Manually Edited by Admin) ---
+        // IMPORTANT: New approved links must be MANUALLY added here by the admin.
+        const linksData = [
+            // --- START OF LINK DATA ---
+            // Admin: Add new link objects here, separated by commas.
+            // Example format: { id: 1, url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", title: "Classic Example Video", category: "youtube", description: "An iconic piece of internet history.", status: "approved" },
+
+            { id: 1, url: "https://www.youtube.com/", title: "YouTube Homepage", category: "youtube", description: "Explore videos from around the world.", status: "approved" },
+            { id: 2, url: "https://www.instagram.com/", title: "Instagram", category: "instagram", description: "Photo and video sharing social network.", status: "approved" },
+            { id: 3, url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript", title: "MDN JavaScript Guide", category: "website", description: "Comprehensive resources for JavaScript developers.", status: "approved" },
+            { id: 4, url: "https://github.com/", title: "GitHub", category: "github", description: "Platform for version control and collaboration.", status: "approved" },
+            { id: 5, url: "https://css-tricks.com/", title: "CSS-Tricks Blog", category: "blog", description: "Articles, tutorials, and tips on CSS and web design.", status: "approved" },
+            { id: 6, url: "https://example.com", title: "Example Domain", category: "other", description: "Reserved for use in documentation examples.", status: "approved" }
+
+            // --- END OF LINK DATA ---
+        ];
+        // --- END OF DATA STORE ---
+
+
+        // --- Application Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const linkContainer = document.getElementById('link-container');
+            const categoryFilter = document.getElementById('category-filter');
+            const searchFilter = document.getElementById('search-filter');
+            const submissionForm = document.getElementById('submissionForm');
+            const submissionMessage = document.getElementById('submission-message');
+            const adminApprovalArea = document.getElementById('admin-approval-area');
+            const codeToAddElement = document.getElementById('code-to-add');
+            const linkCategorySelect = document.getElementById('link-category'); // Form category select
+
+            // --- Populate Category Filter ---
+            function populateCategories() {
+                const categories = new Set(linksData.map(link => link.category));
+                const formCategories = Array.from(linkCategorySelect.options).map(opt => opt.value).filter(Boolean); // Get categories from form
+                const allCategories = [...new Set([...categories, ...formCategories])].sort(); // Combine and unique sort
+
+                // Populate filter dropdown
+                categoryFilter.innerHTML = '<option value="all">All Categories</option>'; // Reset
+                allCategories.forEach(category => {
+                    if (category) { // Ensure category is not empty
+                        const option = document.createElement('option');
+                        option.value = category;
+                        option.textContent = category.charAt(0).toUpperCase() + category.slice(1); // Capitalize
+                        categoryFilter.appendChild(option);
+                    }
+                });
+            }
+
+            // --- Display Links ---
+            function displayLinks(filteredLinks) {
+                linkContainer.innerHTML = ''; // Clear existing links
+
+                if (filteredLinks.length === 0) {
+                    linkContainer.innerHTML = '<p>No links found matching your criteria.</p>';
+                    return;
+                }
+
+                filteredLinks.forEach(link => {
+                    if (link.status !== 'approved') return; // Only show approved links
+
+                    const card = document.createElement('div');
+                    card.className = 'link-card';
+
+                    const categorySpan = document.createElement('span');
+                    categorySpan.className = `link-category ${link.category.toLowerCase()}`;
+                    categorySpan.textContent = link.category;
+
+                    const title = document.createElement('h3');
+                    title.textContent = link.title;
+
+                    const description = document.createElement('p');
+                    description.textContent = link.description || 'No description provided.'; // Fallback text
+
+                    const linkElement = document.createElement('a');
+                    linkElement.href = link.url;
+                    linkElement.textContent = 'Visit Link';
+                    linkElement.target = '_blank'; // Open in new tab
+                    linkElement.rel = 'noopener noreferrer'; // Security best practice
+
+                    card.appendChild(categorySpan);
+                    card.appendChild(title);
+                    card.appendChild(description);
+                    card.appendChild(linkElement);
+
+                    linkContainer.appendChild(card);
+                });
+            }
+
+            // --- Filter and Search Logic ---
+            function filterAndDisplay() {
+                const selectedCategory = categoryFilter.value;
+                const searchTerm = searchFilter.value.toLowerCase().trim();
+
+                const filtered = linksData.filter(link => {
+                    const categoryMatch = selectedCategory === 'all' || link.category === selectedCategory;
+                    const searchMatch = !searchTerm || link.title.toLowerCase().includes(searchTerm) || (link.description && link.description.toLowerCase().includes(searchTerm));
+                    return categoryMatch && searchMatch && link.status === 'approved';
+                });
+
+                displayLinks(filtered);
+            }
+
+            // --- Handle Form Submission ---
+            submissionForm.addEventListener('submit', (event) => {
+                event.preventDefault(); // Prevent default page reload
+
+                submissionMessage.style.display = 'none'; // Hide previous messages
+                adminApprovalArea.style.display = 'none';
+
+                const formData = new FormData(submissionForm);
+                const url = formData.get('url');
+                const title = formData.get('title');
+                const category = formData.get('category');
+                const description = formData.get('description');
+
+                // Basic validation (HTML5 'required' and 'url' type handle most cases)
+                if (!url || !title || !category) {
+                    showSubmissionMessage('Please fill in all required fields.', 'error');
+                    return;
+                }
+
+                 // Find the next available ID
+                 const maxId = linksData.reduce((max, link) => Math.max(max, link.id || 0), 0);
+                 const nextId = maxId + 1;
+
+                // Generate the code snippet for the admin
+                const newLinkObjectString = `
+    {
+        id: ${nextId},
+        url: "${escapeString(url)}",
+        title: "${escapeString(title)}",
+        category: "${escapeString(category)}",
+        description: "${escapeString(description || '')}",
+        status: "approved" /* Status becomes 'approved' once added by admin */
+    },`; // Add comma at the end for easy pasting
+
+                codeToAddElement.textContent = newLinkObjectString.trim();
+                adminApprovalArea.style.display = 'block'; // Show admin instructions
+
+                showSubmissionMessage('Link submitted for admin approval. Thank you!', 'success');
+                submissionForm.reset(); // Clear the form
+            });
+
+            // Helper to show submission status messages
+            function showSubmissionMessage(message, type = 'success') {
+                 submissionMessage.textContent = message;
+                 submissionMessage.className = type; // 'success' or 'error'
+                 submissionMessage.style.display = 'block';
+            }
+
+             // Helper function to escape strings for embedding in the code snippet
+             function escapeString(str) {
+                if (!str) return "";
+                return str.replace(/\\/g, '\\\\') // Escape backslashes
+                          .replace(/"/g, '\\"')  // Escape double quotes
+                          .replace(/\n/g, '\\n') // Escape newlines
+                          .replace(/\r/g, '\\r'); // Escape carriage returns
+             }
+
+
+            // --- Initial Setup ---
+            populateCategories(); // Populate filter dropdown first
+            filterAndDisplay(); // Initial display of all approved links
+
+            // Add event listeners for filters
+            categoryFilter.addEventListener('change', filterAndDisplay);
+            searchFilter.addEventListener('input', filterAndDisplay); // Filter as user types
+
+        });
+    </script>
+
+</body>
+</html>
