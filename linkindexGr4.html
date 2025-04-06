@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Index</title>
+    <style>
+        /* Styling for visual appeal and organization */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        h2 {
+            color: #2980b9;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        #addLinkForm {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #27ae60;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #219653;
+        }
+        #linksContainer {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        small {
+            color: #7f8c8d;
+            display: block;
+            margin-top: 5px;
+        }
+        #instructions {
+            font-size: 0.9em;
+            color: #666;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Link Index</h1>
+    <p style="text-align: center;">A collection of your favorite links, organized by category.</p>
+
+    <!-- Form to add new links -->
+    <div id="addLinkForm">
+        <h2>Add New Link</h2>
+        <form>
+            <label for="url">URL:</label>
+            <input type="text" id="url" name="url" required placeholder="e.g., https://youtube.com/example">
+            
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" placeholder="e.g., Example Video">
+            
+            <label for="category">Category:</label>
+            <select id="category" name="category">
+                <option value="YouTube">YouTube</option>
+                <option value="Instagram">Instagram</option>
+                <option value="Blog">Blog</option>
+                <option value="Website">Website</option>
+                <option value="Other">Other</option>
+            </select>
+            
+            <label for="tags">Tags (comma-separated):</label>
+            <input type="text" id="tags" name="tags" placeholder="e.g., tutorial, tech">
+            
+            <button type="button" onclick="addLink()">Add Link</button>
+        </form>
+    </div>
+
+    <!-- Container to display links -->
+    <div id="linksContainer"></div>
+
+    <!-- Export button and instructions -->
+    <div style="text-align: center; margin-top: 20px;">
+        <button onclick="exportUpdatedHTML()">Export Updated HTML</button>
+    </div>
+    <p id="instructions">Instructions: Use the form to add links. They’ll appear below immediately. When you’re done, click "Export Updated HTML" to download the updated file. Replace this file with the downloaded one to save your changes permanently.</p>
+
+    <!-- Initial link data -->
+    <script id="dataScript">
+        var initialLinkData = [
+            {
+                "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                "title": "Example Video",
+                "category": "YouTube",
+                "tags": ["tutorial", "tech"]
+            },
+            {
+                "url": "https://www.instagram.com/p/example/",
+                "title": "Example Post",
+                "category": "Instagram",
+                "tags": ["photo", "travel"]
+            }
+        ];
+    </script>
+
+    <!-- Main JavaScript logic -->
+    <script>
+        // Initialize link data: use localStorage if available, otherwise use initial data
+        var linkData = localStorage.getItem('linkData') ? JSON.parse(localStorage.getItem('linkData')) : initialLinkData;
+        localStorage.setItem('linkData', JSON.stringify(linkData));
+
+        // Function to display links grouped by category
+        function displayLinks() {
+            var container = document.getElementById('linksContainer');
+            container.innerHTML = ''; // Clear existing content
+
+            // Group links by category
+            var groupedLinks = {};
+            linkData.forEach(function(link) {
+                if (!groupedLinks[link.category]) {
+                    groupedLinks[link.category] = [];
+                }
+                groupedLinks[link.category].push(link);
+            });
+
+            // Generate HTML for each category
+            for (var category in groupedLinks) {
+                var h2 = document.createElement('h2');
+                h2.textContent = category;
+                container.appendChild(h2);
+
+                var ul = document.createElement('ul');
+                groupedLinks[category].forEach(function(link) {
+                    var li = document.createElement('li');
+                    var a = document.createElement('a');
+                    a.href = link.url;
+                    a.textContent = link.title || link.url;
+                    a.target = "_blank"; // Open links in new tab
+                    li.appendChild(a);
+
+                    if (link.tags && link.tags.length > 0) {
+                        var small = document.createElement('small');
+                        small.textContent = 'Tags: ' + link.tags.join(', ');
+                        li.appendChild(small);
+                    }
+
+                    ul.appendChild(li);
+                });
+                container.appendChild(ul);
+            }
+        }
+
+        // Function to add a new link
+        function addLink() {
+            var url = document.getElementById('url').value.trim();
+            var title = document.getElementById('title').value.trim();
+            var category = document.getElementById('category').value;
+            var tagsInput = document.getElementById('tags').value.trim();
+            var tags = tagsInput ? tagsInput.split(',').map(tag => tag.trim()) : [];
+
+            if (!url) {
+                alert('Please enter a URL.');
+                return;
+            }
+
+            var newLink = {
+                url: url,
+                title: title,
+                category: category,
+                tags: tags
+            };
+
+            linkData.push(newLink);
+            localStorage.setItem('linkData', JSON.stringify(linkData));
+            displayLinks();
+
+            // Clear the form
+            document.getElementById('url').value = '';
+            document.getElementById('title').value = '';
+            document.getElementById('tags').value = '';
+        }
+
+        // Function to export the updated HTML file
+        function exportUpdatedHTML() {
+            var updatedLinkData = JSON.stringify(linkData, null, 2);
+            var newScriptContent = 'var initialLinkData = ' + updatedLinkData + ';';
+
+            // Get the current HTML and replace the initial data script content
+            var html = document.documentElement.outerHTML;
+            var regex = /<script id="dataScript">[\s\S]*?<\/script>/;
+            var newHtml = html.replace(regex, '<script id="dataScript">' + newScriptContent + '<\/script>');
+
+            // Create a Blob and trigger download
+            var blob = new Blob([newHtml], { type: 'text/html' });
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'index.html';
+            a.click();
+        }
+
+        // Display links on page load
+        displayLinks();
+    </script>
+</body>
+</html>
