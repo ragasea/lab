@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Light - Chapter Interactive Learning</title>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --accent: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        nav {
+            background-color: var(--dark);
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: space-around;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .nav-links li a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-links li a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .section {
+            background-color: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        
+        .section.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .section h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .interactive-area {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        canvas {
+            background-color: #fff;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .info-box {
+            background-color: rgba(46, 204, 113, 0.1);
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .example-box {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .formula-box {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card h3 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+        
+        .quiz-container {
+            margin: 20px 0;
+        }
+        
+        .quiz-question {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: 8px;
+        }
+        
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .quiz-option {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .quiz-option:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .quiz-option.selected {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .quiz-option.correct {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .quiz-option.incorrect {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .quiz-feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .slider-container {
+            margin: 20px 0;
+        }
+        
+        .slider {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .quiz-options {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Light - Chapter Interactive Learning</h1>
+        <p>CBSE Class 10 Science</p>
+    </header>
+    
+    <nav>
+        <ul class="nav-links">
+            <li><a href="#reflection">Reflection of Light</a></li>
+            <li><a href="#mirrors">Spherical Mirrors</a></li>
+            <li><a href="#refraction">Refraction of Light</a></li>
+            <li><a href="#lenses">Lenses</a></li>
+            <li><a href="#quiz">Quiz</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section id="introduction" class="section active">
+            <h2>Introduction to Light</h2>
+            <p>Light is a form of energy that enables us to see objects around us. It travels in straight lines and can be reflected, refracted, dispersed, and diffracted.</p>
+            
+            <div class="info-box">
+                <h3>Key Points:</h3>
+                <ul>
+                    <li>Light is a form of electromagnetic radiation visible to the human eye</li>
+                    <li>It travels in straight lines at a speed of 3 × 10<sup>8</sup> m/s in vacuum</li>
+                    <li>Light can be reflected, refracted, and dispersed</li>
+                </ul>
+            </div>
+            
+            <div class="interactive-area">
+                <h3>Interactive: Light Rays</h3>
+                <div class="controls">
+                    <button id="start-rays">Start</button>
+                    <button id="stop-rays">Stop</button>
+                    <button id="reset-rays">Reset</button>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="rays-canvas"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <section id="reflection" class="section">
+            <h2>Reflection of Light</h2>
+            <p>Reflection is the phenomenon where light bounces back when it strikes a surface. The angle of incidence equals the angle of reflection.</p>
+            
+            <div class="example-box">
+                <h3>Laws of Reflection:</h3>
+                <ol>
+                    <li>The incident ray, the reflected ray, and the normal at the point of incidence all lie in the same plane.</li>
+                    <li>The angle of incidence equals the angle of reflection (∠i = ∠r).</li>
+                </ol>
+            </div>
+            
+            <div class="interactive-area">
+                <h3>Interactive: Reflection of Light</h3>
+                <div class="controls">
+                    <input type="range" id="angle-slider" min="0" max="90" value="45" class="slider">
+                    <div class="slider-label">
+                        <span>0°</span>
+                        <span id="angle-value">45°</span>
+                        <span>90°</span>
+                    </div>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="reflection-canvas"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <section id="mirrors" class="section">
+            <h2>Spherical Mirrors</h2>
+            <p>Spherical mirrors have a curved reflecting surface. They are of two types: concave mirrors and convex mirrors.</p>
+            
+            <div class="card-container">
+                <div class="card">
+                    <h3>Concave Mirror</h3>
+                    <p>A concave mirror has an inward curved reflecting surface. It converges light rays and forms real, inverted images when the object is placed beyond the focus.</p>
+                </div>
+                <div class="card">
+                    <h3>Convex Mirror</h3>
+                    <p>A convex mirror has an outward curved reflecting surface. It diverges light rays and always forms virtual, erect, and diminished images.</p>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h3>Important Terms:</h3>
+                <ul>
+                    <li><strong>Pole (P):</strong> The center of the spherical mirror.</li>
+                    <li><strong>Center of Curvature (C):</strong> The center of the sphere of which the mirror is a part.</li>
+                    <li><strong>Radius of Curvature (R):</strong> The distance from the pole to the center of curvature.</li>
+                    <li><strong>Principal Axis:</strong> The line joining the pole and the center of curvature.</li>
+                    <li><strong>Focus (F):</strong> The point on the principal axis where parallel rays of light converge or appear to diverge after reflection.</li>
+                    <li><strong>Focal Length (f):</strong> The distance from the pole to the focus. f = R/2</li>
+                </ul>
+            </div>
+            
+            <div class="interactive-area">
+                <h3>Interactive: Concave Mirror Ray Diagram</h3>
+                <div class="controls">
+                    <button id="position-1">Object at Infinity</button>
+                    <button id="position-2">Object beyond C</button>
+                    <button id="position-3">Object at C</button>
+                    <button id="position-4">Object between C and F</button>
+                    <button id="position-5">Object at F</button>
+                    <button id="position-6">Object between P and F</button>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="concave-canvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="interactive-area">
+                <h3>Interactive: Convex Mirror Ray Diagram</h3>
+                <div class="controls">
+                    <button id="convex-position-1">Object at Infinity</button>
+                    <button id="convex-position-2">Object at Finite Distance</button>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="convex-canvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="formula-box">
+                <h3>Mirror Formula:</h3>
+                <p>1/f = 1/v + 1/u</p>
+                <p>Where:</p>
+                <p>f = focal length</p>
+                <p>v = distance of image from mirror</p>
+                <p>u = distance of object from mirror</p>
+                
+                <h3>Magnification:</h3>
+                <p>m = h'/h = -v/u</p>
+                <p>Where:</p>
+                <p>h' = height of image</p>
+                <p>h = height of object</p>
+            </div>
+            
+            <table>
+                <tr>
+                    <th>Position of Object</th>
+                    <th>Position of Image</th>
+                    <th>Nature of Image</th>
+                </tr>
+                <tr>
+                    <td>At infinity</td>
+                    <td>At focus F</td>
+                    <td>Real, inverted, point-sized</td>
+                </tr>
+                <tr>
+                    <td>Beyond C</td>
+                    <td>Between F and C</td>
+                    <td>Real, inverted, diminished</td>
+                </tr>
+                <tr>
+                    <td>At C</td>
+                    <td>At C</td>
+                    <td>Real, inverted, same size</td>
+                </tr>
+                <tr>
+                    <td>Between C and F</td>
+                    <td>Beyond C</td>
+                    <td>Real, inverted, enlarged</td>
+                </tr>
+                <tr>
+                    <td>At F</td>
+                    <td>At infinity</td>
+                    <td>Real, inverted, highly enlarged</td>
+                </tr>
+                <tr>
+                    <td>Between P and F</td>
+                    <td>Behind the mirror</td>
+                    <td>Virtual, erect, enlarged</td>
+                </tr>
+            </table>
+        </section>
+        
+        <section id="refraction" class="section">
+            <h2>Refraction of Light</h2>
+            <p>Refraction is the bending of light when it passes from one medium to another due to the change in speed of light in different media.</p>
+            
+            <div class="example-box">
+                <h3>Laws of Refraction:</h3>
+                <ol>
+                    <li>The incident ray, the refracted ray, and the normal at the point of incidence all lie in the same plane.</li>
+                    <li>The ratio of the sine of the angle of incidence to the sine of the angle of refraction is a constant for a given pair of media. This is known as Snell's Law.</li>
+                </ol>
+            </div>
+            
+            <div class="formula-box">
+                <h3>Snell's Law:</h3>
+                <p>sin(i)/sin(r) = n₂/n₁</p>
+                <p>Where:</p>
+                <p>i = angle of incidence</p>
+                <p>r = angle of refraction</p>
+                <p>n₁ = refractive index of first medium</p>
+                <p>n₂ = refractive index of second medium</p>
+            </div>
+            
+            <div class="interactive-area">
+                <h3>Interactive: Refraction of Light</h3>
+                <div class="controls">
+                    <input type="range" id="refraction-slider" min="0" max="80" value="40" class="slider">
+                    <div class="slider-label">
+                        <span>0°</span>
+                        <span id="refraction-angle-value">40°</span>
+                        <span>80°</span>
+                    </div>
+                    <select id="medium-select">
+                        <option value="air-water">Air to Water (n = 1.33)</option>
+                        <option value="air-glass">Air to Glass (n = 1.5)</option>
+                        <option value="water-glass">Water to Glass (n = 1.13)</option>
+                    </select>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="refraction-canvas"></canvas>
+                </div>
+            </div>
+        </section>
+        
+        <section id="lenses" class="section">
+            <h2>Lenses</h2>
+            <p>A lens is a transparent material bounded by two surfaces, at least one of which is curved. Lenses are of two types: convex (converging) and concave (diverging).</p>
+            
+            <div class="card-container">
+                <div class="card">
+                    <h3>Convex Lens</h3>
+                    <p>A convex lens is thicker at the center and thinner at the edges. It converges light rays and can form both real and virtual images depending on the position of the object.</p>
+                </div>
+                <div class="card">
+                    <h3>Concave Lens</h3>
+                    <p>A concave lens is thinner at the center and thicker at the edges. It diverges light rays and always forms virtual, erect, and diminished images.</p>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h3>Important Terms:</h3>
+                <ul>
+                    <li><strong>Optical Center (O):</strong> The center point of the lens.</li>
+                    <li><strong>Principal Axis:</strong> The straight line passing through the optical center and perpendicular to both surfaces of the lens.</li>
+                    <li><strong>Principal Focus (F):</strong> The point on the principal axis where parallel rays of light converge or appear to diverge after refraction.</li>
+                    <li><strong>Focal Length (f):</strong> The distance from the optical center to the principal focus.</li>
+                </ul>
+            </div>
+            
+            <div class="interactive-area">
+                <h3>Interactive: Convex Lens Ray Diagram</h3>
+                <div class="controls">
+                    <button id="lens-position-1">Object at Infinity</button>
+                    <button id="lens-position-2">Object beyond 2F</button>
+                    <button id="lens-position-3">Object at 2F</button>
+                    <button id="lens-position-4">Object between F and 2F</button>
+                    <button id="lens-position-5">Object at F</button>
+                    <button id="lens-position-6">Object between O and F</button>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="convex-lens-canvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="interactive-area">
+                <h3>Interactive: Concave Lens Ray Diagram</h3>
+                <div class="controls">
+                    <button id="concave-lens-position">Object at any position</button>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="concave-lens-canvas"></canvas>
+                </div>
+            </div>
+            
+            <div class="formula-box">
+                <h3>Lens Formula:</h3>
+                <p>1/f = 1/v - 1/u</p>
+                <p>Where:</p>
+                <p>f = focal length</p>
+                <p>v = distance of image from lens</p>
+                <p>u = distance of object from lens</p>
+                
+                <h3>Magnification:</h3>
+                <p>m = h'/h = v/u</p>
+                <p>Where:</p>
+                <p>h' = height of image</p>
+                <p>h = height of object</p>
+            </div>
+            
+            <table>
+                <tr>
+                    <th>Position of Object</th>
+                    <th>Position of Image</th>
+                    <th>Nature of Image</th>
+                </tr>
+                <tr>
+                    <td>At infinity</td>
+                    <td>At focus F₂</td>
+                    <td>Real, inverted, point-sized</td>
+                </tr>
+                <tr>
+                    <td>Beyond 2F₁</td>
+                    <td>Between F₂ and 2F₂</td>
+                    <td>Real, inverted, diminished</td>
+                </tr>
+                <tr>
+                    <td>At 2F₁</td>
+                    <td>At 2F₂</td>
+                    <td>Real, inverted, same size</td>
+                </tr>
+                <tr>
+                    <td>Between F₁ and 2F₁</td>
+                    <td>Beyond 2F₂</td>
+                    <td>Real, inverted, enlarged</td>
+                </tr>
+                <tr>
+                    <td>At F₁</td>
+                    <td>At infinity</td>
+                    <td>Real, inverted, highly enlarged</td>
+                </tr>
+                <tr>
+                    <td>Between O and F₁</td>
+                    <td>On same side as object</td>
+                    <td>Virtual, erect, enlarged</td>
+                </tr>
+            </table>
+        </section>
+        
+        <section id="quiz" class="section">
+            <h2>Quiz: Test Your Knowledge</h2>
+            
+            <div class="quiz-container">
+                <div class="quiz-question">
+                    <p>1. The focal length of a concave mirror is:</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-correct="true">Half of its radius of curvature</div>
+                        <div class="quiz-option">Equal to its radius of curvature</div>
+                        <div class="quiz-option">Twice its radius of curvature</div>
+                        <div class="quiz-option">One-fourth of its radius of curvature</div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <p>2. An object is placed at the center of curvature of a concave mirror. The image formed will be:</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">Real, inverted, enlarged</div>
+                        <div class="quiz-option" data-correct="true">Real, inverted, same size</div>
+                        <div class="quiz-option">Virtual, erect, enlarged</div>
+                        <div class="quiz-option">Real, inverted, diminished</div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <p>3. The refractive index of a medium is the ratio of:</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">Speed of light in the medium to speed of light in vacuum</div>
+                        <div class="quiz-option" data-correct="true">Speed of light in vacuum to speed of light in the medium</div>
+                        <div class="quiz-option">Angle of incidence to angle of refraction</div>
+                        <div class="quiz-option">Sine of angle of refraction to sine of angle of incidence</div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <p>4. A convex lens always forms what type of image when the object is placed between the optical center and the focus?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">Real, inverted, diminished</div>
+                        <div class="quiz-option">Real, inverted, enlarged</div>
+                        <div class="quiz-option" data-correct="true">Virtual, erect, enlarged</div>
+                        <div class="quiz-option">Virtual, inverted, diminished</div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                
+                <div class="quiz-question">
+                    <p>5. The mirror formula is represented as:</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option">1/f = 1/u - 1/v</div>
+                        <div class="quiz-option" data-correct="true">1/f = 1/v + 1/u</div>
+                        <div class="quiz-option">1/f = 1/u + 1/v</div>
+                        <div class="quiz-option">1/v = 1/f + 1/u</div>
+                    </div>
+                    <div class="quiz-feedback"></div>
+                </div>
+                
+                <button id="check-answers">Check Answers</button>
+                <p id="quiz-score"></p>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>CBSE Class 10 Science - Light Chapter</p>
+        <p>Interactive Learning Module</p>
+    </footer>
+    
+    <script>
+        // Section transition
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('.nav-links a');
+        
+        function activateSection(id) {
+            sections.forEach(section => {
+                if (section.id === id) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+        }
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                activateSection(targetId);
+                window.scrollTo({
+                    top: document.getElementById(targetId).offsetTop - 70,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Activate sections when scrolled into view
+        window.addEventListener('scroll', () => {
+            const scrollPosition = window.scrollY + 100;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    section.classList.add('active');
+                }
+            });
+        });
+        
+        // Introduction Light Rays Animation
+        const raysCanvas = document.getElementById('rays-canvas');
+        const raysCtx = raysCanvas.getContext('2d');
+        let raysAnimationId;
+        let raysAnimating = false;
+        
+        function resizeCanvas(canvas) {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        }
+        
+        function drawLightRays() {
+            resizeCanvas(raysCanvas);
+            raysCtx.clearRect(0, 0, raysCanvas.width, raysCanvas.height);
+            
+            const centerX = raysCanvas.width / 2;
+            const centerY = raysCanvas.height / 2;
+            
+            // Draw light source
+            raysCtx.beginPath();
+            raysCtx.arc(centerX - 150, centerY, 20, 0, Math.PI * 2);
+            raysCtx.fillStyle = '#ffeb3b';
+            raysCtx.fill();
+            raysCtx.strokeStyle = '#ffc107';
+            raysCtx.lineWidth = 2;
+            raysCtx.stroke();
+            
+            // Draw rays
+            const numRays = 8;
+            const time = Date.now() / 500;
+            
+            for (let i = 0; i < numRays; i++) {
+                const angle = (i / numRays) * Math.PI * 2;
+                const rayLength = 300;
+                const startX = centerX - 150;
+                const startY = centerY;
+                const endX = startX + Math.cos(angle + time) * rayLength;
+                const endY = startY + Math.sin(angle + time) * rayLength;
+                
+                raysCtx.beginPath();
+                raysCtx.moveTo(startX, startY);
+                raysCtx.lineTo(endX, endY);
+                raysCtx.strokeStyle = '#ffeb3b';
+                raysCtx.lineWidth = 2;
+                raysCtx.stroke();
+            }
+            
+            if (raysAnimating) {
+                raysAnimationId = requestAnimationFrame(drawLightRays);
+            }
+        }
