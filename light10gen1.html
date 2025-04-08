@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Light: Reflection and Refraction - NCERT Class 10</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.4.0/lib/p5.js"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #7e22ce;
+            --accent: #f59e0b;
+            --light: #f3f4f6;
+            --dark: #1f2937;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--dark);
+            background: linear-gradient(to bottom, #f0f9ff, #e0f2fe);
+            scroll-behavior: smooth;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            border-radius: 0 0 1rem 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0 1rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .canvas-container {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .slider-container {
+            margin: 1rem 0;
+        }
+        
+        .button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .button:hover {
+            background-color: var(--secondary);
+        }
+        
+        .info-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        
+        .formula {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        table, th, td {
+            border: 1px solid #e2e8f0;
+        }
+        
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f1f5f9;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 1rem;
+        }
+        
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .glow {
+            animation: glow 2s infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px rgba(79, 70, 229, 0.5);
+            }
+            to {
+                box-shadow: 0 0 15px rgba(79, 70, 229, 0.8);
+            }
+        }
+        
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .control {
+            display: flex;
+            flex-direction: column;
+            min-width: 150px;
+        }
+        
+        .control label {
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .note {
+            background-color: #fff7ed;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        
+        .definition {
+            background-color: #f0f9ff;
+            border: 1px dashed #93c5fd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .concept-map {
+            margin: 2rem 0;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .diagram-label {
+            font-size: 0.75rem;
+            color: #4b5563;
+            margin-top: 0.25rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1 class="text-3xl font-bold">Light: Reflection and Refraction</h1>
+            <p class="mt-2">NCERT Class 10 Science - Interactive Learning Module</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <h2 class="text-xl font-bold mb-3">Introduction to Light</h2>
+            <p>Light is a form of energy that enables us to see objects around us. When light falls on an object, it is reflected and reaches our eyes, making the object visible. Light travels in straight lines, which is why we see sharp shadows.</p>
+            
+            <div class="info-box mt-4">
+                <p><strong>Did you know?</strong> Light travels at a speed of approximately 3 × 10<sup>8</sup> m/s in vacuum, making it the fastest known entity in the universe!</p>
+            </div>
+        </div>
+        
+        <div class="section-header">
+            <h2 class="text-xl font-bold">1. Reflection of Light</h2>
+        </div>
+        
+        <div class="card">
+            <h3 class="text-lg font-semibold mb-2">Laws of Reflection</h3>
+            <p>When light falls on a reflecting surface, it follows these laws:</p>
+            <ol class="list-decimal pl-5 mt-2">
+                <li>The angle of incidence (i) equals the angle of reflection (r)</li>
+                <li>The incident ray, reflected ray, and the normal at the point of incidence all lie in the same plane</li>
+            </ol>
+            
+            <div class="canvas-container mt-4" id="laws-of-reflection-container">
+                <!-- Canvas for laws of reflection will be inserted here -->
+            </div>
+            
+            <div class="control-panel">
+                <div class="control">
+                    <label for="incident-angle">Angle of Incidence</label>
+                    <input type="range" id="incident-angle" min="0" max="85" value="30" class="w-full">
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3 class="text-lg font-semibold mb-2">Spherical Mirrors</h3>
+            <p>Spherical mirrors have a reflecting surface that forms part of a sphere. There are two types:</p>
+            
+            <div class="tabs mt-4">
+                <div class="tab active" data-tab="concave">Concave Mirror</div>
+                <div class="tab" data-tab="convex">Convex Mirror</div>
+            </div>
+            
+            <div class="tab-content active" id="concave">
+                <div class="flex flex-col md:flex-row">
+                    <div class="md:w-1/2">
+                        <h4 class="text-md font-semibold mt-2">Concave Mirror</h4>
+                        <p>A mirror whose reflecting surface is curved inwards. Light rays parallel to the principal axis converge at the focus after reflection.</p>
+                        
+                        <div class="definition mt-3">
+                            <p><strong>Key Terms:</strong></p>
+                            <ul class="list-disc pl-5">
+                                <li><strong>Pole (P):</strong> The center of the reflecting surface</li>
+                                <li><strong>Center of Curvature (C):</strong> The center of the sphere of which the mirror is a part</li>
+                                <li><strong>Radius of Curvature (R):</strong> The radius of the sphere</li>
+                                <li><strong>Principal Axis:</strong> The line joining P and C</li>
+                                <li><strong>Principal Focus (F):</strong> The point where rays parallel to the principal axis converge</li>
+                                <li><strong>Focal Length (f):</strong> The distance between P and F</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="formula mt-3">
+                            <p>R = 2f</p>
+                            <p>The focal length is half the radius of curvature</p>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/2">
+                        <div class="canvas-container" id="concave-mirror-container">
+                            <!-- Canvas for concave mirror will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-panel">
+                    <div class="control">
+                        <label for="concave-object-distance">Object Distance</label>
+                        <input type="range" id="concave-object-distance" min="10" max="150" value="80" class="w-full">
+                    </div>
+                    <div class="control">
+                        <label for="concave-focal-length">Focal Length</label>
+                        <input type="range" id="concave-focal-length" min="20" max="50" value="30" class="w-full">
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="text-md font-semibold">Image Formation by Concave Mirror</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr>
+                                    <th>Position of Object</th>
+                                    <th>Position of Image</th>
+                                    <th>Size of Image</th>
+                                    <th>Nature of Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>At infinity</td>
+                                    <td>At focus F</td>
+                                    <td>Highly diminished, point-sized</td>
+                                    <td>Real and inverted</td>
+                                </tr>
+                                <tr>
+                                    <td>Beyond C</td>
+                                    <td>Between F and C</td>
+                                    <td>Diminished</td>
+                                    <td>Real and inverted</td>
+                                </tr>
+                                <tr>
+                                    <td>At C</td>
+                                    <td>At C</td>
+                                    <td>Same size</td>
+                                    <td>Real and inverted</td>
+                                </tr>
+                                <tr>
+                                    <td>Between C and F</td>
+                                    <td>Beyond C</td>
+                                    <td>Enlarged</td>
+                                    <td>Real and inverted</td>
+                                </tr>
+                                <tr>
+                                    <td>At F</td>
+                                    <td>At infinity</td>
+                                    <td>Image would not be formed</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>Between P and F</td>
+                                    <td>Behind the mirror</td>
+                                    <td>Enlarged</td>
+                                    <td>Virtual and erect</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="convex">
+                <div class="flex flex-col md:flex-row">
+                    <div class="md:w-1/2">
+                        <h4 class="text-md font-semibold mt-2">Convex Mirror</h4>
+                        <p>A mirror whose reflecting surface is curved outwards. Light rays parallel to the principal axis appear to diverge from the focus after reflection.</p>
+                        
+                        <div class="definition mt-3">
+                            <p><strong>Key Terms:</strong></p>
+                            <ul class="list-disc pl-5">
+                                <li><strong>Pole (P):</strong> The center of the reflecting surface</li>
+                                <li><strong>Center of Curvature (C):</strong> The center of the sphere of which the mirror is a part</li>
+                                <li><strong>Radius of Curvature (R):</strong> The radius of the sphere</li>
+                                <li><strong>Principal Axis:</strong> The line joining P and C</li>
+                                <li><strong>Principal Focus (F):</strong> The point from which rays parallel to the principal axis appear to diverge</li>
+                                <li><strong>Focal Length (f):</strong> The distance between P and F</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="formula mt-3">
+                            <p>R = 2f</p>
+                            <p>The focal length is half the radius of curvature</p>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/2">
+                        <div class="canvas-container" id="convex-mirror-container">
+                            <!-- Canvas for convex mirror will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-panel">
+                    <div class="control">
+                        <label for="convex-object-distance">Object Distance</label>
+                        <input type="range" id="convex-object-distance" min="10" max="150" value="80" class="w-full">
+                    </div>
+                    <div class="control">
+                        <label for="convex-focal-length">Focal Length</label>
+                        <input type="range" id="convex-focal-length" min="20" max="50" value="30" class="w-full">
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="text-md font-semibold">Image Formation by Convex Mirror</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr>
+                                    <th>Position of Object</th>
+                                    <th>Position of Image</th>
+                                    <th>Size of Image</th>
+                                    <th>Nature of Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>At infinity</td>
+                                    <td>At focus F, behind the mirror</td>
+                                    <td>Highly diminished, point-sized</td>
+                                    <td>Virtual and erect</td>
+                                </tr>
+                                <tr>
+                                    <td>Between infinity and the pole P</td>
+                                    <td>Between P and F, behind the mirror</td>
+                                    <td>Diminished</td>
+                                    <td>Virtual and erect</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3 class="text-lg font-semibold mb-2">Mirror Formula and Magnification</h3>
+            
+            <div class="definition">
+                <p><strong>Sign Convention for Spherical Mirrors:</strong></p>
+                <ul class="list-disc pl-5">
+                    <li>All distances are measured from the pole of the mirror</li>
+                    <li>Distances measured in the direction of incident light are positive</li>
+                    <li>Distances measured opposite to the direction of incident light are negative</li>
+                    <li>Heights measured upward from the principal axis are positive</li>
+                    <li>Heights measured downward from the principal axis are negative</li>
+                </ul>
+            </div>
+            
+            <div class="formula mt-4">
+                <h4 class="text-md font-semibold">Mirror Formula:</h4>
+                <p>1/v + 1/u = 1/f</p>
+                <p class="text-sm mt-1">where v = image distance, u = object distance, f = focal length</p>
+            </div>
+            
+            <div class="formula mt-4">
+                <h4 class="text-md font-semibold">Magnification:</h4>
+                <p>m = h'/h = -v/u</p>
+                <p class="text-sm mt-1">where h' = height of image, h = height of object</p>
+            </div>
+            
+            <div class="canvas-container mt-4" id="mirror-formula-container">
+                <!-- Canvas for mirror formula will be inserted here -->
+            </div>
+            
+            <div class="control-panel">
+                <div class="control">
+                    <label for="mirror-type">Mirror Type</label>
+                    <select id="mirror-type" class="w-full p-1 border rounded">
+                        <option value="concave">Concave Mirror</option>
+                        <option value="convex">Convex Mirror</option>
+                    </select>
+                </div>
+                <div class="control">
+                    <label for="object-distance">Object Distance (u)</label>
+                    <input type="range" id="object-distance" min="10" max="150" value="60" class="w-full">
+                </div>
+                <div class="control">
+                    <label for="object-height">Object Height (h)</label>
+                    <input type="range" id="object-height" min="5" max="30" value="20" class="w-full">
+                </div>
+                <div class="control">
+                    <label for="focal-length">Focal Length (f)</label>
+                    <input type="range" id="focal-length" min="10" max="80" value="30" class="w-full">
+                </div>
+            </div>
+            
+            <div class="mt-4 p-3 bg-gray-100 rounded-lg" id="formula-results">
+                <p><strong>Calculation Results:</strong></p>
+                <p>Image Distance (v): <span id="image-distance">-</span></p>
+                <p>Image Height (h'): <span id="image-height">-</span></p>
+                <p>Magnification (m): <span id="magnification">-</span></p>
+                <p>Nature of Image: <span id="image-nature">-</span></p>
+            </div>
+        </div>
+        
+        <div class="section-header">
+            <h2 class="text-xl font-bold">2. Refraction of Light</h2>
+        </div>
+        
+        <div class="card">
+            <h3 class="text-lg font-semibold mb-2">Laws of Refraction</h3>
+            <p>Refraction is the bending of light when it passes from one medium to another. It follows these laws:</p>
+            <ol class="list-decimal pl-5 mt-2">
+                <li>The incident ray, refracted ray, and the normal at the point of incidence all lie in the same plane</li>
+                <li>The ratio of sine of angle of incidence to the sine of angle of refraction is a constant for a given pair of media. This is known as Snell's law.</li>
+            </ol>
+            
+            <div class="formula mt-3">
+                <p>sin i / sin r = constant = n₂₁</p>
+                <p class="text-sm mt-1">where n₂₁ is the refractive index of second medium with respect to the first</p>
+            </div>
+            
+            <div class="canvas-container mt-4" id="refraction-law-container">
+                <!-- Canvas for refraction laws will be inserted here -->
+            </div>
+            
+            <div class="control-panel">
+                <div class="control">
+                    <label for="refraction-angle">Angle of Incidence</label>
+                    <input type="range" id="refraction-angle" min="0" max="85" value="30" class="w-full">
+                </div>
+                <div class="control">
+                    <label for="medium-pair">Medium Pair</label>
+                    <select id="medium-pair" class="w-full p-1 border rounded">
+                        <option value="air-water">Air to Water (n = 1.33)</option>
+                        <option value="air-glass">Air to Glass (n = 1.5)</option>
+                        <option value="water-glass">Water to Glass (n = 1.13)</option>
+                        <option value="glass-air">Glass to Air (n = 0.67)</option>
+                        <option value="water-air">Water to Air (n = 0.75)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3 class="text-lg font-semibold mb-2">Refractive Index</h3>
+            <p>The refractive index is a measure of how much light bends when it passes from one medium to another.</p>
+            
+            <div class="definition mt-3">
+                <p><strong>Absolute Refractive Index:</strong></p>
+                <p>The ratio of speed of light in vacuum (c) to the speed of light in the medium (v).</p>
+                <p class="formula mt-2">n = c/v</p>
+            </div>
+            
+            <table class="min-w-full mt-4">
+                <thead>
+                    <tr>
+                        <th>Material Medium</th>
+                        <th>Refractive Index</th>
+                        <th>Material Medium</th>
+                        <th>Refractive Index</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Air</td>
+                        <td>1.0003</td>
+                        <td>Crown Glass</td>
+                        <td>1.52</td>
+                    </tr>
+                    <tr>
+                        <td>Ice</td>
+                        <td>1.31</td>
+                        <td>Canada Balsam</td>
+                        <td>1.53</td>
+                    </tr>
+                    <tr>
+                        <td>Water</td>
+                        <td>1.33</td>
+                        <td>Rock Salt</td>
+                        <td>1.54</td>
+                    </tr>
+                    <tr>
+                        <td>Alcohol</td>
+                        <td>1.36</td>
+                        <td>Carbon Disulphide</td>
+                        <td>1.63</td>
+                    </tr>
+                    <tr>
+                        <td>Kerosene</td>
+                        <td>1.44</td>
+                        <td>Dense Flint Glass</td>
+                        <td>1.65</td>
+                    </tr>
+                    <tr>
+                        <td>Fused Quartz</td>
+                        <td>1.46</td>
+                        <td>Ruby</td>
+                        <td>1.71</td>
+                    </tr>
+                    <tr>
+                        <td>Turpentine Oil</td>
+                        <td>1.47</td>
+                        <td>Sapphire</td>
+                        <td>1.77</td>
+                    </tr>
+                    <tr>
+                        <td>Benzene</td>
+                        <td>1.50</td>
+                        <td>Diamond</td>
+                        <td>2.42</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="info-box mt-4">
+                <p><strong>Optical Density:</strong> A medium with a higher refractive index is optically denser. When light travels from a rarer medium to a denser medium, it slows down and bends towards the normal. When it travels from a denser medium to a rarer medium, it speeds up and bends away from the normal.</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3 class="text-lg font-semibold mb-2">Refraction through a Rectangular Glass Slab</h3>
+            <p>When light passes through a rectangular glass slab, it undergoes refraction twice - first when entering the slab and then when exiting the slab.</p>
+            
+            <div class="canvas-container mt-4" id="glass-slab-container">
+                <!-- Canvas for glass slab refraction will be inserted here -->
+            </div>
+            
+            <div class="control-panel">
+                <div class="control">
+                    <label for="slab-angle">Angle of Incidence</label>
+                    <input type="range" id="slab-angle" min="0" max="85" value="30" class="w-full">
+                </div>
+                <div class="control">
+                    <label for="slab-thickness">Slab Thickness</label>
+                    <input type="range" id="slab-thickness" min="10" max="50" value="20" class="w-full">
+                </div>
+                <div class="control">
+                    <label for="slab-material">Material</label>
+                    <select id="slab-material" class="w-full p-1 border rounded">
+                        <option value="1.5">Glass (n = 1.5)</option>
+                        <option value="1.33">Water (n = 1.33)</option>
+                        <option value="1.65">Dense Flint Glass (n = 1.65)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="info-box mt-4">
+                <p><strong>Key Observations:</strong></p>
+                <ul class="list-disc pl-5">
+                    <li>The emergent ray is parallel to the incident ray but laterally displaced</li>
+                    <li>The lateral displacement increases with increase in angle of incidence</li>
+                    <li>The lateral displacement increases with increase in thickness of the slab</li>
+                    <li>The lateral displacement increases with increase in refractive index of the slab</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3 class="text-lg font-semibold mb-2">Spherical Lenses</h3>
+            <p>A lens is a transparent material bound by two surfaces, of which at least one is spherical.</p>
+            
+            <div class="tabs mt-4">
+                <div class="tab active" data-tab="convex-lens">Convex Lens</div>
+                <div class="tab" data-tab="concave-lens">Concave Lens</div>
+            </div>
+            
+            <div class="tab-content active" id="convex-lens">
+                <div class="flex flex-col md:flex-row">
+                    <div class="md:w-1/2">
+                        <h4 class="text-md font-semibold mt-2">Convex Lens</h4>
+                        <p>A lens that is thicker at the middle and thinner at the edges. It converges light rays, hence called a converging lens.</p>
+                        
+                        <div class="definition mt-3">
+                            <p><strong>Key Terms:</strong></p>
+                            <ul class="list-disc pl-5">
+                                <li><strong>Optical Centre (O):</strong> The central point of the lens</li>
+                                <li><strong>Principal Axis:</strong> The line passing through the optical centre</li>
+                                <li><strong>Principal Focus (F):</strong> The point where rays parallel to the principal axis converge</li>
+                                <li><strong>Focal Length (f):</strong> The distance between O and F</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/2">
+                        <div class="canvas-container" id="convex-lens-container">
+                            <!-- Canvas for convex lens will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-panel">
+                    <div class="control">
+                        <label for="convex-lens-object-distance">Object Distance</label>
+                        <input type="range" id="convex-lens-object-distance" min="10" max="150" value="80" class="w-full">
+                    </div>
+                    <div class="control">
+                        <label for="convex-lens-focal-length">Focal Length</label>
+                        <input type="range" id="convex-lens-focal-length" min="20" max="50" value="30" class="w-full">
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="text-md font-semibold">Image Formation by Convex Lens</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr>
+                                    <th>Position of Object</th>
+                                    <th>Position of Image</th>
+                                    <th>Size of Image</th>
+                                    <th>Nature of Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>At infinity</td>
+                                    <td>At focus F₂</td>
+                                    <td>Highly diminished, point-sized</td>
+                                    <td>Real and inverted</td>
+                                </tr>
+                                <tr>
+                                    <td>Beyond 2F₁</td>
+                                    <td>Between F₂ and 2F₂</td>
+                                    <td>Diminished</td>
+                                    <td>Real and inverted</td>
+                                </tr>
+                                <tr>
+                                    <td>At 2F₁</td>
+                                    <td>At 2F₂</td>
+                                    <td>Same size</td>
+                                    <td>Real and inverted</td>
+                                </tr>
+                                <tr>
+                                    <td>Between F₁ and 2F₁</td>
+                                    <td>Beyond 2F₂</td>
+                                    <td>Enlarged</td>
+                                    <td>Real and inverted</td>
+                                </tr>
+                                <tr>
+                                    <td>At focus F₁</td>
+                                    <td>At infinity</td>
+                                    <td>Image would not be formed</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>Between focus F₁ and optical centre O</td>
+                                    <td>On the same side of the lens as the object</td>
+                                    <td>Enlarged</td>
+                                    <td>Virtual and erect</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="concave-lens">
+                <div class="flex flex-col md:flex-row">
+                    <div class="md:w-1/2">
+                        <h4 class="text-md font-semibold mt-2">Concave Lens</h4>
+                        <p>A lens that is thinner at the middle and thicker at the edges. It diverges light rays, hence called a diverging lens.</p>
+                        
+                        <div class="definition mt-3">
+                            <p><strong>Key Terms:</strong></p>
+                            <ul class="list-disc pl-5">
+                                <li><strong>Optical Centre (O):</strong> The central point of the lens</li>
+                                <li><strong>Principal Axis:</strong> The line passing through the optical centre</li>
+                                <li><strong>Principal Focus (F):</strong> The point from which rays parallel to the principal axis appear to diverge</li>
+                                <li><strong>Focal Length (f):</strong> The distance between O and F</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/2">
+                        <div class="canvas-container" id="concave-lens-container">
+                            <!-- Canvas for concave lens will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-panel">
+                    <div class="control">
+                        <label for="concave-lens-object-distance">Object Distance</label>
+                        <input type="range" id="concave-lens-object-distance" min="10" max="150" value="80" class="w-full">
+                    </div>
+                    <div class="control">
+                        <label for="concave-lens-focal-length">Focal Length</label>
+                        <input type="range" id="concave-lens-focal-length" min="20" max="50" value="30" class="w-full">
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <h4 class="text-md font-semibold">Image Formation by Concave Lens</h4>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr>
+                                    <th>Position of Object</th>
+                                    <th>Position of Image</th>
+                                    <th>Size of Image</th>
+                                    <th>Nature of Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>At infinity</td>
+                                    <td>At focus F₁</td>
+                                    <td>Highly diminished, point-sized</td>
+                                    <td>Virtual and erect</td>
+                                </tr>
+                                <tr>
+                                    <td>Between infinity and optical centre O</td>
+                                    <td>Between focus F₁ and optical centre O</td>
+                                    <td>Diminished</td>
+                                    <td>Virtual and erect</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3 class="text-lg font-semibold mb-2">Lens Formula and Magnification</h3>
+            
+            <div class="definition">
+                <p><strong>Sign Convention for Spherical Lenses:</strong></p>
+                <ul class="list-disc pl-5">
+                    <li>All distances are measured from the optical centre of the lens</li>
+                    <li>Distances measured in the direction of incident light are positive</li>
+                    <li>Distances measured opposite to the direction of incident light are negative</li>
+                    <li>Heights measured upward from the principal axis are positive</li>
+                    <li>Heights measured downward from the principal axis are negative</li>
+                </ul>
+            </div>
+            
+            <div class="formula mt-4">
+                <h4 class="text-md font-semibold">Lens Formula:</h4>
+                <p>1/v - 1/u = 1/f</p>
+                <p class="text-sm mt-1">where v = image distance, u = object distance, f = focal length</p>
+            </div>
+            
+            <div class="formula mt-4">
+                <h4 class="text-md font-semibold">Magnification:</h4>
+                <p>m = h'/h = v/u</p>
+                <p class="text-sm mt-1">where h' = height of image, h = height of object</p>
+            </div>
+            
+            <div class="formula mt-4">
+                <h4 class="text-md font-semibold">Power of a Lens:</h4>
+                <p>P = 1/f</p>
+                <p class="text-sm mt-1">where P = power in diopters, f = focal length in meters</p>
+                <p class="text-sm mt-1">Power of a convex lens is positive and that of a concave lens is negative</p>
+            </div>
+            
+            <div class="canvas-container mt-4" id="lens-formula-container">
+                <!-- Canvas for lens formula will be inserted here -->
+            </div>
+            
+            <div class="control-panel">
+                <div class="control">
+                    <label for="lens-type">Lens Type</label>
+                    <select id="lens-type" class="w-full p-1 border rounded">
+                        <option value="convex">Convex Lens</option>
+                        <option value="concave">Concave Lens</option>
+                    </select>
+                </div>
+                <div class="control">
+                    <label for="lens-object-distance">Object Distance (u)</label>
+                    <input type="range" id="lens-object-distance" min="10" max="150" value="60" class="w-full">
+                </div>
+                <div class="control">
+                    <label for="lens-object-height">Object Height (h)</label>
+                    <input type="range" id="lens-object-height" min="5" max="30" value="20" class="w-full">
+                </div>
+                <div class="control">
+                    <label for="lens-focal-length">Focal Length (f)</label>
+                    <input type="range" id="lens-focal-length" min="10" max="80" value="30" class="w-full">
+                </div>
+            </div>
+            
+            <div class="mt-4 p-3 bg-gray-100 rounded-lg" id="lens-formula-results">
+                <p><strong>Calculation Results:</strong></p>
+                <p>Image Distance (v): <span id="lens-image-distance">-</span></p>
+                <p>Image Height (h'): <span id="lens-image-height">-</span></p>
+                <p>Magnification (m): <span id="lens-magnification">-</span></p>
+                <p>Power (P): <span id="lens-power">-</span></p>
+                <p>Nature of Image: <span id="lens-image-nature">-</span></p>
+            </div>
+        </div>
+        
+        <div class="section-header">
+            <h2 class="text-xl font-bold">3. Practical Applications</h2>
+        </div>
+        
+        <div class="card">
+            <h3 class="text-lg font-semibold mb-2">Uses of Spherical Mirrors</h3>
+            
+            <div class="flex flex-col md:flex-row">
+                <div class="md:w-1/2 p-2">
+                    <h4 class="text-md font-semibold">Concave Mirrors</h4>
+                    <ul class="list-disc pl-5">
+                        <li>Torches, headlights, and search lights (to get powerful parallel beam of light)</li>
+                        <li>Shaving mirrors (to get a magnified image)</li>
+                        <li>Dentist's mirrors (to see enlarged image of teeth)</li>
+                        <li>Solar furnaces (to concentrate sunlight)</li>
+                        <li>Reflecting telescopes (to gather more light)</li>
+                    </ul>
+                </div>
+                
+                <div class="md:w-1/2 p-2">
+                    <h4 class="text-md font-semibold">Convex Mirrors</h4>
+                    <ul class="list-disc pl-5">
+                        <li>Rear-view mirrors in vehicles (to get a wider field of view)</li>
+                        <li>Security mirrors in shops and buildings (to monitor a larger area)</li>
+                        <li>Street light reflectors (to spread light over a larger area)</li>
+                        <li>ATM surveillance (to cover wide areas)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3 class="text-lg font-semibold mb-2">Uses of Spherical Lenses</h3>
+            
+            <div class="flex flex-col md:flex-row">
+                <div class="md:w-1/2 p-2">
+                    <h4 class="text-md font-semibold">Convex Lenses</h4>
+                    <ul class="list-disc pl-5">
+                        <li>Magnifying glasses (to get enlarged image)</li>
+                        <li>Cameras (to form real image on film or sensor)</li>
+                        <li>Projectors (to form enlarged images on screen)</li>
+                        <li>Microscopes (for magnification)</li>
+                        <li>Human eye (crystalline lens forms image on retina)</li>
+                        <li>Spectacles for hypermetropia (far-sightedness)</li>
+                    </ul>
+                </div>
+                
+                <div class="md:w-1/2 p-2">
+                    <h4 class="text-md font-semibold">Concave Lenses</h4>
+                    <ul class="list-disc pl-5">
+                        <li>Spectacles for myopia (near-sightedness)</li>
+                        <li>Peepholes in doors (to see wider area)</li>
+                        <li>Camera lenses (as part of compound lenses)</li>
+                        <li>Galilean telescopes (as eyepiece)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3 class="text-lg font-semibold mb-2">Summary of Key Concepts</h3>
+            
+            <div class="concept-map">
+                <h4 class="text-md font-semibold mb-2">Reflection</h4>
+                <ul class="list-disc pl-5">
+                    <li>Laws of Reflection: Angle of incidence = Angle of reflection</li>
+                    <li>Spherical Mirrors: Concave (converging) and Convex (diverging)</li>
+                    <li>Mirror Formula: 1/v + 1/u = 1/f</li>
+                    <li>Magnification: m = h'/h = -v/u</li>
+                    <li>Sign Convention: Important for solving problems</li>
+                </ul>
+            </div>
+            
+            <div class="concept-map">
+                <h4 class="text-md font-semibold mb-2">Refraction</h4>
+                <ul class="list-disc pl-5">
+                    <li>Laws of Refraction: sin i / sin r = constant (Snell's Law)</li>
+                    <li>Refractive Index: n = c/v (speed in vacuum / speed in medium)</li>
+                    <li>Glass Slab: Emergent ray is parallel to incident ray but laterally displaced</li>
+                    <li>Spherical Lenses: Convex (converging) and Concave (diverging)</li>
+                    <li>Lens Formula: 1/v - 1/u = 1/f</li>
+                    <li>Magnification: m = h'/h = v/u</li>
+                    <li>Power of Lens: P = 1/f (measured in diopters)</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card mt-8">
+            <p class="text-center">Created for NCERT Class 10 Science Chapter - Light: Reflection and Refraction</p>
+        </div>
+    </div>
+    
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Get the tab group
+                const tabGroup = tab.parentElement;
+                // Remove active class from all tabs in the group
+                tabGroup.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Get tab content id
+                const tabContentId = tab.getAttribute('data-tab');
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                // Show the selected tab content
+                document.getElementById(tabContentId).classList.add('active');
+            });
+        });
+        
+        // Create sketches for each canvas container
+        function createLawsOfReflectionSketch() {
+            return function(p) {
+                let angleSlider;
+                
+                p.setup = function() {
+                    const canvas = p.createCanvas(p.windowWidth > 600 ? 600 : p.windowWidth - 40, 300);
+                    canvas.parent('laws-of-reflection-container');
+                    angleSlider = document.getElementById('incident-angle');
+                };
+                
+                p.draw = function() {
+                    p.background(240);
+                    const angle = Number(angleSlider.value);
+                    
+                    // Draw the mirror
+                    p.fill(200);
+                    p.rect(0, p.height/2, p.width, p.height/2);
+                    
+                    // Draw normal
+                    p.stroke(100);
+                    p.strokeWeight(1);
+                    p.line(p.width/2, 0, p.width/2, p.height);
+                    
+                    // Calculate incident ray
+                    const radians = p.radians(angle);
+                    const x1 = p.width/2 - p.cos(radians) * 200;
+                    const y1 = p.height/2 - p.sin(radians) * 200;
+                    
+                    // Calculate reflected ray
+                    const x2 = p.width/2 + p.cos(radians) * 200;
+                    const y2 = p.height/2 - p.sin(radians) * 200;
+                    
+                    // Draw incident ray
+                    p.stroke(255, 0, 0);
+                    p.strokeWeight(2);
+                    p.line(x1, y1, p.width/2, p.height/2);
+                    
+                    // Draw reflected ray
+                    p.stroke(0, 0, 255);
+                    p.strokeWeight(2);
+                    p.line(p.width/2, p.height/2, x2, y2);
+                    
+                    // Draw angles
+                    p.noFill();
+                    p.stroke(255, 0, 0);
+                    p.arc(p.width/2, p.height/2, 80, 80, -p.PI + radians, -p.PI/2);
+                    p.stroke(0, 0, 255);
+                    p.arc(p.width/2, p.height/2, 60, 60, -p.PI/2, -p.PI/2 + radians);
+                    
+                    // Labels
+                    p.fill(0);
+                    p.noStroke();
+                    p.textSize(16);
+                    p.text("Mirror", p.width/2 - 25, p.height - 20);
+                    p.text("Normal", p.width/2 + 10, 20);
+                    p.fill(255, 0, 0);
+                    p.text("Incident Ray", x1 - 40, y1 - 10);
+                    p.fill(0, 0, 255);
+                    p.text("Reflected Ray", x2 - 40, y2 - 10);
+                    p.fill(255, 0, 0);
+                    p.text("i = " + angle + "°", p.width/2 - 70, p.height/2 - 20);
+                    p.fill(0, 0, 255);
+                    p.text("r = " + angle + "°", p.width/2 + 30, p.height/2 - 20);
+                };
+            };
+        }
+        
+        function createConcaveMirrorSketch() {
+            return function(p) {
+                let objectDistanceSlider, focalLengthSlider;
+                
+                p.setup = function() {
+                    const canvas = p.createCanvas(p.windowWidth > 600 ? 600 : p.windowWidth - 40, 300);
+                    canvas.parent('concave-mirror-container');
+                    objectDistanceSlider = document.getElementById('concave-object-distance');
+                    focalLengthSlider = document.getElementById('concave-focal-length');
+                };
+                
+                p.draw = function() {
+                    p.background(240);
+                    
+                    const objectDistance = Number(objectDistanceSlider.value);
+                    const focalLength = Number(focalLengthSlider.value);
+                    const radius = focalLength * 2;
+                    
+                    // Set up coordinate system
+                    const mirrorX = 50;
+                    const centerY = p.height / 2;
+                    
+                    // Draw principal axis
+                    p.stroke(100);
+                    p.strokeWeight(1);
+                    p.line(0, centerY, p.width, centerY);
+                    
+                    // Draw concave mirror
+                    p.stroke(0);
+                    p.strokeWeight(2);
+                    p.noFill();
+                    p.arc(mirrorX + radius, centerY, radius * 2, p.height * 0.8, -p.PI/4, p.PI/4);
+                    
+                    // Mark key points
+                    // Pole (P)
+                    p.fill(0);
+                    p.noStroke();
+                    p.ellipse(mirrorX, centerY, 5, 5);
+                    p.text("P", mirrorX - 15, centerY - 5);
+                    
+                    // Focus (F)
+                    p.fill(255, 0, 0);
+                    p.ellipse(mirrorX + focalLength, centerY, 5, 5);
+                    p.text("F", mirrorX + focalLength - 5, centerY - 15);
+                    
+                    // Center of curvature (C)
+                    p.fill(0, 0, 255);
+                    p.ellipse(mirrorX + radius, centerY, 5, 5);
+                    p.text("C", mirrorX + radius - 5, centerY - 15);
+                    
+                    // Object
+                    const objectX = mirrorX + objectDistance;
+                    const objectHeight = 50;
+                    p.fill(0, 150, 0);
+                    p.rect(objectX, centerY - objectHeight, 2, objectHeight);
+                    p.text("Object", objectX - 20, centerY - objectHeight - 10);
+                    
+                    // Calculate image position using mirror formula
+                    // 1/v + 1/u = 1/f
+                    // v = (u*f)/(u-f)
+                    const u = -objectDistance; // Negative because object is in front of mirror
+                    const f = -focalLength; // Negative for concave mirror
+                    let v;
+                    if (u === f) {
+                        // Object at focus means image at infinity
+                        v = -9999; // Very large negative number to represent infinity
+                    } else {
+                        v = (u * f) / (u - f);
+                    }
+                    
+                    // Calculate magnification: m = -v/u
+                    const m = -v / u;
+                    const imageHeight = objectHeight * m;
+                    
+                    // Draw image
+                    const imageX = mirrorX + Math.abs(v);
+                    if (v < 0) { // Real image (in front of mirror)
+                        p.fill(0, 150, 150);
+                        if (Math.abs(v) < p.width - mirrorX) { // Only draw if within canvas
+                            p.rect(imageX, centerY, 2, -imageHeight);
+                            p.text("Image", imageX - 20, centerY - Math.abs(imageHeight) - 10);
+                            
+                            // Draw principal rays
+                            p.strokeWeight(1);
+                            
+                            // Ray 1: Parallel to principal axis, reflected through F
+                            p.stroke(255, 0, 0, 150);
+                            p.line(objectX, centerY - objectHeight, mirrorX, centerY - objectHeight); // Incident ray
+                            // Calculate reflection point on mirror
+                            const reflectionAngle = p.atan2(objectHeight, radius);
+                            const reflectionY = centerY - Math.sin(reflectionAngle) * radius / 2;
+                            p.line(mirrorX, centerY - objectHeight, mirrorX + focalLength, reflectionY); // Reflected ray
+                            p.line(mirrorX + focalLength, reflectionY, imageX, centerY - imageHeight); // Continuation to image
+                            
+                            // Ray 2: Through F, reflected parallel to axis
+                            p.stroke(0, 255, 0, 150);
+                            const rayAngle = p.atan2(objectHeight, objectDistance - focalLength);
+                            p.line(objectX, centerY - objectHeight, mirrorX, centerY); // Incident ray
+                            p.line(mirrorX, centerY, imageX, centerY - imageHeight); // Reflected ray
+                            
+                            // Ray 3: Through C, reflected back on itself
+                            p.stroke(0, 0, 255, 150);
+                            const ray3Angle = p.atan2(objectHeight, objectDistance - radius);
+                            const ray3Y = centerY - Math.tan(ray3Angle) * radius;
+                            p.line(objectX, centerY - objectHeight, mirrorX, ray3Y); // Incident ray
+                            p.line(mirrorX, ray3Y, imageX, centerY - imageHeight); // Reflected ray
+                        }
+                    } else { // Virtual image (behind mirror)
+                        // Draw virtual image behind mirror with dashed lines
+                        if (Math.abs(v) < p.width - mirrorX) { // Only draw if within canvas
+                            p.stroke(0, 150, 150);
+                            p.strokeWeight(1);
+                            // Draw dashed line for virtual image
+                            for (let i = 0; i < imageHeight; i += 5) {
+                                if (i % 10 < 5) {
+                                    p.line(imageX, centerY - i, imageX, centerY - i - 3);
+                                }
+                            }
+                            p.noStroke();
+                            p.fill(0, 150, 150);
+                            p.text("Virtual Image", imageX - 30, centerY - imageHeight - 10);
+                            
+                            // Draw rays for virtual image
+                            p.strokeWeight(1);
+                            
+                            // Ray 1: Parallel to principal axis
+                            p.stroke(255, 0, 0, 150);
+                            p.line(objectX, centerY - objectHeight, mirrorX, centerY - objectHeight); // Incident ray
+                            // Reflected ray
+                            const ray1EndX = objectX - 50;
+                            const ray1EndY = centerY - objectHeight + 50;
+                            p.line(mirrorX, centerY - objectHeight, ray1EndX, ray1EndY);
+                            // Extend ray backwards (dashed)
+                            p.drawingContext.setLineDash([5, 5]);
+                            p.line(mirrorX, centerY - objectHeight, imageX, centerY - imageHeight);
+                            p.drawingContext.setLineDash([]);
+                            
+                            // Ray 2: Towards F
+                            p.stroke(0, 255, 0, 150);
+                            const ray2EndY = centerY - objectHeight/2;
+                            p.line(objectX, centerY - objectHeight, mirrorX, ray2EndY); // Incident ray
+                            // Reflected ray
+                            p.line(mirrorX, ray2EndY, ray1EndX, ray2EndY);
+                            // Extend ray backwards (dashed)
+                            p.drawingContext.setLineDash([5, 5]);
+                            p.line(mirrorX, ray2EndY, imageX, centerY - imageHeight);
+                            p.drawingContext.setLineDash([]);
+                        }
+                    }
+                    
+                    // Display parameters
+                    p.fill(0);
+                    p.noStroke();
+                    p.text("Object Distance: " + objectDistance + " cm", 10, 20);
+                    p.text("Focal Length: " + focalLength + " cm", 10, 40);
+                    p.text("Image Distance: " + Math.abs(v).toFixed(1) + " cm", 10, 60);
+                    p.text("Magnification: " + Math.abs(m).toFixed(2) + "x", 10, 80);
+                    p.text("Image Type: " + (v < 0 ? "Real, Inverted" : "Virtual, Erect"), 10, 100);
+                };
+            };
+        }
+        
+        function createConvexMirrorSketch() {
+            return function(p) {
+                let objectDistanceSlider, focalLengthSlider;
+                
+                p.setup = function() {
+                    const canvas = p.createCanvas(p.windowWidth > 600 ? 600 : p.windowWidth - 40, 300);
+                    canvas.parent('convex-mirror-container');
+                    objectDistanceSlider = document.getElementById('convex-object-distance');
+                    focalLengthSlider = document.getElementById('convex-focal-length');
+                };
+                
+                p.draw = function() {
+                    p.background(240);
+                    
+                    const objectDistance = Number(objectDistanceSlider.value);
+                    const focalLength = Number(focalLengthSlider.value);
+                    const radius = focalLength * 2;
+                    
+                    // Set up coordinate system
+                    const mirrorX = 50;
+                    const centerY = p.height / 2;
+                    
+                    // Draw principal axis
+                    p.stroke(100);
+                    p.strokeWeight(1);
+                    p.line(0, centerY, p.width, centerY);
+                    
+                    // Draw convex mirror
+                    p.stroke(0);
+                    p.strokeWeight(2);
+                    p.noFill();
+                    p.arc(mirrorX - radius, centerY, radius * 2, p.height * 0.8, -p.PI/4 + p.PI/2, p.PI/4 + p.PI/2);
+                    
+                    // Mark key points
+                    // Pole (P)
+                    p.fill(0);
+                    p.noStroke();
+                    p.ellipse(mirrorX, centerY, 5, 5);
+                    p.text("P", mirrorX - 15, centerY - 5);
+                    
+                    // Focus (F) - behind the mirror for convex
+                    p.fill(255, 0, 0);
+                    p.ellipse(mirrorX - focalLength, centerY, 5, 5);
+                    p.text("F", mirrorX - focalLength - 5, centerY - 15);
+                    
+                    // Center of curvature (C) - behind the mirror for convex
+                    p.fill(0, 0, 255);
+                    p.ellipse(mirrorX - radius, centerY, 5, 5);
+                    p.text("C", mirrorX - radius - 5, centerY - 15);
+                    
+                    // Object
+                    const objectX = mirrorX + objectDistance;
+                    const objectHeight = 50;
+                    p.fill(0, 150, 0);
+                    p.rect(objectX, centerY - objectHeight, 2, objectHeight);
+                    p.text("Object", objectX - 20, centerY - objectHeight - 10);
+                    
+                    // Calculate image position using mirror formula
+                    // 1/v + 1/u = 1/f
+                    // For convex mirror, f is positive
+                    const u = -objectDistance; // Negative because object is in front of mirror
+                    const f = focalLength; // Positive for convex mirror
+                    const v = (u * f) / (u - f);
+                    
+                    // Calculate magnification: m = -v/u
+                    const m = -v / u;
+                    const imageHeight = objectHeight * m;
+                    
+                    // For convex mirror, image is always virtual (behind mirror)
+                    const imageX = mirrorX - Math.abs(v);
+                    
+                    // Draw virtual image
+                    if (Math.abs(v) < mirrorX) { // Only draw if within canvas
+                        p.stroke(0, 150, 150);
+                        p.strokeWeight(1);
+                        // Draw dashed line for virtual image
+                        for (let i = 0; i < imageHeight; i += 5) {
+                            if (i % 10 < 5) {
+                                p.line(imageX, centerY - i, imageX, centerY - i - 3);
+                            }
+                        }
+                        p.noStroke();
+                        p.fill(0, 150, 150);
+                        p.text("Virtual Image", imageX - 30, centerY - imageHeight - 10);
+                        
+                        // Draw rays
+                        p.strokeWeight(1);
+                        
+                        // Ray 1: Parallel to principal axis
+                        p.stroke(255, 0, 0, 150);
+                        p.line(objectX, centerY - objectHeight, mirrorX, centerY - objectHeight); // Incident ray
+                        // Calculate intersection with mirror and reflection direction
+                        const ray1EndX = 10;
+                        const ray1EndY = centerY - objectHeight + (objectX - ray1EndX) * (objectHeight / objectDistance);
+                        p.line(mirrorX, centerY - objectHeight, ray1EndX, ray1EndY); // Reflected ray
+                        // Extend ray backwards (dashed)
+                        p.drawingContext.setLineDash([5, 5]);
+                        p.line(mirrorX, centerY - objectHeight, imageX, centerY - imageHeight);
+                        p.drawingContext.setLineDash([]);
+                        
+                        // Ray 2: Towards C (extended)
+                        p.stroke(0, 255, 0, 150);
+                        const ray2Angle = p.atan2(objectHeight, objectDistance + radius);
+                        const ray2Y = centerY - objectHeight/2;
+                        p.line(objectX, centerY - objectHeight, mirrorX, ray2Y); // Incident ray
+                        // Reflected ray
+                        p.line(mirrorX, ray2Y, ray1EndX, ray2Y);
+                        // Extend ray backwards (dashed)
+                        p.drawingContext.setLineDash([5, 5]);
+                        p.line(mirrorX, ray2Y, imageX, centerY - imageHeight);
+                        p.drawingContext.setLineDash([]);
+                    }
+                    
+                    // Display parameters
+                    p.fill(0);
+                    p.noStroke();
+                    p.text("Object Distance: " + objectDistance + " cm", 10, 20);
+                    p.text("Focal Length: " + focalLength + " cm", 10, 40);
+                    p.text("Image Distance: " + Math.abs(v).toFixed(1) + " cm", 10, 60);
+                    p.text("Magnification: " + m.toFixed(2) + "x", 10, 80);
+                    p.text("Image Type: Virtual, Erect", 10, 100);
+                };
+            };
+        }
+        
+        function createMirrorFormulaSketch() {
+            return function(p) {
+                let objectDistanceSlider, objectHeightSlider, focalLengthSlider, mirrorTypeSelect;
+                
+                p.setup = function() {
+                    const canvas = p.createCanvas(p.windowWidth > 600 ? 600 : p.windowWidth - 40, 300);
+                    canvas.parent('mirror-formula-container');
+                    objectDistanceSlider = document.getElementById('object-distance');
+                    objectHeightSlider = document.getElementById('object-height');
+                    focalLengthSlider = document.getElementById('focal-length');
+                    mirrorTypeSelect = document.getElementById('mirror-type');
+                };
+                
+                p.draw = function() {
+                    p.background(240);
+                    
+                    const objectDistance = Number(objectDistanceSlider.value);
+                    const objectHeight = Number(objectHeightSlider.value);
+                    const focalLength = Number(focalLengthSlider.value);
+                    const mirrorType = mirrorTypeSelect.value;
+                    
+                    // Set up coordinate system
+                    const mirrorX = 50;
+                    const centerY = p.height / 2;
+                    
+                    // Draw principal axis
+                    p.stroke(100);
+                    p.strokeWeight(1);
+                    p.line(0, centerY, p.width, centerY);
+                    
+                    // Draw mirror
+                    p.stroke(0);
+                    p.strokeWeight(2);
+                    p.noFill();
+                    const radius = focalLength * 2;
+                    
+                    if (mirrorType === 'concave') {
+                        p.arc(mirrorX + radius, centerY, radius * 2, p.height * 0.8, -p.PI/4, p.PI/4);
+                        // Focus (F)
+                        p.fill(255, 0, 0);
+                        p.noStroke();
+                        p.ellipse(mirrorX + focalLength, centerY, 5, 5);
+                        p.text("F", mirrorX + focalLength - 5, centerY - 15);
+                    } else {
+                        p.arc(mirrorX - radius, centerY, radius * 2, p.height * 0.8, -p.PI/4 + p.PI/2, p.PI/4 + p.PI/2);
+                        // Focus (F) - behind the mirror for convex
+                        p.fill(255, 0, 0);
+                        p.noStroke();
+                        p.ellipse(mirrorX - focalLength, centerY, 5, 5);
+                        p.text("F", mirrorX - focalLength - 5, centerY - 15);
+                    }
+                    
+                    // Pole (P)
+                    p.fill(0);
+                    p.noStroke();
+                    p.ellipse(mirrorX, centerY, 5, 5);
+                    p.text("P", mirrorX - 15, centerY - 5);
+                    
+                    // Object
+                    const objectX = mirrorX + objectDistance;
+                    p.fill(0, 150, 0);
+                    p.rect(objectX, centerY - objectHeight, 2, objectHeight);
+                    p.text("Object", objectX - 20, centerY - objectHeight - 10);
+                    
+                    // Calculate image position using mirror formula
+                    // 1/v + 1/u = 1/f
+                    const u = -objectDistance; // Negative because object is in front of mirror
+                    const f = mirrorType === 'concave' ? -focalLength : focalLength; // Negative for concave, positive for convex
+                    
+                    let v;
+                    if (u === f) {
+                        // Object at focus means image at infinity
+                        v = -9999; // Very large negative number to represent infinity
+                    } else {
+                        v = (u * f) / (u - f);
+                    }
+                    
+                    // Calculate magnification: m = -v/u
+                    const m = -v / u;
+                    const imageHeight = objectHeight * m;
+                    
+                    // Update HTML elements
+                    document.getElementById('image-distance').textContent = Math.abs(v).toFixed(2) + " cm";
+                    document.getElementById('image-height').textContent = Math.abs(imageHeight).toFixed(2) + " cm";
+                    document.getElementById('magnification').textContent = Math.abs(m).toFixed(2) + "x";
+                    document.getElementById('image-nature').textContent = 
+                        v < 0 ? "Real, Inverted" : "Virtual, Erect";
+                    
+                    // Draw image
+                    if (mirrorType === 'concave') {
+                        const imageX = mirrorX + Math.abs(v);
+                        if (v < 0) { // Real image (in front of mirror)
+                            if (Math.abs(v) < p.width - mirrorX) { // Only draw if within canvas
+                                p.fill(0, 150, 150);
+                                p.rect(imageX, centerY, 2, -imageHeight);
+                                p.text("Image", imageX - 20, centerY - Math.abs(imageHeight) - 10);
+                            }
+                        } else { // Virtual image (behind mirror)
+                            if (Math.abs(v) < p.width - mirrorX) { // Only draw if within canvas
+                                p.stroke(0, 150, 150);
+                                p.strokeWeight(1);
+                                // Draw dashed line for virtual image
+                                for (let i = 0; i < imageHeight; i += 5) {
+                                    if (i % 10 < 5) {
+                                        p.line(imageX, centerY - i, imageX, centerY - i - 3);
+                                    }
+                                }
+                                p.noStroke();
+                                p.fill(0, 150, 150);
+                                p.text("Virtual Image", imageX - 30, centerY - imageHeight - 10);
+                            }
+                        }
+                    } else { // Convex mirror - always virtual image
+                        const imageX = mirrorX - Math.abs(v);
+                        if (Math.abs(v) < mirrorX) { // Only draw if within canvas
+                            p.stroke(0, 150, 150);
+                            p.strokeWeight(1);
+                            // Draw dashed line for virtual image
+                            for (let i = 0; i < imageHeight; i += 5) {
+                                if (i % 10 < 5) {
+                                    p.line(imageX, centerY - i, imageX, centerY - i - 3);
+                                }
+                            }
+                            p.noStroke();
+                            p.fill(0, 150, 150);
+                            p.text("Virtual Image", imageX - 30, centerY - imageHeight - 10);
+                        }
+                    }
+                };
+            };
+        }
+        
+        function createRefractionLawSketch() {
+            return function(p) {
+                let angleSlider, mediumSelect;
+                
+                p.setup = function() {
+                    const canvas = p.createCanvas(p.windowWidth > 600 ? 600 : p.windowWidth - 40, 300);
+                    canvas.parent('refraction-law-container');
+                    angleSlider = document.getElementById('refraction-angle');
+                    mediumSelect = document.getElementById('medium-pair');
+                };
+                
+                p.draw = function() {
+                    p.background(240);
+                    
+                    const incidentAngle = Number(angleSlider.value);
+                    let refractiveIndex;
+                    
+                    switch(mediumSelect.value) {
+                        case 'air-water':
+                            refractiveIndex = 1.33;
+                            break;
+                        case 'air-glass':
+                            refractiveIndex = 1.5;
+                            break;
+                        case 'water-glass':
+                            refractiveIndex = 1.13;
+                            break;
+                        case 'glass-air':
+                            refractiveIndex = 0.67;
+                            break;
+                        case 'water-air':
+                            refractiveIndex = 0.75;
+                            break;
+                        default:
+                            refractiveIndex = 1.33;
+                    }
+                    
+                    // Calculate refracted angle using Snell's Law
+                    // sin(i) / sin(r) = n
+                    const incidentRadians = p.radians(incidentAngle);
+                    let refractedRadians;
+                    
+                    // Handle total internal reflection
+                    const sinR = Math.sin(incidentRadians) / refractiveIndex;
+                    if (sinR > 1) {
+                        refractedRadians = Math.PI/2; // Total internal reflection, 90 degrees
+                    } else {
+                        refractedRadians = Math.asin(sinR);
+                    }
+                    
+                    const refractedAngle = p.degrees(refractedRadians);
+                    
+                    // Draw the interface between media
+                    p.fill(200, 230, 255, 180);
+                    p.rect(0, p.height/2, p.width, p.height/2);
+                    
+                    // Medium labels
+                    let medium1, medium2;
+                    if (mediumSelect.value === 'air-water') {
+                        medium1 = "Air (n = 1.0)";
+                        medium2 = "Water (n = 1.33)";
+                    } else if (mediumSelect.value === 'air-glass') {
+                        medium1 = "Air (n = 1.0)";
+                        medium2 = "Glass (n = 1.5)";
+                    } else if (mediumSelect.value === 'water-glass') {
+                        medium1 = "Water (n = 1.33)";
+                        medium2 = "Glass (n = 1.5)";
+                    } else if (mediumSelect.value === 'glass-air') {
+                        medium1 = "Glass (n = 1.5)";
+                        medium2 = "Air (n = 1.0)";
+                    } else if (mediumSelect.value === 'water-air') {
+                        medium1 = "Water (n = 1.33)";
+                        medium2 = "Air (n = 1.0)";
+                    }
+                    
+                    p.fill(0);
+                    p.noStroke();
+                    p.textSize(16);
+                    p.text(medium1, 10, p.height/2 - 10);
+                    p.text(medium2, 10, p.height/2 + 20);
+                    
+                    // Draw normal
+                    p.stroke(100);
+                    p.strokeWeight(1);
+                    p.line(p.width/2, 0, p.width/2, p.height);
+                    
+                    // Calculate incident ray
+                    const x1 = p.width/2 - p.cos(incidentRadians) * 200;
+                    const y1 = p.height/2 - p.sin(incidentRadians) * 200;
+                    
+                    // Draw incident ray
+                    p.stroke(255, 0, 0);
+                    p.strokeWeight(2);
+                    p.line(x1, y1, p.width/2, p.height/2);
+                    
+                    // Draw refracted ray
+                    if (sinR > 1) {
+                        // Total internal reflection
+                        const x2 = p.width/2 + p.cos(incidentRadians) * 200;
+                        const y2 = p.height/2 - p.sin(incidentRadians) * 200;
+                        p.stroke(0, 0, 255);
+                        p.line(p.width/2, p.height/2, x2, y2);
+                        p.fill(0, 0, 255);
+                        p.noStroke();
+                        p.text("Total Internal Reflection", p.width/2 + 10, p.height/2 - 40);
+                    } else {
+                        // Normal refraction
+                        const x2 = p.width/2 + p.cos(refractedRadians) * 200;
+                        const y2 = p.height/2 + p.sin(refractedRadians) * 200;
+                        p.stroke(0, 0, 255);
+                        p.line(p.width/2, p.height/2, x2, y2);
+                    }
+                    
+                    // Draw angles
+                    p.noFill();
+                    p.stroke(255, 0, 0);
+                    p.arc(p.width/2, p.height/2, 60, 60, -p.PI + incidentRadians, -p.PI/2);
+                    
+                    if (sinR <= 1) {
+                        p.stroke(0, 0, 255);
+                        p.arc(p.width/2, p.height/2, 80, 80, p.PI/2, p.PI/2 + refractedRadians);
+                    }
+                    
+                    // Labels
+                    p.fill(0);
+                    p.noStroke();
+                    p.text("Normal", p.width/2 + 10, 20);
+                    p.fill(255, 0, 0);
+                    p.text("Incident Ray", x1 - 40, y1 - 10);
+                    p.text("i = " + incidentAngle + "°", p.width/2 - 70, p.height/2 - 20);
+                    
+                    if (sinR <= 1) {
+                        p.fill(0, 0, 255);
+                        p.text("Refracted Ray", p.width/2 + 40, p.height/2 + 40);
+                        p.text("r = " + Math.round(refractedAngle) + "°", p.width/2 + 30, p.height/2 + 20);
+                    }
+                    
+                    // Show Snell's law calculation
+                    p.fill(0);
+                    p.text("Snell's Law: sin(i) / sin(r) = n", p.width - 250, 20);
+                    p.text("sin(" + incidentAngle + "°) / sin(" + Math.round(refractedAngle) + "°) = " + refractiveIndex.toFixed(2), p.width - 250, 40);
+                };
+            };
+        }
+        
+        function createGlassSlabSketch() {
+            return function(p) {
+                let angleSlider, thicknessSlider, materialSelect;
+                
+                p.setup = function() {
+                    const canvas = p.createCanvas(p.windowWidth > 600 ? 600 : p.windowWidth - 40, 300);
+                    canvas.parent('glass-slab-container');
+                    angleSlider = document.getElementById('slab-angle');
+                    thicknessSlider = document.getElementById('slab-thickness');
+                    materialSelect = document.getElementById('slab-material');
+                };
+                
+                p.draw = function() {
+                    p.background(240);
+                    
+                    const incidentAngle = Number(angleSlider.value);
+                    const slabThickness = Number(thicknessSlider.value);
+                    const refractiveIndex = Number(materialSelect.value);
+                    
+                    // Calculate positions
+                    const slabStartX = 100;
+                    const slabEndX = p.width - 100;
+                    const slabTopY = p.height/2 - slabThickness;
+                    const slabBottomY = p.height/2 + slabThickness;
+                    
+                    // Draw the glass slab
+                    p.fill(200, 230, 255, 180);
+                    p.rect(slabStartX, slabTopY, slabEndX - slabStartX, slabBottomY - slabTopY);
+                    
+                    // Calculate refracted angle using Snell's Law
+                    // sin(i) / sin(r) = n
+                    const incidentRadians = p.radians(incidentAngle);
+                    const refractedRadians = Math.asin(Math.sin(incidentRadians) / refractiveIndex);
+                    const refractedAngle = p.degrees(refractedRadians);
+                    
+                    // Incident ray point
+                    const incidentX = slabStartX - 100;
+                    const incidentY = slabTopY - 100 * Math.tan(incidentRadians);
+                    
+                    // Point where ray hits slab
+                    const hitX = slabStartX;
+                    const hitY = slabTopY;
+                    
+                    // Calculate refracted ray in slab
+                    const refractedInSlabX = hitX + slabThickness / Math.tan(refractedRadians);
+                    const refractedInSlabY = slabBottomY;
+                    
+                    // Calculate emergent ray
+                    // When ray leaves slab, angle is same as incident
+                    const emergentX = refractedInSlabX + 100;
+                    const emergentY = refractedInSlabY + 100 * Math.tan(incidentRadians);
+                    
+                    // Draw incident ray
+                    p.stroke(255, 0, 0);
+                    p.strokeWeight(2);
+                    p.line(incidentX, incidentY, hitX, hitY);
+                    
+                    // Draw refracted ray in slab
+                    p.stroke(0, 255, 0);
+                    p.line(hitX, hitY, refractedInSlabX, refractedInSlabY);
+                    
+                    // Draw emergent ray
+                    p.stroke(0, 0, 255);
+                    p.line(refractedInSlabX, refractedInSlabY, emergentX, emergentY);
+                    
+                    // Draw normals
+                    p.stroke(100);
+                    p.strokeWeight(1);
+                    p.line(hitX, hitY - 50, hitX, hitY + 50);
+                    p.line(refractedInSlabX, refractedInSlabY - 50, refractedInSlabX, refractedInSlabY + 50);
+                    
+                    // Calculate lateral displacement
+                    const lateralDisplacement = emergentX - (incidentX + (emergentY - incidentY) / Math.tan(incidentRadians));
+                    
+                    // Labels
+                    p.fill(0);
+                    p.noStroke();
+                    p.textSize(14);
+                    p.text("Glass Slab (n = " + refractiveIndex + ")", p.width/2 - 60, slabTopY + slabThickness/2 + 5);
+                    p.fill(255, 0, 0);
+                    p.text("Incident Ray", incidentX, incidentY - 10);
+                    p.text("i = " + incidentAngle + "°", hitX - 60, hitY - 10);
+                    p.fill(0, 255, 0);
+                    p.text("Refracted Ray", hitX + 50, (hitY + refractedInSlabY)/2);
+                    p.text("r = " + Math.round(refractedAngle) + "°", hitX + 20, hitY + 20);
+                    p.fill(0, 0, 255);
+                    p.text("Emergent Ray", emergentX - 80, emergentY - 10);
+                    p.text("e = " + incidentAngle + "°", refractedInSlabX + 20, refractedInSlabY - 20);
+                    
+                    // Show lateral displacement
+                    p.fill(255, 0, 255);
+                    p.text("Lateral Displacement: " + Math.abs(lateralDisplacement).toFixed(1) + " units", p.width - 250, p.height - 20);
+                    
+                    // Draw dashed line to show lateral displacement
+                    p.stroke(255, 0, 255);
+                    p.strokeWeight(1);
+                    p.drawingContext.setLineDash([5, 5]);
+                    const extensionX = incidentX + (emergentY - incidentY) / Math.tan(incidentRadians);
+                    p.line(incidentX, incidentY, extensionX, emergentY);
+                    p.drawingContext.setLineDash([]);
+                    
+                    // Draw double-headed arrow to show displacement
+                    p.strokeWeight(1);
+                    p.line(extensionX, emergentY - 10, emergentX, emergentY - 10);
+                    p.line(extensionX, emergentY - 13, extensionX, emergentY - 7);
+                    p.line(emergentX, emergentY - 13, emergentX, emergentY - 7);
+                };
+            };
+        }
+        
+        function createConvexLensSketch() {
+            return function(p) {
+                let objectDistanceSlider, focalLengthSlider;
+                
+                p.setup = function() {
+                    const canvas = p.createCanvas(p.windowWidth > 600 ? 600 : p.windowWidth - 40, 300);
+                    canvas.parent('convex-lens-container');
+                    objectDistanceSlider = document.getElementById('convex-lens-object-distance');
+                    focalLengthSlider = document.getElementById('convex-lens-focal-length');
+                };
+                
+                p.draw = function() {
+                    p.background(240);
+                    
+                    const objectDistance = Number(objectDistanceSlider.value);
+                    const focalLength = Number(focalLengthSlider.value);
+                    
+                    // Set up coordinate system
+                    const lensX = p.width / 2;
+                    const centerY = p.height / 2;
+                    
+                    // Draw principal axis
+                    p.stroke(100);
+                    p.strokeWeight(1);
+                    p.line(0, centerY, p.width, centerY);
+                    
+                    // Draw convex lens
+                    p.stroke(0);
+                    p.strokeWeight(2);
+                    p.fill(220, 240, 255, 80);
+                    p.ellipse(lensX, centerY, 20, p.height * 0.7);
+                    
+                    // Mark key points
+                    // Optical center (O)
+                    p.fill(0);
+                    p.noStroke();
+                    p.ellipse(lensX, centerY, 5, 5);
+                    p.text("O", lensX - 15, centerY - 5);
+                    
+                    // Focus (F1) - left focus
+                    p.fill(255, 0, 0);
+                    p.ellipse(lensX - focalLength, centerY, 5, 5);
+                    p.text("F₁", lensX - focalLength - 5, centerY - 15);
+                    
+                    // Focus (F2) - right focus
+                    p.fill(255, 0, 0);
+                    p.ellipse(lensX + focalLength, centerY, 5, 5);
+                    p.text("F₂", lensX + focalLength - 5, centerY - 15);
+                    
+                    // 2F1 and 2F2 points
+                    p.fill(0, 150, 150);
+                    p.ellipse(lensX - 2 * focalLength, centerY, 5, 5);
+                    p.text("2F₁", lensX - 2 * focalLength - 10, centerY - 15);
+                    p.ellipse(lensX + 2 * focalLength, centerY, 5, 5);
+                    p.text("2F₂", lensX + 2 * focalLength - 10, centerY - 15);
+                    
+                    // Object
+                    const objectX = lensX - objectDistance;
+                    const objectHeight = 50;
+                    p.fill(0, 150, 0);
+                    p.rect(objectX, centerY - objectHeight, 2, objectHeight);
+                    p.text("Object", objectX - 20, centerY - objectHeight - 10);
+                    
+                    // Calculate image position using lens formula
+                    // 1/v - 1/u = 1/f
+                    const u = -objectDistance; // Negative for object on left side
+                    const f = focalLength; // Positive for convex lens
+                    
+                    let v;
+                    if (u === -f) {
+                        // Object at focus means image at infinity
+                        v = 9999; // Very large positive number to represent infinity
+                    } else {
+                        v = (u * f) / (u + f);
+                    }
+                    
+                    // Calculate magnification: m = v/u
+                    const m = v / u;
+                    const imageHeight = objectHeight * m;
+                    
+                    // Draw image
+                    const imageX = lensX + v;
+                    
+                    if (v > 0) { // Real image (on right side)
+                        if (v < p.width - lensX) { // Only draw if within canvas
+                            p.fill(0, 150, 150);
+                            p.rect(imageX, centerY, 2, -imageHeight);
+                            p.text("Image", imageX - 20, centerY - Math.abs(imageHeight) - 10);
+                            
+                            // Draw principal rays
+                            p.strokeWeight(1);
+                            
+                            // Ray 1: Parallel to principal axis, passes through F2
+                            p.stroke(255, 0, 0, 150);
+                            p.line(objectX, centerY - objectHeight, lensX, centerY - objectHeight);
+                            p.line(lensX, centerY - objectHeight, imageX, centerY - imageHeight);
+                            
+                            // Ray 2: Through optical center, no deviation
+                            p.stroke(0, 255, 0, 150);
+                            p.line(objectX, centerY - objectHeight, lensX, centerY);
+                            p.line(lensX, centerY, imageX, centerY - imageHeight);
+                            
+                            // Ray 3: Through F1, emerges parallel to axis
+                            p.stroke(0, 0, 255, 150);
+                            p.line(objectX, centerY - objectHeight, lensX - focalLength, centerY);
+                            p.line(lensX - focalLength, centerY, imageX, centerY - imageHeight);
+                        }
+                    } else { // Virtual image (on left side)
+                        // Draw virtual image with dashed lines
+                        if (Math.abs(v) < lensX) { // Only draw if within canvas
+                            p.stroke(0, 150, 150);
+                            p.strokeWeight(1);
+                            // Draw dashed line for virtual image
+                            for (let i = 0; i < imageHeight; i += 5) {
+                                if (i % 10 < 5) {
+                                    p.line(imageX, centerY - i, imageX, centerY - i - 3);
+                                }
+                            }
+                            p.noStroke();
+                            p.fill(0, 150, 150);
+                            p.text("Virtual Image", imageX - 30, centerY - imageHeight - 10);
+                            
+                            // Draw rays for virtual image
+                            p.strokeWeight(1);
+                            
+                            // Ray 1: Parallel to principal axis
+                            p.stroke(255, 0, 0, 150);
+                            p.line(objectX, centerY - objectHeight, lensX, centerY - objectHeight);
+                            // Refracted ray towards F2
+                            const refractedX = lensX + 100;
+                            const refractedY = centerY - objectHeight + (refractedX - lensX) * Math.tan(Math.atan2(objectHeight, focalLength));
+                            p.line(lensX, centerY - objectHeight, refractedX, refractedY);
+                            // Extension backwards (dashed)
+                            p.drawingContext.setLineDash([5, 5]);
+                            p.line(lensX, centerY - objectHeight, imageX, centerY - imageHeight);
+                            p.drawingContext.setLineDash([]);
+                            
+                            // Ray 2: Through optical center, no deviation
+                            p.stroke(0, 255, 0, 150);
+                            p.line(objectX, centerY - objectHeight, imageX, centerY - imageHeight);
+                        }
+                    }
+                    
+                    // Display parameters
+                    p.fill(0);
+                    p.noStroke();
+                    p.text("Object Distance: " + objectDistance + " cm", 10, 20);
+                    p.text("Focal Length: " + focalLength + " cm", 10, 40);
+                    p.text("Image Distance: " + Math.abs(v).toFixed(1) + " cm", 10, 60);
+                    p.text("Magnification: " + Math.abs(m).toFixed(2) + "x", 10, 80);
+                    p.text("Image Type: " + (v > 0 ? "Real, Inverted" : "Virtual, Erect"), 10, 100);
+                };
+            };
+        }
+        
+        function createConcaveLensSketch() {
+            return function(p) {
+                let objectDistanceSlider, focalLengthSlider;
+                
+                p.setup = function() {
+                    const canvas = p.createCanvas(p.windowWidth > 600 ? 600 : p.windowWidth - 40, 300);
+                    canvas.parent('concave-lens-container');
+                    objectDistanceSlider = document.getElementById('concave-lens-object-distance');
+                    focalLengthSlider = document.getElementById('concave-lens-focal-length');
+                };
+                
+                p.draw = function() {
+                    p.background(240);
+                    
+                    const objectDistance = Number(objectDistanceSlider.value);
+                    const focalLength = Number(focalLengthSlider.value);
+                    
+                    // Set up coordinate system
+                    const lensX = p.width / 2;
+                    const centerY = p.height / 2;
+                    
+                    // Draw principal axis
+                    p.stroke(100);
+                    p.strokeWeight(1);
+                    p.line(0, centerY, p.width, centerY);
+                    
+                    // Draw concave lens
+                    p.stroke(0);
+                    p.strokeWeight(2);
+                    p.fill(220, 240, 255, 80);
+                    p.beginShape();
+                    p.vertex(lensX - 10, centerY - p.height * 0.35);
+                    p.bezierVertex(lensX - 20, centerY - p.height * 0.25, 
+                                  lensX - 20, centerY + p.height * 0.25, 
+                                  lensX - 10, centerY + p.height * 0.35);
+                    p.vertex(lensX + 10, centerY + p.height * 0.35);
+                    p.bezierVertex(lensX + 20, centerY + p.height * 0.25,
+                                  lensX + 20, centerY - p.height * 0.25,
+                                  lensX + 10, centerY - p.height * 0.35);
+                    p.endShape(p.CLOSE);
+                    
+                    // Mark key points
+                    // Optical center (O)
+                    p.fill(0);
+                    p.noStroke();
+                    p.ellipse(lensX, centerY, 5, 5);
+                    p.text("O", lensX - 15, centerY - 5);
+                    
+                    // Focus (F1) - left focus
+                    p.fill(255, 0, 0);
+                    p.ellipse(lensX - focalLength, centerY, 5, 5);
+                    p.text("F₁", lensX - focalLength - 5, centerY - 15);
+                    
+                    // Focus (F2) - right focus
+                    p.fill(255, 0, 0);
+                    p.ellipse(lensX + focalLength, centerY, 5, 5);
+                    p.text("F₂", lensX + focalLength - 5, centerY - 15);
+                    
+                    // Object
+                    const objectX = lensX - objectDistance;
+                    const objectHeight = 50;
+                    p.fill(0, 150, 0);
+                    p.rect(objectX, centerY - objectHeight, 2, objectHeight);
+                    p.text("Object", objectX - 20, centerY - objectHeight - 10);
+                    
+                    // Calculate image position using lens formula
+                    // 1/v - 1/u = 1/f
+                    const u = -objectDistance; // Negative for object on left side
+                    const f = -focalLength; // Negative for concave lens
+                    
+                    const v = (u * f) / (u - f);
+                    
+                    // Calculate magnification: m = v/u
+                    const m = v / u;
+                    const imageHeight = objectHeight * m;
+                    
+                    // For concave lens, image is always virtual, erect, and diminished
+                    const imageX = lensX + v; // v is negative, so this is left of lens
+                    
+                    // Draw virtual image
+                    if (Math.abs(v) < lensX) { // Only draw if within canvas
+                        p.stroke(0, 150, 150);
+                        p.strokeWeight(1);
+                        // Draw dashed line for virtual image
+                        for (let i = 0; i < imageHeight; i += 5) {
+                            if (i % 10 < 5) {
+                                p.line(imageX, centerY - i, imageX, centerY - i - 3);
+                            }
+                        }
+                        p.noStroke();
+                        p.fill(0, 150, 150);
+                        p.text("Virtual Image", imageX - 30, centerY - imageHeight - 10);
+                        
+                        // Draw rays
+                        p.strokeWeight(1);
+                        
+                        // Ray 1: Parallel to principal axis
+                        p.stroke(255, 0, 0, 150);
+                        p.line(objectX, centerY - objectHeight, lensX, centerY - objectHeight);
+                        // Refracted ray - appears to diverge from F1
+                        const refractedAngle = Math.atan2(objectHeight, focalLength);
+                        const refractedX = lensX + 100;
+                        const refractedY = centerY - objectHeight - (refractedX - lensX) * Math.tan(refractedAngle);
+                        p.line(lensX, centerY - objectHeight, refractedX, refractedY);
+                        // Extension backwards (dashed)
+                        p.drawingContext.setLineDash([5, 5]);
+                        p.line(lensX, centerY - objectHeight, imageX, centerY - imageHeight);
+                        p.drawingContext.setLineDash([]);
+                        
+                        // Ray 2: Through optical center, no deviation
+                        p.stroke(0, 255, 0, 150);
+                        p.line(objectX, centerY - objectHeight, imageX, centerY - imageHeight);
+                    }
+                    
+                    // Display parameters
+                    p.fill(0);
+                    p.noStroke();
+                    p.text("Object Distance: " + objectDistance + " cm", 10, 20);
+                    p.text("Focal Length: " + focalLength + " cm", 10, 40);
+                    p.text("Image Distance: " + Math.abs(v).toFixed(1) + " cm", 10, 60);
+                    p.text("Magnification: " + Math.abs(m).toFixed(2) + "x", 10, 80);
+                    p.text("Image Type: Virtual, Erect", 10, 100);
+                };
+            };
+        }
+        
+        function createLensFormulaSketch() {
+            return function(p) {
+                let objectDistanceSlider, objectHeightSlider, focalLengthSlider, lensTypeSelect;
+                
+                p.setup = function() {
+                    const canvas = p.createCanvas(p.windowWidth > 600 ? 600 : p.windowWidth - 40, 300);
+                    canvas.parent('lens-formula-container');
+                    objectDistanceSlider = document.getElementById('lens-object-distance');
+                    objectHeightSlider = document.getElementById('lens-object-height');
+                    focalLengthSlider = document.getElementById('lens-focal-length');
+                    lensTypeSelect = document.getElementById('lens-type');
+                };
+                
+                p.draw = function() {
+                    p.background(240);
+                    
+                    const objectDistance = Number(objectDistanceSlider.value);
+                    const objectHeight = Number(objectHeightSlider.value);
+                    const focalLength = Number(focalLengthSlider.value);
+                    const lensType = lensTypeSelect.value;
+                    
+                    // Set up coordinate system
+                    const lensX = p.width / 2;
+                    const centerY = p.height / 2;
+                    
+                    // Draw principal axis
+                    p.stroke(100);
+                    p.strokeWeight(1);
+                    p.line(0, centerY, p.width, centerY);
+                    
+                    // Draw lens
+                    p.stroke(0);
+                    p.strokeWeight(2);
+                    p.fill(220, 240, 255, 80);
+                    
+                    if (lensType === 'convex') {
+                        p.ellipse(lensX, centerY, 20, p.height * 0.7);
+                    } else {
+                        p.beginShape();
+                        p.vertex(lensX - 10, centerY - p.height * 0.35);
+                        p.bezierVertex(lensX - 20, centerY - p.height * 0.25, 
+                                      lensX - 20, centerY + p.height * 0.25, 
+                                      lensX - 10, centerY + p.height * 0.35);
+                        p.vertex(lensX + 10, centerY + p.height * 0.35);
+                        p.bezierVertex(lensX + 20, centerY + p.height * 0.25,
+                                      lensX + 20, centerY - p.height * 0.25,
+                                      lensX + 10, centerY - p.height * 0.35);
+                        p.endShape(p.CLOSE);
+                    }
+                    
+                    // Optical center (O)
+                    p.fill(0);
+                    p.noStroke();
+                    p.ellipse(lensX, centerY, 5, 5);
+                    p.text("O", lensX - 15, centerY - 5);
+                    
+                    // Focus (F1) - left focus
+                    p.fill(255, 0, 0);
+                    p.ellipse(lensX - focalLength, centerY, 5, 5);
+                    p.text("F₁", lensX - focalLength - 5, centerY - 15);
+                    
+                    // Focus (F2) - right focus
+                    p.fill(255, 0, 0);
+                    p.ellipse(lensX + focalLength, centerY, 5, 5);
+                    p.text("F₂", lensX + focalLength - 5, centerY - 15);
+                    
+                    // Object
+                    const objectX = lensX - objectDistance;
+                    p.fill(0, 150, 0);
+                    p.rect(objectX, centerY - objectHeight, 2, objectHeight);
+                    p.text("Object", objectX - 20, centerY - objectHeight - 10);
+                    
+                    // Calculate image position using lens formula
+                    // 1/v - 1/u = 1/f
+                    const u = -objectDistance; // Negative for object on left side
+                    const f = lensType === 'convex' ? focalLength : -focalLength; // Positive for convex, negative for concave
+                    
+                    let v;
+                    if (lensType === 'convex' && u === -f) {
+                        // Object at focus means image at infinity
+                        v = 9999; // Very large positive number to represent infinity
+                    } else {
+                        v = (u * f) / (u - f);
+                    }
+                    
+                    // Calculate magnification: m = v/u
+                    const m = v / u;
+                    const imageHeight = objectHeight * m;
+                    
+                    // Calculate power: P = 1/f (in diopters)
+                    // Convert focal length from cm to meters
+                    const power = 100 / (lensType === 'convex' ? focalLength : -focalLength);
+                    
+                    // Update HTML elements
+                    document.getElementById('lens-image-distance').textContent = Math.abs(v).toFixed(2) + " cm";
+                    document.getElementById('lens-image-height').textContent = Math.abs(imageHeight).toFixed(2) + " cm";
+                    document.getElementById('lens-magnification').textContent = Math.abs(m).toFixed(2) + "x";
+                    document.getElementById('lens-power').textContent = power.toFixed(2) + " D";
+                    document.getElementById('lens-image-nature').textContent = 
+                        v > 0 ? "Real, Inverted" : "Virtual, Erect";
+                    
+                    // Draw image
+                    const imageX = lensX + v;
+                    
+                    if (v > 0) { // Real image (right side)
+                        if (v < p.width - lensX) { // Only draw if within canvas
+                            p.fill(0, 150, 150);
+                            p.rect(imageX, centerY, 2, -imageHeight);
+                            p.text("Image", imageX - 20, centerY - Math.abs(imageHeight) - 10);
+                        }
+                    } else { // Virtual image (left side)
+                        if (Math.abs(v) < lensX) { // Only draw if within canvas
+                            p.stroke(0, 150, 150);
+                            p.strokeWeight(1);
+                            // Draw dashed line for virtual image
+                            for (let i = 0; i < imageHeight; i += 5) {
+                                if (i % 10 < 5) {
+                                    p.line(imageX, centerY - i, imageX, centerY - i - 3);
+                                }
+                            }
+                            p.noStroke();
+                            p.fill(0, 150, 150);
+                            p.text("Virtual Image", imageX - 30, centerY - imageHeight - 10);
+                        }
+                    }
+                };
+            };
+        }
+        
+        // Create p5.js sketches
+        new p5(createLawsOfReflectionSketch());
+        new p5(createConcaveMirrorSketch());
+        new p5(createConvexMirrorSketch());
+        new p5(createMirrorFormulaSketch());
+        new p5(createRefractionLawSketch());
+        new p5(createGlassSlabSketch());
+        new p5(createConvexLensSketch());
+        new p5(createConcaveLensSketch());
+        new p5(createLensFormulaSketch());
+    </script>
+</body>
+</html>
