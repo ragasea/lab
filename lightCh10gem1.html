@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class 10 Light - Reflection & Refraction (Interactive)</title>
+    <style>
+        /* Basic Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8; /* Light background */
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 25px;
+            background-color: #ffffff; /* White content area */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Headings and Text */
+        h1, h2, h3 {
+            color: #0056b3; /* Primary blue */
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 5px;
+            margin-top: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            background-color: #007bff; /* Bright blue header */
+            padding: 20px;
+            margin: -25px -25px 30px -25px; /* Extend to container edges */
+            border-radius: 8px 8px 0 0;
+            font-size: 2em;
+        }
+
+        strong {
+            color: #d9534f; /* Emphasis color */
+        }
+
+        code {
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+
+        /* Interactive Diagram Specific Styles */
+        .interactive-area {
+            border: 2px dashed #007bff;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: #e7f3ff;
+            border-radius: 5px;
+            position: relative; /* Needed for absolute positioning hints */
+             overflow: hidden; /* Hide parts of diagram extending outside */
+        }
+
+        #mirror-svg {
+            width: 100%;
+            height: 400px; /* Adjust as needed */
+            background-color: #fff;
+            border: 1px solid #ccc;
+            cursor: grab;
+            touch-action: none; /* Prevent page scroll on touch devices */
+            display: block;
+            margin: 10px auto;
+        }
+         #mirror-svg:active {
+            cursor: grabbing;
+        }
+
+
+        /* SVG Element Styling */
+        .axis { stroke: #555; stroke-width: 1; stroke-dasharray: 5,5; }
+        .mirror-shape { fill: none; stroke: #333; stroke-width: 3; }
+        .mirror-back { fill: #d0d0d0; opacity: 0.3; }
+        .object { fill: #007bff; stroke: #0056b3; stroke-width: 1; cursor: grab; }
+        .image { fill: #28a745; stroke: #1e7e34; stroke-width: 1; }
+        .image-virtual { fill: #28a745; stroke: #1e7e34; stroke-width: 1; stroke-dasharray: 5,3; opacity: 0.7; }
+        .ray { stroke: #ff8c00; stroke-width: 1; marker-end: url(#arrowhead); }
+        .ray-virtual { stroke: #ff8c00; stroke-width: 1; stroke-dasharray: 4,2; opacity: 0.6; }
+        .label { font-size: 14px; font-family: sans-serif; fill: #d9534f; text-anchor: middle; }
+        .point-label { font-size: 16px; font-family: sans-serif; fill: #000; text-anchor: middle; font-weight: bold;}
+
+        /* Info Display */
+        .info-box {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9em;
+            white-space: pre-wrap; /* Preserve line breaks */
+        }
+        .info-box strong {
+            color: #0056b3;
+        }
+
+        /* Simple Callout/Hint */
+         .hint {
+            font-style: italic;
+            color: #666;
+            margin-top: 5px;
+            text-align: center;
+         }
+
+         /* Button-like links (optional) */
+         .nav-link {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 4px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+         }
+         .nav-link:hover {
+             background-color: #0056b3;
+         }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Light: Reflection and Refraction (Class 10)</h1>
+
+        <div class="section" id="intro">
+            <h2>Introduction to Light</h2>
+            <p>Light is a form of energy that enables us to see objects. It travels in straight lines (rectilinear propagation). We see objects when light from them enters our eyes. This light may be emitted by the object (like a bulb) or reflected by it (like a chair).</p>
+        </div>
+
+        <div class="section" id="reflection">
+            <h2>Reflection of Light</h2>
+            <p>When light falls on a surface, it usually bounces back. This phenomenon is called <strong>reflection</strong>.</p>
+            <h3>Laws of Reflection:</h3>
+            <ol>
+                <li>The angle of incidence (∠i) is equal to the angle of reflection (∠r).</li>
+                <li>The incident ray, the reflected ray, and the normal to the reflecting surface at the point of incidence all lie in the same plane.</li>
+            </ol>
+            <p>These laws apply to all reflecting surfaces, including plane mirrors and spherical mirrors.</p>
+        </div>
+
+        <div class="section" id="spherical-mirrors">
+            <h2>Spherical Mirrors</h2>
+            <p>A mirror whose reflecting surface is a part of a sphere is called a spherical mirror. There are two main types:</p>
+            <ul>
+                <li><strong>Concave Mirror:</strong> Reflecting surface curves inwards (like the inside of a spoon). It's a converging mirror.</li>
+                <li><strong>Convex Mirror:</strong> Reflecting surface curves outwards. It's a diverging mirror.</li>
+            </ul>
+
+            <h3>Important Terms for Spherical Mirrors:</h3>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Spherical_mirror_terminology.svg/400px-Spherical_mirror_terminology.svg.png" alt="Spherical Mirror Terminology" style="display:block; margin:10px auto; max-width:80%;">
+            <ul>
+                <li><strong>Pole (P):</strong> The geometric center of the spherical mirror's reflecting surface.</li>
+                <li><strong>Center of Curvature (C):</strong> The center of the sphere of which the mirror is a part. (Not physically on the mirror surface, except maybe for P if R=0).</li>
+                <li><strong>Radius of Curvature (R):</strong> The radius of the sphere of which the mirror is a part. Distance PC.</li>
+                <li><strong>Principal Axis:</strong> The imaginary straight line passing through the Pole (P) and the Center of Curvature (C).</li>
+                <li><strong>Aperture:</strong> The diameter of the reflecting surface of the mirror.</li>
+                <li><strong>Principal Focus (F):</strong>
+                    <ul>
+                        <li><em>For Concave Mirror:</em> A point on the principal axis where rays parallel to the principal axis converge after reflection. It's real.</li>
+                        <li><em>For Convex Mirror:</em> A point on the principal axis from which rays parallel to the principal axis appear to diverge after reflection. It's virtual.</li>
+                    </ul>
+                </li>
+                <li><strong>Focal Length (f):</strong> The distance between the Pole (P) and the Principal Focus (F). Distance PF.</li>
+                <li><strong>Relationship:</strong> For spherical mirrors with small apertures, the Radius of Curvature is approximately twice the Focal Length: <strong>R ≈ 2f</strong>.</li>
+            </ul>
+        </div>
+
+        <!-- ======================= INTERACTIVE SECTION ======================= -->
+        <div class="section interactive-area" id="interactive-mirror">
+            <h2>Interactive Concave Mirror Diagram</h2>
+            <p class="hint">Click and drag the <span style="color:#007bff; font-weight:bold;">Blue Object Arrow</span> left or right along the principal axis!</p>
+
+            <svg id="mirror-svg" viewBox="0 0 800 400">
+                <!-- Definitions for arrowhead marker -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#ff8c00" />
+                    </marker>
+                </defs>
+
+                <!-- Principal Axis -->
+                <line class="axis" x1="0" y1="200" x2="800" y2="200" />
+
+                <!-- Concave Mirror (approximated as arc) -->
+                <path id="mirror-curve" class="mirror-shape" d="M 400 50 Q 300 200 400 350" />
+                <!-- Mirror Shading (optional) -->
+                <path id="mirror-back" class="mirror-back" d="M 400 50 Q 410 200 400 350 L 400 50 Z" />
+
+                <!-- Points: P, F, C -->
+                <circle id="pole" cx="400" cy="200" r="3" fill="black" />
+                <text class="point-label" x="400" y="220">P</text>
+                <circle id="focus" cx="300" cy="200" r="3" fill="red" />
+                <text class="point-label" x="300" y="220">F</text>
+                <circle id="center-curve" cx="200" cy="200" r="3" fill="red" />
+                <text class="point-label" x="200" y="220">C</text>
+
+                <!-- Rays (will be updated by JS) -->
+                <line id="ray1-in" class="ray" x1="0" y1="0" x2="0" y2="0"/>
+                <line id="ray1-out" class="ray" x1="0" y1="0" x2="0" y2="0"/>
+                <line id="ray2-in" class="ray" x1="0" y1="0" x2="0" y2="0"/>
+                <line id="ray2-out" class="ray" x1="0" y1="0" x2="0" y2="0"/>
+                <line id="ray3-in" class="ray" x1="0" y1="0" x2="0" y2="0"/>
+                <line id="ray3-out" class="ray" x1="0" y1="0" x2="0" y2="0"/>
+                 <!-- Virtual Ray extensions -->
+                <line id="ray1-virtual" class="ray-virtual" x1="0" y1="0" x2="0" y2="0"/>
+                <line id="ray2-virtual" class="ray-virtual" x1="0" y1="0" x2="0" y2="0"/>
+                <line id="ray3-virtual" class="ray-virtual" x1="0" y1="0" x2="0" y2="0"/>
+
+
+                <!-- Object Arrow (Draggable) -->
+                <path id="object" class="object" d="M 100 150 L 100 200" stroke-width="3" marker-end="url(#arrowhead-object)"/>
+                 <defs>
+                    <marker id="arrowhead-object" markerWidth="10" markerHeight="7" refX="5" refY="3.5" orient="auto" markerUnits="strokeWidth">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#007bff" />
+                    </marker>
+                 </defs>
+
+                <!-- Image Arrow (will be updated by JS) -->
+                <path id="image" class="image" d="M 0 0 L 0 0" stroke-width="3" marker-end="url(#arrowhead-image)"/>
+                 <defs>
+                    <marker id="arrowhead-image" markerWidth="10" markerHeight="7" refX="5" refY="3.5" orient="auto" markerUnits="strokeWidth">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#28a745" />
+                    </marker>
+                 </defs>
+
+                 <!-- Object/Image Labels -->
+                 <text id="object-label" class="label" x="100" y="145">Object (O)</text>
+                 <text id="image-label" class="label" x="0" y="0">Image (I)</text>
+
+            </svg>
+
+            <div class="info-box" id="info-display">
+                <strong>Status:</strong> Drag the blue object arrow. <br>
+                <strong>Focal Length (f):</strong> -100 units (fixed for this demo) <br>
+                <strong>Object Distance (u):</strong> ... <br>
+                <strong>Image Distance (v):</strong> ... <br>
+                <strong>Magnification (m):</strong> ... <br>
+                <strong>Image Characteristics:</strong> ...
+            </div>
+        </div>
+        <!-- ======================= END INTERACTIVE SECTION ======================= -->
+
+
+        <div class="section" id="ray-diagram-rules">
+            <h2>Ray Diagrams for Spherical Mirrors</h2>
+            <p>We can determine the position, size, and nature of the image formed by spherical mirrors using ray diagrams. We typically use at least two of the following rays originating from the top of the object:</p>
+            <ol>
+                <li><strong>Ray parallel to Principal Axis:</strong> After reflection, it passes through the Principal Focus (F) for a concave mirror, or appears to diverge from F for a convex mirror.</li>
+                <li><strong>Ray passing through Principal Focus (F):</strong> After reflection, it emerges parallel to the Principal Axis (for concave), or a ray directed towards F becomes parallel (for convex).</li>
+                <li><strong>Ray passing through Center of Curvature (C):</strong> It reflects back along the same path because it strikes the mirror normally (at 90°).</li>
+                <li><strong>Ray incident obliquely to the Principal Axis towards Pole (P):</strong> It is reflected obliquely, making equal angles with the Principal Axis (following laws of reflection).</li>
+            </ol>
+            <p>The point where the reflected rays actually intersect forms a <strong>real image</strong>. If they appear to diverge from a point behind the mirror, they form a <strong>virtual image</strong>.</p>
+        </div>
+
+        <div class="section" id="sign-convention">
+            <h2>Sign Convention for Spherical Mirrors (New Cartesian Sign Convention)</h2>
+            <p>To use mirror formulas consistently, we follow these conventions:</p>
+            <ul>
+                <li>The <strong>Pole (P)</strong> is the origin (0,0).</li>
+                <li>The <strong>Principal Axis</strong> is the X-axis.</li>
+                <li>The object is always placed to the <strong>left</strong> of the mirror. Light travels from left to right.</li>
+                <li>Distances measured <strong>to the right</strong> of P are positive (+ve).</li>
+                <li>Distances measured <strong>to the left</strong> of P are negative (-ve).</li>
+                <li>Distances measured <strong>upwards</strong> (perpendicular to the principal axis) are positive (+ve).</li>
+                <li>Distances measured <strong>downwards</strong> are negative (-ve).</li>
+            </ul>
+            <p>Therefore:</p>
+            <ul>
+                <li>Object distance (u) is always <strong>negative</strong>.</li>
+                <li>Focal length (f) of a concave mirror is <strong>negative</strong>.</li>
+                <li>Focal length (f) of a convex mirror is <strong>positive</strong>.</li>
+                <li>Real images (formed in front, usually inverted) have <strong>negative v</strong> and <strong>negative height (h')</strong>.</li>
+                <li>Virtual images (formed behind, usually erect) have <strong>positive v</strong> and <strong>positive height (h')</strong>.</li>
+            </ul>
+        </div>
+
+        <div class="section" id="formulas">
+            <h2>Mirror Formula and Magnification</h2>
+            <p>These formulas relate object distance (u), image distance (v), and focal length (f):</p>
+            <p><strong>Mirror Formula:</strong></p>
+            <code>1/v + 1/u = 1/f</code>
+            <p><strong>Magnification (m):</strong> It relates the height of the image (h') to the height of the object (h), and also relates image distance to object distance.</p>
+            <code>m = h'/h = -v/u</code>
+            <ul>
+                <li>If <strong>|m| > 1</strong>, image is magnified.</li>
+                <li>If <strong>|m| < 1</strong>, image is diminished.</li>
+                <li>If <strong>|m| = 1</strong>, image is the same size.</li>
+                <li>If <strong>m is positive (+)</strong>, image is virtual and erect.</li>
+                <li>If <strong>m is negative (-)</strong>, image is real and inverted.</li>
+            </ul>
+        </div>
+
+         <div class="section" id="uses">
+             <h2>Uses of Spherical Mirrors</h2>
+             <h3>Concave Mirrors:</h3>
+             <ul>
+                 <li>Shaving mirrors / Makeup mirrors (object close, forms magnified virtual image).</li>
+                 <li>Dentist's mirrors (to see magnified image of teeth).</li>
+                 <li>Torches, searchlights, vehicle headlights (light source at F, produces parallel beam).</li>
+                 <li>Solar furnaces (concentrate sunlight at F).</li>
+             </ul>
+             <h3>Convex Mirrors:</h3>
+             <ul>
+                 <li>Rear-view mirrors in vehicles (provide wider field of view, always form erect, diminished images).</li>
+                 <li>Security mirrors in shops.</li>
+             </ul>
+         </div>
+
+        <div class="section" id="next-steps">
+            <h2>Next Steps</h2>
+            <p>This interactive page focused mainly on reflection and concave mirrors. The chapter also covers:</p>
+            <ul>
+                <li>Image formation by Convex Mirrors.</li>
+                <li><strong>Refraction</strong> of Light (bending of light when passing from one medium to another).</li>
+                <li>Laws of Refraction (Snell's Law).</li>
+                <li>Refractive Index.</li>
+                <li>Refraction through a Glass Slab.</li>
+                <li>Spherical Lenses (Concave and Convex).</li>
+                <li>Lens Formula and Magnification.</li>
+                <li>Power of a Lens.</li>
+            </ul>
+            <p>Keep exploring these concepts!</p>
+            <!-- Optional navigation links -->
+            <!-- <a href="#intro" class="nav-link">Intro</a>
+            <a href="#reflection" class="nav-link">Reflection</a>
+            <a href="#spherical-mirrors" class="nav-link">Mirrors</a>
+            <a href="#interactive-mirror" class="nav-link">Interactive</a> -->
+        </div>
+
+    </div> <!-- End Container -->
+
+    <script>
+        // ======================= JAVASCRIPT FOR INTERACTIVE MIRROR =======================
+
+        const svg = document.getElementById('mirror-svg');
+        const objectArrow = document.getElementById('object');
+        const imageArrow = document.getElementById('image');
+        const objectLabel = document.getElementById('object-label');
+        const imageLabel = document.getElementById('image-label');
+
+        const ray1In = document.getElementById('ray1-in');
+        const ray1Out = document.getElementById('ray1-out');
+        const ray2In = document.getElementById('ray2-in');
+        const ray2Out = document.getElementById('ray2-out');
+        const ray3In = document.getElementById('ray3-in');
+        const ray3Out = document.getElementById('ray3-out');
+
+        const ray1Virtual = document.getElementById('ray1-virtual');
+        const ray2Virtual = document.getElementById('ray2-virtual');
+        const ray3Virtual = document.getElementById('ray3-virtual');
+
+
+        const infoDisplay = document.getElementById('info-display');
+
+        // SVG Coordinates and Physics Constants
+        const svgWidth = 800;
+        const svgHeight = 400;
+        const principalAxisY = 200;
+        const poleX = 400; // Position of P (Origin for calculations)
+        const focalLength = -100; // Negative for concave mirror (pixels as units)
+        const centerX = poleX + 2 * focalLength; // C = P + R = P + 2f
+        const objectHeight = 50; // Fixed height of the object arrow
+        const minObjectX = 10; // Limit how far left object can go
+        const maxObjectX = poleX - 5; // Limit how far right object can go
+
+        let objectX = 150; // Initial object position (SVG coordinate)
+        let isDragging = false;
+        let offset = { x: 0 }; // Offset between mouse click and object base
+
+        // --- Helper Functions ---
+        function getSVGPoint(evt) {
+            const CTM = svg.getScreenCTM();
+            const clientX = evt.clientX || (evt.touches ? evt.touches[0].clientX : 0);
+            const clientY = evt.clientY || (evt.touches ? evt.touches[0].clientY : 0);
+             return {
+                 x: (clientX - CTM.e) / CTM.a,
+                 y: (clientY - CTM.f) / CTM.d
+            };
+        }
+
+        function updateDiagram() {
+            // 1. Calculate Physics Values (u, v, m)
+            const u = objectX - poleX; // Object distance from P (Negative as it's left)
+            let v, m, h_prime;
+            let imageCharacteristics = "";
+
+            // Avoid division by zero if object is exactly at F
+            if (Math.abs(u - focalLength) < 1) {
+                // Object at Focus -> Image at Infinity
+                 v = Infinity; // Or a very large number
+                 m = Infinity;
+                 h_prime = Infinity;
+                 imageCharacteristics = "Real, Inverted, Highly Magnified (at Infinity)";
+                 // Hide image arrow if at infinity
+                 imageArrow.setAttribute('d', 'M 0 0 L 0 0'); // Effectively hide
+                 imageLabel.setAttribute('visibility', 'hidden');
+
+            } else if (u === 0) { // Object at Pole (theoretically)
+                v = 0;
+                m = 1;
+                h_prime = objectHeight * m;
+                imageCharacteristics = "Virtual, Erect, Same Size (at Pole)";
+            }
+            else {
+                 // Mirror Formula: 1/v + 1/u = 1/f  =>  1/v = 1/f - 1/u = (u - f) / (f * u)
+                 v = (focalLength * u) / (u - focalLength);
+                 // Magnification: m = -v/u
+                 m = -v / u;
+                 h_prime = objectHeight * m; // Image height
+
+                 // Determine Characteristics
+                if (v < 0) { // Real image (left side)
+                    imageCharacteristics = "Real, ";
+                    imageArrow.classList.remove('image-virtual');
+                    imageArrow.classList.add('image');
+
+                } else { // Virtual image (right side)
+                     imageCharacteristics = "Virtual, ";
+                     imageArrow.classList.add('image-virtual');
+                    imageArrow.classList.remove('image');
+                 }
+
+                 if (m < 0) {
+                     imageCharacteristics += "Inverted, ";
+                 } else {
+                     imageCharacteristics += "Erect, ";
+                 }
+
+                 const abs_m = Math.abs(m);
+                 if (abs_m > 1.05) imageCharacteristics += "Magnified";
+                 else if (abs_m < 0.95) imageCharacteristics += "Diminished";
+                 else imageCharacteristics += "Same Size";
+
+                 // Update image label visibility
+                 imageLabel.setAttribute('visibility', 'visible');
+            }
+
+
+            // 2. Update SVG Elements
+
+            // --- Object Arrow ---
+            // Base at (objectX, principalAxisY), Tip at (objectX, principalAxisY - objectHeight)
+            objectArrow.setAttribute('d', `M ${objectX} ${principalAxisY} L ${objectX} ${principalAxisY - objectHeight}`);
+            objectLabel.setAttribute('x', objectX);
+            objectLabel.setAttribute('y', principalAxisY - objectHeight - 10); // Label above object
+
+
+            // --- Image Arrow ---
+            if (isFinite(v) && isFinite(h_prime)) {
+                const imageX = poleX + v; // Image position in SVG coords
+                const imageBaseY = principalAxisY;
+                const imageTipY = principalAxisY - h_prime; // Negative h_prime means tip goes down
+
+                imageArrow.setAttribute('d', `M ${imageX} ${imageBaseY} L ${imageX} ${imageTipY}`);
+                 imageLabel.setAttribute('x', imageX);
+                 imageLabel.setAttribute('y', imageTipY + (h_prime > 0 ? -10 : 15) ); // Label above/below image
+             }
+
+
+             // --- Rays (Simplified Representation) ---
+             // We calculate image pos first, then draw rays that *would* form it.
+            const objectTipX = objectX;
+            const objectTipY = principalAxisY - objectHeight;
+            const imageX = poleX + v;
+            const imageTipY = principalAxisY - h_prime;
+
+            // Clear virtual extensions initially
+            ray1Virtual.setAttribute('d', 'M 0 0 L 0 0');
+            ray2Virtual.setAttribute('d', 'M 0 0 L 0 0');
+            ray3Virtual.setAttribute('d', 'M 0 0 L 0 0');
+
+             // Ray 1: Parallel to axis -> through F
+             const pointOnMirror1X = poleX; // Approximation: hitting mirror vertically above P
+             const pointOnMirror1Y = objectTipY;
+             ray1In.setAttribute('x1', objectTipX);
+             ray1In.setAttribute('y1', objectTipY);
+             ray1In.setAttribute('x2', pointOnMirror1X);
+             ray1In.setAttribute('y2', pointOnMirror1Y);
+
+             if(isFinite(v)){ // Only draw reflected/refracted ray if image is not at infinity
+                ray1Out.setAttribute('x1', pointOnMirror1X);
+                ray1Out.setAttribute('y1', pointOnMirror1Y);
+                ray1Out.setAttribute('x2', imageX); // Aim towards image tip
+                ray1Out.setAttribute('y2', imageTipY);
+                // If virtual, draw extension
+                if(v > 0) {
+                     ray1Virtual.setAttribute('x1', pointOnMirror1X);
+                     ray1Virtual.setAttribute('y1', pointOnMirror1Y);
+                     ray1Virtual.setAttribute('x2', poleX + focalLength); // Originates from F
+                     ray1Virtual.setAttribute('y2', principalAxisY);
+                     // Also need to extend the actual reflected ray backwards if virtual
+                     // This needs careful geometry, for simplicity we aim at image tip
+                }
+
+             } else { // Image at infinity - reflected ray goes parallel through F
+                 ray1Out.setAttribute('x1', pointOnMirror1X);
+                 ray1Out.setAttribute('y1', pointOnMirror1Y);
+                 ray1Out.setAttribute('x2', poleX + focalLength); // Pass through F
+                 ray1Out.setAttribute('y2', principalAxisY);
+                 // Extend this line further left (or handle appropriately)
+             }
+
+
+             // Ray 2: Through F (or towards F) -> Parallel to axis
+             const focusX = poleX + focalLength;
+             // Find intersection of line (ObjectTip -> Focus) with the mirror (approximated as vertical line at P)
+             const pointOnMirror2X = poleX;
+             const pointOnMirror2Y = principalAxisY - (objectHeight * focalLength) / (focalLength - u); // Similar triangles or interpolation
+
+             if (Math.abs(u - focalLength) > 1) { // Avoid drawing if object is at F
+                 ray2In.setAttribute('x1', objectTipX);
+                 ray2In.setAttribute('y1', objectTipY);
+                 ray2In.setAttribute('x2', pointOnMirror2X);
+                 ray2In.setAttribute('y2', pointOnMirror2Y);
+
+                 if(isFinite(v)){
+                    ray2Out.setAttribute('x1', pointOnMirror2X);
+                    ray2Out.setAttribute('y1', pointOnMirror2Y);
+                    ray2Out.setAttribute('x2', imageX); // Aim towards image tip (should be parallel if accurate)
+                    ray2Out.setAttribute('y2', imageTipY);
+                    // If virtual, draw extension
+                     if(v > 0) {
+                        ray2Virtual.setAttribute('x1', pointOnMirror2X);
+                        ray2Virtual.setAttribute('y1', pointOnMirror2Y);
+                        // This ray becomes parallel, so virtual part doesn't converge
+                        ray2Virtual.setAttribute('d', 'M 0 0 L 0 0'); // Hide
+                     }
+                 } else {
+                    // Reset if image at infinity
+                    ray2In.setAttribute('d', 'M 0 0 L 0 0');
+                    ray2Out.setAttribute('d', 'M 0 0 L 0 0');
+                 }
+             } else {
+                 // Object at F, ray goes parallel inwards, reflects parallel outwards
+                 ray2In.setAttribute('x1', objectTipX);
+                 ray2In.setAttribute('y1', objectTipY);
+                 ray2In.setAttribute('x2', objectTipX + 500); // Draw parallel ray going right
+                 ray2In.setAttribute('y2', objectTipY);
+                 ray2Out.setAttribute('d', 'M 0 0 L 0 0'); // No reflected ray shown in this case
+             }
+
+
+             // Ray 3: Through C -> Retraces path
+             // Find intersection of line (ObjectTip -> Center) with the mirror
+             const pointOnMirror3X = poleX;
+             // Simple approach: Draw line from object tip through C
+             ray3In.setAttribute('x1', objectTipX);
+             ray3In.setAttribute('y1', objectTipY);
+             ray3In.setAttribute('x2', centerX); // Aim towards C
+             ray3In.setAttribute('y2', principalAxisY); // On axis
+
+             // The ray *reflects* back along same path towards image tip
+            if (isFinite(v)) {
+                ray3Out.setAttribute('x1', pointOnMirror3X); // Where it hits mirror (approx P)
+                ray3Out.setAttribute('y1', principalAxisY - objectHeight * (2 * focalLength) / (2 * focalLength - u)); // Approx height on mirror
+                ray3Out.setAttribute('x2', imageX);
+                ray3Out.setAttribute('y2', imageTipY);
+                // If virtual, draw extension
+                if(v > 0) {
+                    ray3Virtual.setAttribute('x1', pointOnMirror3X); // Extend back from mirror point
+                    ray3Virtual.setAttribute('y1', principalAxisY - objectHeight * (2 * focalLength) / (2 * focalLength - u));
+                    ray3Virtual.setAttribute('x2', centerX); // Originates from C
+                    ray3Virtual.setAttribute('y2', principalAxisY);
+                }
+             } else {
+                ray3Out.setAttribute('d', 'M 0 0 L 0 0'); // Hide if image at infinity
+             }
+
+
+            // 3. Update Info Box
+            infoDisplay.innerHTML = `
+                <strong>Status:</strong> Concave Mirror Simulation <br>
+                <strong>Focal Length (f):</strong> ${focalLength.toFixed(1)} units <br>
+                <strong>Object Distance (u):</strong> ${u.toFixed(1)} units <br>
+                <strong>Image Distance (v):</strong> ${isFinite(v) ? v.toFixed(1) : 'Infinity'} units <br>
+                <strong>Magnification (m):</strong> ${isFinite(m) ? m.toFixed(2) : 'Infinity'} <br>
+                <strong>Image Characteristics:</strong> ${imageCharacteristics}
+            `;
+        }
+
+        // --- Event Listeners ---
+        function startDrag(evt) {
+            evt.preventDefault(); // Prevent text selection, etc.
+            const pt = getSVGPoint(evt);
+            offset.x = pt.x - objectX; // Calculate offset from object base
+            isDragging = true;
+             svg.style.cursor = 'grabbing';
+             objectArrow.style.cursor = 'grabbing';
+        }
+
+        function drag(evt) {
+            if (isDragging) {
+                evt.preventDefault();
+                const pt = getSVGPoint(evt);
+                let newX = pt.x - offset.x;
+
+                // Clamp object position within limits
+                newX = Math.max(minObjectX, Math.min(newX, maxObjectX));
+
+                objectX = newX;
+                updateDiagram();
+            }
+        }
+
+        function endDrag(evt) {
+            if (isDragging) {
+                 isDragging = false;
+                 svg.style.cursor = 'grab';
+                 objectArrow.style.cursor = 'grab';
+            }
+        }
+
+        // Mouse events
+        objectArrow.addEventListener('mousedown', startDrag);
+        svg.addEventListener('mousemove', drag); // Listen on SVG to capture movement outside the arrow
+        svg.addEventListener('mouseup', endDrag);
+        svg.addEventListener('mouseleave', endDrag); // Stop dragging if mouse leaves SVG
+
+        // Touch events
+         objectArrow.addEventListener('touchstart', startDrag);
+         svg.addEventListener('touchmove', drag);
+         svg.addEventListener('touchend', endDrag);
+         svg.addEventListener('touchcancel', endDrag);
+
+
+        // Initial Diagram Update
+        updateDiagram();
+
+        // Update points C and F based on f
+        document.getElementById('focus').setAttribute('cx', poleX + focalLength);
+        document.getElementById('center-curve').setAttribute('cx', poleX + 2 * focalLength);
+        document.querySelector('#focus + text').setAttribute('x', poleX + focalLength);
+        document.querySelector('#center-curve + text').setAttribute('x', poleX + 2 * focalLength);
+
+    </script>
+
+</body>
+</html>
