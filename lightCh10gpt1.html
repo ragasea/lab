@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Light - Class 10 CBSE</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #004080;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      padding: 2rem;
+    }
+    section {
+      margin-bottom: 2rem;
+    }
+    canvas {
+      border: 2px solid #004080;
+      background: white;
+      display: block;
+      margin: 1rem auto;
+    }
+    button {
+      margin: 0.5rem;
+      padding: 0.5rem 1rem;
+      background-color: #0080ff;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005bb5;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Light - Reflection and Spherical Mirrors</h1>
+    <p>Play and Learn about Light Concepts</p>
+  </header>
+  <main>
+    <section>
+      <h2>Interactive Mirror Simulation</h2>
+      <canvas id="mirrorCanvas" width="800" height="400"></canvas>
+      <div style="text-align:center">
+        <button onclick="setMirror('concave')">Concave Mirror</button>
+        <button onclick="setMirror('convex')">Convex Mirror</button>
+        <button onclick="toggleRay()">Toggle Ray</button>
+        <button onclick="resetCanvas()">Reset</button>
+      </div>
+    </section>
+    <section>
+      <h2>Concepts</h2>
+      <ul>
+        <li><strong>Focal Point (F):</strong> The point where parallel rays meet after reflection.</li>
+        <li><strong>Center of Curvature (C):</strong> The center of the sphere of which mirror is a part.</li>
+        <li><strong>Principal Axis:</strong> The straight line passing through C and the pole of the mirror.</li>
+        <li><strong>Focal Length (f):</strong> Distance between pole and focal point (f = R/2).</li>
+        <li><strong>Spherical Mirrors:</strong> Mirrors with spherical surfaces (concave or convex).</li>
+      </ul>
+    </section>
+  </main>
+  <script>
+    const canvas = document.getElementById('mirrorCanvas');
+    const ctx = canvas.getContext('2d');
+    let mirrorType = 'concave';
+    let showRay = false;function drawMirror() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const radius = 150;
+  const focalLength = radius / 2;
+
+  // Draw principal axis
+  ctx.beginPath();
+  ctx.moveTo(0, centerY);
+  ctx.lineTo(canvas.width, centerY);
+  ctx.strokeStyle = '#000';
+  ctx.stroke();
+
+  // Draw mirror arc
+  ctx.beginPath();
+  if (mirrorType === 'concave') {
+    ctx.arc(centerX + radius, centerY, radius, Math.PI, 2 * Math.PI);
+  } else {
+    ctx.arc(centerX - radius, centerY, radius, 0, Math.PI);
+  }
+  ctx.strokeStyle = '#004080';
+  ctx.stroke();
+
+  // Mark F and C
+  ctx.fillStyle = 'red';
+  ctx.beginPath();
+  ctx.arc(centerX + (mirrorType === 'concave' ? focalLength : -focalLength), centerY, 5, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.fillText('F', centerX + (mirrorType === 'concave' ? focalLength : -focalLength) - 10, centerY - 10);
+
+  ctx.beginPath();
+  ctx.arc(centerX + (mirrorType === 'concave' ? radius : -radius), centerY, 5, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.fillText('C', centerX + (mirrorType === 'concave' ? radius : -radius) - 10, centerY - 10);
+
+  if (showRay) drawRay(centerX, centerY, radius, focalLength);
+}
+
+function drawRay(cx, cy, r, f) {
+  // Incoming ray parallel to axis
+  ctx.beginPath();
+  ctx.moveTo(cx - 200, cy - 50);
+  ctx.lineTo(cx, cy - 50);
+  ctx.strokeStyle = 'green';
+  ctx.stroke();
+
+  // Reflected ray through focus
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - 50);
+  ctx.lineTo(cx + (mirrorType === 'concave' ? f : -f), cy);
+  ctx.strokeStyle = 'orange';
+  ctx.stroke();
+}
+
+function setMirror(type) {
+  mirrorType = type;
+  drawMirror();
+}
+
+function toggleRay() {
+  showRay = !showRay;
+  drawMirror();
+}
+
+function resetCanvas() {
+  mirrorType = 'concave';
+  showRay = false;
+  drawMirror();
+}
+
+drawMirror();
+
+  </script>
+</body>
+</html>
