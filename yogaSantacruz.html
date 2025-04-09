@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Yoga Institute - Teacher Training Courses</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #fdf8f2; /* Light beige background */
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f58233; /* Orange accent */
+            position: relative;
+        }
+        header h1 {
+            color: #f58233;
+            margin-bottom: 5px;
+        }
+        .logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.8em;
+            font-style: italic;
+            /* In a real scenario, replace text with an <img> tag */
+            border: 1px solid #ccc;
+            padding: 5px;
+            background-color: #eee;
+        }
+
+        section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background-color: #ffffff;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        h2 {
+            color: #f58233;
+            border-bottom: 1px solid #fde4d1;
+            padding-bottom: 10px;
+            margin-top: 0;
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+        h3 {
+            color: #e67e22; /* Darker orange */
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        .contact-info li span {
+            display: inline-block;
+            width: 20px; /* Space for icons */
+            text-align: center;
+            margin-right: 8px;
+            color: #f58233;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-around;
+        }
+        .card {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            flex: 1;
+            min-width: 250px; /* Ensure cards don't get too narrow */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card h4 {
+            color: #f58233;
+            margin-top: 0;
+            font-size: 1.3em;
+        }
+        .card p {
+            font-size: 0.95em;
+            color: #555;
+        }
+        .card .level {
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+        .card .mode {
+            font-style: italic;
+            color: #777;
+            margin-top: 15px;
+            display: block;
+            font-size: 0.9em;
+        }
+        .card .logos img { /* Placeholder for logos */
+             height: 50px;
+             margin: 10px 5px;
+             opacity: 0.7; /* Simulate logos if not available */
+        }
+         .logos span { /* Text fallback for logos */
+            display: inline-block;
+            border: 1px dashed #ccc;
+            padding: 5px 10px;
+            margin: 10px 5px;
+            font-size: 0.8em;
+            color: #777;
+        }
+
+        .founders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+        .founder-card {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .founder-card .portrait {
+            width: 100px;
+            height: 120px;
+            background-color: #e0e0e0; /* Placeholder color */
+            margin: 0 auto 10px auto;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 0.8em;
+        }
+        .founder-card p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .milestones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .milestone {
+            background-color: #f58233;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
+        .certification-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .certification-table th, .certification-table td {
+            border: 1px solid #eee;
+            padding: 12px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .certification-table th {
+            background-color: #f58233;
+            color: white;
+            font-weight: bold;
+        }
+        .certification-table td:first-child { /* Name column */
+            font-weight: bold;
+            color: #e67e22;
+            min-width: 150px;
+        }
+        .eligibility {
+            margin-top: 30px;
+            background-color: #fffaf5;
+            padding: 15px;
+            border-left: 4px solid #f58233;
+        }
+        .eligibility h4 {
+            margin-top: 0;
+            color: #f58233;
+        }
+
+        .tips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            align-items: flex-start; /* Align items at the top */
+        }
+        .tip-card {
+            background-color: #f58233;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 150px;
+            flex: 1;
+            max-width: 180px; /* Limit max width */
+        }
+        .tip-card .icon { /* Placeholder for icons */
+            font-size: 2em;
+            margin-bottom: 10px;
+            /* Example using text - replace with actual icons if possible */
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            margin: 10px auto;
+        }
+         .tip-card h4 {
+            margin: 0;
+            font-size: 1.1em;
+            color: white; /* Override default h4 color */
+        }
+         .tip-card p {
+            margin: 5px 0 0 0;
+            font-size: 0.9em;
+         }
+
+        .skills-container {
+            display: flex;
+            gap: 20px;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .skill-circle { /* Conceptual representation */
+            border: 3px solid #f58233;
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 15px;
+            background-color: #fffaf5;
+            position: relative; /* For pseudo-elements if needed */
+        }
+        .skill-circle h4 {
+            color: #e67e22;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        .skill-circle ul {
+            font-size: 0.8em;
+            color: #555;
+            padding: 0 10px; /* Indent list */
+            list-style-type: disc; /* Use discs for inner items */
+        }
+         .skill-circle li {
+            margin-bottom: 3px;
+            text-align: left;
+         }
+
+        .certificate-section {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .certificate-image { /* Placeholder */
+            flex: 1;
+            min-width: 250px;
+            height: 200px;
+            border: 1px dashed #ccc;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+        }
+        .certificate-text {
+            flex: 2;
+            min-width: 300px;
+        }
+        .certificate-text ul li {
+            margin-bottom: 8px;
+        }
+        .footnote {
+            font-size: 0.85em;
+            color: #777;
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+
+        .internship-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .internship-card {
+            background-color: #f58233;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 280px;
+        }
+         .internship-card h4 {
+            color: white;
+            margin-top: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            padding-bottom: 8px;
+            font-size: 1.2em;
+         }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .flex-container, .skills-container, .certificate-section, .internship-container {
+                flex-direction: column;
+            }
+            .card, .skill-circle, .certificate-image, .certificate-text, .internship-card {
+                min-width: 90%;
+                margin-bottom: 20px;
+            }
+            .skill-circle {
+                width: 80%; /* Adjust size for mobile */
+                height: auto;
+                padding: 20px;
+                 min-height: 150px; /* Ensure minimum height */
+            }
+            .certification-table, .certification-table tbody, .certification-table tr, .certification-table td {
+                display: block;
+                width: 100%;
+            }
+            .certification-table thead {
+                 display: none; /* Hide headers on mobile, use data attributes or labels if needed */
+            }
+             .certification-table tr {
+                margin-bottom: 15px;
+                border: 1px solid #eee;
+                border-radius: 5px;
+             }
+            .certification-table td {
+                border: none;
+                border-bottom: 1px solid #f0f0f0;
+                position: relative;
+                padding-left: 50%; /* Space for label */
+                text-align: right;
+            }
+             .certification-table td:before {
+                content: attr(data-label); /* Use data-label for mobile view */
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: bold;
+                text-align: left;
+                color: #f58233;
+             }
+             .certification-table td:last-child {
+                border-bottom: none;
+             }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo">The Yoga Institute<br>Estd. 1918</div>
+            <h1>The Yoga Institute</h1>
+            <p>Teacher Training Courses & Information</p>
+        </header>
+
+        <!-- Section 1: Further Assistance -->
+        <section id="assistance">
+            <h2>Further Assistance for Teacher Training Courses at TYI</h2>
+            <ul class="contact-info">
+                <li><span>📧</span> Email ID: admission@theyogainstitute.org</li>
+                <li><span>📞</span> Phone Number: +91-9136059434 & +91-7208169252</li>
+                <li><span>🌐</span> Website Link: <a href="http://www.theyogainstitute.org" target="_blank">www.theyogainstitute.org</a></li>
+                <li><span>📍</span> Location: Shri Yogendra Marg, Prabhat Colony, Santacruz East, Mumbai - 400055 India</li>
+            </ul>
+            <p style="margin-top: 20px; text-align: center; background-color: #fef9f3; padding: 10px; border-radius: 5px;">
+                We're posting a Google form, please mention your preferred time slot for 1:1 counselling session.
+            </p>
+        </section>
+
+        <!-- Section 2: TTC Levels -->
+        <section id="ttc-levels">
+            <h2>Yoga Teacher Training Courses - 3 Levels</h2>
+            <div class="flex-container">
+                <div class="card">
+                    <h4>200 Hours</h4>
+                    <p>Basic Yoga TTC</p>
+                     <div class="logos">
+                        <span>RYT 200 Yoga Alliance</span>
+                        <span>Yoga Certification Board Level 1</span>
+                    </div>
+                    <p class="level">Level 1</p>
+                    <span class="mode">(Online or OnCampus)</span>
+                </div>
+                <div class="card">
+                    <h4>500 Hours</h4>
+                    <p>Intermediate Yoga TTC</p>
+                     <div class="logos">
+                        <span>RYT 500 Yoga Alliance</span>
+                        <span>Yoga Certification Board Level 2</span>
+                    </div>
+                    <p class="level">Level 2</p>
+                     <span class="mode">(Online Only)</span>
+                 </div>
+                <div class="card">
+                    <h4>900 Hours</h4>
+                    <p>Advanced Yoga TTC</p>
+                     <div class="logos">
+                        <span>RYT 500 Yoga Alliance</span>
+                        <span>Yoga Certification Board Level 3</span>
+                    </div>
+                    <p class="level">Level 3</p>
+                    <span class="mode">(Online or OnCampus)</span>
+                </div>
+            </div>
+            <div class="footnote">
+                *No TTC is a prerequisite to another level of TTC.<br>
+                *Certification for online and on-campus is same (course mode is not specified on certificate).<br>
+                *YCB & RYT are certification boards, TYI conducted TTCs before these boards were incepted.
+            </div>
+        </section>
+
+        <!-- Section 3: History / Founders -->
+        <section id="history">
+            <h2>The Yoga Institute - Established 1918</h2>
+            <div class="founders-grid">
+                <div class="founder-card">
+                    <div class="portrait">[Portrait]</div>
+                    <p><strong>Shri. Yogendra ji</strong></p>
+                    <p>(1897 - 1989)</p>
+                </div>
+                <div class="founder-card">
+                    <div class="portrait">[Portrait]</div>
+                    <p><strong>Smt. Sitadevi ji</strong></p>
+                    <p>(1912 - 2008)</p>
+                </div>
+                 <div class="founder-card">
+                    <div class="portrait">[Portrait]</div>
+                    <p><strong>Dr. Jayadeva Yogendraji</strong></p>
+                    <p>(1929 - 2018)</p>
+                </div>
+                 <div class="founder-card">
+                    <div class="portrait">[Portrait]</div>
+                    <p><strong>Dr. Hansaji Yogendraj</strong></p>
+                    <p>(1947 - )</p>
+                 </div>
+            </div>
+            <div class="milestones">
+                <div class="milestone">First TTC Conducted in 1954</div>
+                <div class="milestone">100+ Publications</div>
+                <div class="milestone">Yoga & Total Health 1933</div>
+                <div class="milestone">1.5 Lakh Yoga Teachers</div>
+            </div>
+        </section>
+
+        <!-- Section 4: Specialized Certifications -->
+        <section id="specialized">
+            <h2>Specialized Certifications</h2>
+            <p>The Yoga Institute also offers YACEP (Yoga Alliance Continuing Education Provider) as per criteria set by Yoga Alliance for continuing education.</p>
+            <div style="overflow-x:auto;"> <!-- Make table scrollable on small screens -->
+                <table class="certification-table">
+                     <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Recognition</th>
+                            <th>Opportunities</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                             <td data-label="Name">Yoga Therapy</td>
+                             <td data-label="Description">100 hours Yoga Therapy course that offers specialized knowledge and therapeutic applications of yoga in 110 diseases, deepens the skill set of yoga teachers.</td>
+                             <td data-label="Recognition">Yoga Alliance Continuing Education (YACEP)<br>YCB - Level 6 - Yoga Therapist</td>
+                             <td data-label="Opportunities"><strong>In-depth Expertise:</strong> Learn yogic management for 110 diseases with practical techniques and expert guidance.<br><strong>Professional Certification:</strong> Become a specialised yoga therapist with hands-on experience and global recognition.</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Name">Yoga for Cancer</td>
+                            <td data-label="Description">The 40 hours Yoga for Cancer focuses on specific methodologies for supporting individuals with cancer, which is a niche and advanced area of yoga teaching.</td>
+                             <td data-label="Recognition">Yoga Alliance Continuing Education (YACEP)</td>
+                             <td data-label="Opportunities"><strong>Specialized Training:</strong> Become a certified cancer therapist and equip yourself to safely and effectively support cancer survivors with yoga practices tailored to their unique needs.</td>
+                        </tr>
+                         <tr>
+                             <td data-label="Name">Advanced Pranayama Techniques</td>
+                            <td data-label="Description">The 40 hours Advanced Pranayama Techniques Deepens understanding and practice of pranayama, adding advanced breath work skills to a teacher's repertoire.</td>
+                            <td data-label="Recognition">Yoga Alliance Continuing Education (YACEP)</td>
+                            <td data-label="Opportunities"><strong>Specialized Training:</strong> Enhance your teaching with advanced breathwork skills.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="eligibility">
+                <h4>Eligibility:</h4>
+                <ul>
+                    <li><strong>Yoga Therapy:</strong> Eligible for students who have completed 500-hour or 900-hour TTC, or equivalent certifications recognized by YCB level 2/3 or Yoga Alliance RYT 500. Medical Doctors who have completed any TTC (200/500/900 hrs.) from The Yoga Institute.</li>
+                    <li><strong>Yoga for Cancer:</strong> Eligible for students who have completed minimum 200 hours TTC from any Institution.</li>
+                    <li><strong>Advanced Pranayama Techniques:</strong> Open to all.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 5: 5 Tips Deepen Practice -->
+        <section id="deepen-practice">
+            <h2>5 Tips to Deepen Your Yoga Practice & Teaching</h2>
+            <div class="tips-container">
+                <div class="tip-card">
+                    <div class="icon">🍽️</div>
+                    <h4>Ahar</h4>
+                    <p>Eat Right</p>
+                </div>
+                <div class="tip-card">
+                     <div class="icon">😴</div>
+                    <h4>Vihar</h4>
+                    <p>Rest Well</p>
+                </div>
+                <div class="tip-card">
+                     <div class="icon">🗓️</div>
+                     <h4>Achar</h4>
+                     <p>Stick to Your Routine</p>
+                </div>
+                <div class="tip-card">
+                     <div class="icon">🧠</div>
+                     <h4>Vichar</h4>
+                     <p>Positive Thoughts</p>
+                </div>
+                <div class="tip-card">
+                     <div class="icon">🤝</div>
+                     <h4>Vyavhar</h4>
+                     <p>How you treat others</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Knowledge & Skills -->
+        <section id="knowledge-skills">
+             <h2>Knowledge & Skills to Teach Yoga Effectively</h2>
+             <div class="skills-container">
+                 <div class="skill-circle">
+                    <h4>TECHNIQUES</h4>
+                    <ul>
+                        <li>Asanas</li>
+                        <li>Pranayama</li>
+                        <li>Relaxation</li>
+                        <li>Kriyas</li>
+                        <li>Meditation</li>
+                        <li>Anatomy & Physiology</li>
+                        <li>In-depth Sessions</li>
+                    </ul>
+                </div>
+                <div class="skill-circle">
+                    <h4>KNOWLEDGE & PHILOSOPHY</h4>
+                    <ul>
+                        <li>Yoga Sutras</li>
+                        <li>Samkhya</li>
+                        <li>Bhagavad Gita</li>
+                        <li>Hatha Yoga</li>
+                        <li>Lifestyle & Stress Mgmnt.</li>
+                        <li>Food, Nutrition & Wellness</li>
+                        <li>Spiritual Attitudes</li>
+                    </ul>
+                 </div>
+                <div class="skill-circle">
+                     <h4>TEACHING SKILL DEVELOPMENT</h4>
+                     <ul>
+                         <li>Public Speaking</li>
+                         <li>Designing Flows</li>
+                         <li>Do's & Don'ts</li>
+                         <li>Yoga Teaching Practice</li>
+                         <li>Teaching Environment</li>
+                     </ul>
+                 </div>
+             </div>
+        </section>
+
+         <!-- Section 7: Tips for Good Class -->
+        <section id="good-class-tips">
+            <h2>Tips for Conducting a Good Yoga Class</h2>
+             <div class="tips-container">
+                <div class="tip-card">
+                    <div class="icon">🔄</div>
+                    <h4>Sequence & Flows</h4>
+                    <p>of Yoga Techniques</p>
+                </div>
+                <div class="tip-card">
+                    <div class="icon">🔗</div>
+                    <h4>Building Connection</h4>
+                    <p>with students</p>
+                </div>
+                 <div class="tip-card">
+                     <div class="icon">🧘</div>
+                    <h4>Exercising Patience</h4>
+                    <p>with students</p>
+                </div>
+                <div class="tip-card">
+                    <div class="icon">📈</div>
+                    <h4>Check Growth</h4>
+                    <p>Individually</p>
+                 </div>
+                <div class="tip-card">
+                     <div class="icon">👍</div>
+                     <h4>Share Own</h4>
+                    <p>Personal Experiences</p>
+                </div>
+             </div>
+        </section>
+
+        <!-- Section 8: First Step - Certification -->
+        <section id="certification-step">
+            <h2>First Step - Getting Certified as a Yoga Teacher</h2>
+            <div class="certificate-section">
+                <div class="certificate-image">
+                    [Sample Certificate Image Area]<br>Intermediate TTC (500 Hours) Example
+                </div>
+                <div class="certificate-text">
+                     <h3>Get certified from the World's Oldest Organized Yoga Center</h3>
+                     <ul>
+                        <li>First Yoga School to become certified to train Yoga Teachers</li>
+                        <li>1.5 Lakh Yoga Teachers Graduated</li>
+                        <li>First Course conducted in 1954 - 70+ Years of conducting TTCs</li>
+                        <li>Certificates Globally recognized</li>
+                        <li>Highly specialized & experienced trainers</li>
+                     </ul>
+                </div>
+            </div>
+             <div class="footnote">
+                 *Opportunity based on student's interest & institute's discretion (as per interview process).<br>
+                 *All Training is Free of Cost (*Context might be specific - clarify with institute).<br>
+                 *Opportunity Only for Advanced Teacher Training Course Only (*Applies to specific programs/opportunities mentioned elsewhere).
+             </div>
+        </section>
+
+        <!-- Section 9: Internship & Associations -->
+        <section id="internship">
+            <h2>Internship & Associations with The Yoga Institute (Only for 900H ATTC)</h2>
+             <div class="internship-container">
+                 <div class="internship-card">
+                     <h4>Yoga Abhyas - Represent The Yoga Institute</h4>
+                     <p>2 months of rigorous training to further strengthen your skills and confidence to take yoga sessions for small & large groups.</p>
+                     <p><strong>Opportunities:</strong> to conduct session in schools, corporates, special events & non-teacher courses at TYI.</p>
+                 </div>
+                <div class="internship-card">
+                     <h4>Teacher in TTCs at The Yoga Institute</h4>
+                     <p>To train future Yoga Teachers and become an evaluator / teacher. This is followed by rigorous training under specialised teachers.</p>
+                </div>
+             </div>
+            <div class="footnote" style="background-color: white; border: none; padding: 10px 0 0 0;">
+                *Opportunity based on student's interest & institute's discretion (as per interview process).<br>
+                *All Training is Free of Cost (*Context specific, likely refers to the internship training itself).<br>
+                *Opportunity Only for Advanced Teacher Training Course Only.
+             </div>
+        </section>
+
+    </div> <!-- /container -->
+
+</body>
+</html>
