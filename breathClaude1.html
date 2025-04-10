@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Breathing Visualization - Yoga Anurag</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+        
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .breathing-circle {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .inner-circle {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            opacity: 0.8;
+            transition: all 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 24px;
+            text-align: center;
+            font-weight: 300;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .message {
+            margin-top: 40px;
+            font-size: 28px;
+            color: #185a9d;
+            text-align: center;
+            font-weight: 500;
+            min-height: 40px;
+            transition: opacity 0.3s ease;
+        }
+        
+        .timer {
+            margin-top: 10px;
+            font-size: 24px;
+            color: #185a9d;
+            text-align: center;
+        }
+        
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .settings {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .setting-group {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        label {
+            width: 120px;
+            font-size: 16px;
+            color: #185a9d;
+        }
+        
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            margin: 0 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #43cea2 0%, #185a9d 100%);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .logo {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 18px;
+            font-weight: 500;
+            color: rgba(24, 90, 157, 0.6);
+            font-style: italic;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+        
+        .pulsate {
+            animation: pulse 4s infinite ease-in-out;
+        }
+        
+        @media (max-width: 600px) {
+            .breathing-circle {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .inner-circle {
+                width: 200px;
+                height: 200px;
+                font-size: 20px;
+            }
+            
+            .message {
+                font-size: 24px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="breathing-circle">
+            <div class="inner-circle" id="breathCircle">
+                <span id="breathText">Ready</span>
+            </div>
+        </div>
+        <div class="message" id="message">Deep Breathing</div>
+        <div class="timer" id="timer"></div>
+        
+        <div class="controls">
+            <button id="startBtn">Start</button>
+            <button id="stopBtn">Stop</button>
+        </div>
+        
+        <div class="settings">
+            <div class="setting-group">
+                <label for="inhaleTime">Inhale (s):</label>
+                <input type="number" id="inhaleTime" min="1" max="10" value="4">
+            </div>
+            <div class="setting-group">
+                <label for="inhaleHoldTime">Hold after inhale (s):</label>
+                <input type="number" id="inhaleHoldTime" min="0" max="10" value="4">
+            </div>
+            <div class="setting-group">
+                <label for="exhaleTime">Exhale (s):</label>
+                <input type="number" id="exhaleTime" min="1" max="15" value="6">
+            </div>
+            <div class="setting-group">
+                <label for="exhaleHoldTime">Hold after exhale (s):</label>
+                <input type="number" id="exhaleHoldTime" min="0" max="10" value="4">
+            </div>
+        </div>
+    </div>
+    
+    <div class="logo">Yoga Anurag</div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const breathCircle = document.getElementById('breathCircle');
+            const breathText = document.getElementById('breathText');
+            const message = document.getElementById('message');
+            const timer = document.getElementById('timer');
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            
+            // Settings inputs
+            const inhaleTimeInput = document.getElementById('inhaleTime');
+            const inhaleHoldTimeInput = document.getElementById('inhaleHoldTime');
+            const exhaleTimeInput = document.getElementById('exhaleTime');
+            const exhaleHoldTimeInput = document.getElementById('exhaleHoldTime');
+            
+            // Variables
+            let isBreathing = false;
+            let interval;
+            let phase = 'ready';
+            let timeLeft = 0;
+            
+            // Get timing settings
+            function getTimings() {
+                return {
+                    inhale: parseInt(inhaleTimeInput.value) || 4,
+                    inhaleHold: parseInt(inhaleHoldTimeInput.value) || 4,
+                    exhale: parseInt(exhaleTimeInput.value) || 6,
+                    exhaleHold: parseInt(exhaleHoldTimeInput.value) || 4
+                };
+            }
+            
+            // Update visual state based on breathing phase
+            function updateVisuals(phase, timeLeft) {
+                timer.textContent = timeLeft > 0 ? timeLeft + 's' : '';
+                
+                switch(phase) {
+                    case 'inhale':
+                        breathCircle.style.transform = 'scale(1.2)';
+                        breathCircle.style.opacity = '1';
+                        breathText.textContent = 'Inhale';
+                        message.textContent = 'Breathe In Slowly';
+                        breathCircle.style.background = 'linear-gradient(135deg, #43cea2 0%, #185a9d 100%)';
+                        break;
+                    case 'inhaleHold':
+                        breathCircle.style.transform = 'scale(1.2)';
+                        breathCircle.style.opacity = '1';
+                        breathText.textContent = 'Hold';
+                        message.textContent = 'Hold Your Breath';
+                        breathCircle.style.background = 'linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%)';
+                        break;
+                    case 'exhale':
+                        breathCircle.style.transform = 'scale(0.8)';
+                        breathCircle.style.opacity = '0.8';
+                        breathText.textContent = 'Exhale';
+                        message.textContent = 'Breathe Out Slowly';
+                        breathCircle.style.background = 'linear-gradient(135deg, #834d9b 0%, #d04ed6 100%)';
+                        break;
+                    case 'exhaleHold':
+                        breathCircle.style.transform = 'scale(0.8)';
+                        breathCircle.style.opacity = '0.8';
+                        breathText.textContent = 'Hold';
+                        message.textContent = 'Keep Empty';
+                        breathCircle.style.background = 'linear-gradient(135deg, #5f2c82 0%, #49a09d 100%)';
+                        break;
+                    default:
+                        breathCircle.style.transform = 'scale(1)';
+                        breathCircle.style.opacity = '0.8';
+                        breathText.textContent = 'Ready';
+                        message.textContent = 'Deep Breathing';
+                        breathCircle.style.background = 'linear-gradient(135deg, #43cea2 0%, #185a9d 100%)';
+                        timer.textContent = '';
+                }
+            }
+            
+            // Start breathing exercise
+            function startBreathing() {
+                if (isBreathing) return;
+                
+                isBreathing = true;
+                const timings = getTimings();
+                
+                // Initial setup
+                phase = 'inhale';
+                timeLeft = timings.inhale;
+                updateVisuals(phase, timeLeft);
+                
+                // Enable pulsing animation
+                breathCircle.classList.add('pulsate');
+                
+                // Start the interval
+                interval = setInterval(() => {
+                    timeLeft--;
+                    
+                    if (timeLeft <= 0) {
+                        // Move to next phase
+                        switch(phase) {
+                            case 'inhale':
+                                phase = 'inhaleHold';
+                                timeLeft = timings.inhaleHold;
+                                break;
+                            case 'inhaleHold':
+                                phase = 'exhale';
+                                timeLeft = timings.exhale;
+                                break;
+                            case 'exhale':
+                                phase = 'exhaleHold';
+                                timeLeft = timings.exhaleHold;
+                                break;
+                            case 'exhaleHold':
+                                phase = 'inhale';
+                                timeLeft = timings.inhale;
+                                break;
+                        }
+                    }
+                    
+                    updateVisuals(phase, timeLeft);
+                }, 1000);
+            }
+            
+            // Stop breathing exercise
+            function stopBreathing() {
+                if (!isBreathing) return;
+                
+                clearInterval(interval);
+                isBreathing = false;
+                phase = 'ready';
+                timeLeft = 0;
+                updateVisuals(phase, timeLeft);
+                breathCircle.classList.remove('pulsate');
+            }
+            
+            // Event listeners
+            startBtn.addEventListener('click', startBreathing);
+            stopBtn.addEventListener('click', stopBreathing);
+            
+            // Initial state
+            updateVisuals('ready', 0);
+        });
+    </script>
+</body>
+</html>
