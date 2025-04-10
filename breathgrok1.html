@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Breathing - Yoga Anurag</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }
+
+        .circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #87ceeb 0%, #4682b4 100%);
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        .text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .controls {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .control-group {
+            margin: 10px 0;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 8px 16px;
+            background: #4682b4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #87ceeb;
+        }
+
+        .branding {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: #4682b4;
+            font-size: 14px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="circle" id="breathingCircle">
+            <div class="text" id="breathingText">Breathe In</div>
+        </div>
+        <div class="controls">
+            <div class="control-group">
+                <label>Inhale (s): <input type="number" id="inhaleTime" value="4" min="1"></label>
+            </div>
+            <div class="control-group">
+                <label>Hold 1 (s): <input type="number" id="hold1Time" value="4" min="1"></label>
+            </div>
+            <div class="control-group">
+                <label>Exhale (s): <input type="number" id="exhaleTime" value="6" min="1"></label>
+            </div>
+            <div class="control-group">
+                <label>Hold 2 (s): <input type="number" id="hold2Time" value="4" min="1"></label>
+            </div>
+            <button onclick="startBreathing()">Start</button>
+            <button onclick="stopBreathing()">Stop</button>
+        </div>
+        <div class="branding">Powered by Yoga Anurag</div>
+    </div>
+
+    <script>
+        let interval;
+        const circle = document.getElementById('breathingCircle');
+        const text = document.getElementById('breathingText');
+
+        function startBreathing() {
+            stopBreathing();
+            const inhaleTime = parseInt(document.getElementById('inhaleTime').value) * 1000;
+            const hold1Time = parseInt(document.getElementById('hold1Time').value) * 1000;
+            const exhaleTime = parseInt(document.getElementById('exhaleTime').value) * 1000;
+            const hold2Time = parseInt(document.getElementById('hold2Time').value) * 1000;
+
+            function breatheCycle() {
+                // Inhale
+                text.textContent = 'Breathe In';
+                circle.style.transform = 'scale(1.5)';
+                setTimeout(() => {
+                    // Hold 1
+                    text.textContent = 'Hold';
+                    setTimeout(() => {
+                        // Exhale
+                        text.textContent = 'Breathe Out';
+                        circle.style.transform = 'scale(1)';
+                        setTimeout(() => {
+                            // Hold 2
+                            text.textContent = 'Hold';
+                        }, exhaleTime);
+                    }, hold1Time);
+                }, inhaleTime);
+            }
+
+            breatheCycle();
+            interval = setInterval(breatheCycle, inhaleTime + hold1Time + exhaleTime + hold2Time);
+        }
+
+        function stopBreathing() {
+            if (interval) {
+                clearInterval(interval);
+                circle.style.transform = 'scale(1)';
+                text.textContent = 'Breathe In';
+            }
+        }
+    </script>
+</body>
+</html>
