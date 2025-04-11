@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Light - Class 10 Physics</title>
+    <style>
+        /* --- Basic Styling --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 25px 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.2em;
+        }
+        h2 {
+            font-size: 1.6em;
+            color: #3498db;
+        }
+
+        p, ul, li {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            padding-left: 25px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        strong {
+            color: #e74c3c;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 15px auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* --- Progress Bar --- */
+        #progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden; /* Keep inner bar contained */
+        }
+
+        #progress-bar {
+            width: 0%; /* Starts at 0% */
+            height: 25px;
+            background-color: #3498db;
+            text-align: center;
+            line-height: 25px;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px 0 0 5px; /* Smooth left edge */
+            transition: width 0.5s ease-in-out; /* Smooth animation */
+        }
+
+        /* --- Topic Segments --- */
+        .topic-segment {
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #d1d8de;
+            border-radius: 6px;
+            background-color: #fdfdfe;
+            display: none; /* Hide all topics initially */
+        }
+
+        .topic-segment.active {
+            display: block; /* Show the active topic */
+        }
+
+        /* --- Quiz Styling --- */
+        .quiz {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e9f5ff;
+            border: 1px dashed #aed6f1;
+            border-radius: 5px;
+        }
+
+        .quiz p {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .quiz label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+         .quiz label:hover {
+             background-color: #d4e6f1;
+         }
+
+        .quiz input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .quiz-submit {
+            display: inline-block;
+            background-color: #2ecc71;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+
+        .quiz-submit:hover {
+            background-color: #27ae60;
+        }
+
+        .quiz-submit:disabled {
+             background-color: #95a5a6;
+             cursor: not-allowed;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .feedback.correct {
+            color: #27ae60;
+            background-color: #eafaf1;
+            border: 1px solid #a3e4d7;
+        }
+
+        .feedback.incorrect {
+            color: #c0392b;
+            background-color: #fdedec;
+            border: 1px solid #f5b7b1;
+        }
+
+        /* --- Completion Message --- */
+        #completion-message {
+            text-align: center;
+            font-size: 1.5em;
+            color: #27ae60;
+            padding: 30px;
+            border: 2px solid #27ae60;
+            background-color: #eafaf1;
+            border-radius: 8px;
+            display: none; /* Hidden initially */
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Learn Physics: Light - Reflection and Refraction</h1>
+
+        <!-- Progress Bar -->
+        <div id="progress-container">
+            <div id="progress-bar">0%</div>
+        </div>
+
+        <!-- Topic Segments Container -->
+        <div id="topics-container">
+
+            <!-- Topic 1: Introduction to Light -->
+            <div class="topic-segment active" id="topic-1">
+                <h2>1. What is Light?</h2>
+                <p>Light is a form of energy that enables us to see objects around us. It travels in straight lines.</p>
+                <ul>
+                    <li>Light exhibits dual nature: Wave and Particle (Photon).</li>
+                    <li>Speed of light in vacuum is approximately <strong>3 x 10<sup>8</sup> m/s</strong>.</li>
+                    <li>Objects are visible when light reflects off them and enters our eyes.</li>
+                    <li>Luminous objects produce their own light (Sun, bulb). Non-luminous objects reflect light (Moon, table).</li>
+                </ul>
+                 <p>[Image: Diagram showing light traveling in straight lines or sources of light]</p>
+
+                <div class="quiz" data-correct-answer="b">
+                    <p>Quiz: What is the approximate speed of light in a vacuum?</p>
+                    <label><input type="radio" name="q1" value="a"> 3 x 10<sup>6</sup> m/s</label>
+                    <label><input type="radio" name="q1" value="b"> 3 x 10<sup>8</sup> m/s</label>
+                    <label><input type="radio" name="q1" value="c"> 3 x 10<sup>10</sup> m/s</label>
+                    <button class="quiz-submit" onclick="checkAnswer(this, 1)">Check Answer</button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Topic 2: Reflection of Light -->
+            <div class="topic-segment" id="topic-2">
+                <h2>2. Reflection of Light</h2>
+                <p>Reflection is the bouncing back of light when it strikes a polished surface like a mirror.</p>
+                <p><strong>Laws of Reflection:</strong></p>
+                <ul>
+                    <li>The angle of incidence (∠i) is equal to the angle of reflection (∠r). (∠i = ∠r)</li>
+                    <li>The incident ray, the reflected ray, and the normal to the mirror at the point of incidence all lie in the same plane.</li>
+                </ul>
+                <p>[Image: Diagram showing reflection - incident ray, reflected ray, normal, angle i, angle r]</p>
+                 <p>Types of Reflection: Regular (smooth surfaces) and Diffused (rough surfaces).</p>
+
+                <div class="quiz" data-correct-answer="a">
+                    <p>Quiz: According to the laws of reflection, the angle of incidence is ______ the angle of reflection.</p>
+                    <label><input type="radio" name="q2" value="a"> Equal to</label>
+                    <label><input type="radio" name="q2" value="b"> Greater than</label>
+                    <label><input type="radio" name="q2" value="c"> Less than</label>
+                    <button class="quiz-submit" onclick="checkAnswer(this, 2)">Check Answer</button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Topic 3: Spherical Mirrors -->
+            <div class="topic-segment" id="topic-3">
+                <h2>3. Spherical Mirrors</h2>
+                <p>Mirrors whose reflecting surfaces are curved are called spherical mirrors. They are parts of a sphere.</p>
+                <ul>
+                    <li><strong>Concave Mirror:</strong> Reflecting surface curves inwards. Converging mirror.</li>
+                    <li><strong>Convex Mirror:</strong> Reflecting surface curves outwards. Diverging mirror.</li>
+                </ul>
+                <p><strong>Important Terms:</strong></p>
+                <ul>
+                    <li><strong>Pole (P):</strong> Center of the reflecting surface.</li>
+                    <li><strong>Center of Curvature (C):</strong> Center of the sphere of which the mirror is a part.</li>
+                    <li><strong>Radius of Curvature (R):</strong> Distance between P and C.</li>
+                    <li><strong>Principal Axis:</strong> Line joining P and C.</li>
+                    <li><strong>Principal Focus (F):</strong> Point on the principal axis where parallel rays converge (concave) or appear to diverge from (convex) after reflection.</li>
+                    <li><strong>Focal Length (f):</strong> Distance between P and F. Relationship: <strong>R = 2f</strong>.</li>
+                </ul>
+                <p>[Image: Diagrams of Concave and Convex mirrors showing P, C, F, R, f]</p>
+
+                <div class="quiz" data-correct-answer="c">
+                    <p>Quiz: Which type of mirror has its reflecting surface curved outwards?</p>
+                    <label><input type="radio" name="q3" value="a"> Plane Mirror</label>
+                    <label><input type="radio" name="q3" value="b"> Concave Mirror</label>
+                    <label><input type="radio" name="q3" value="c"> Convex Mirror</label>
+                    <button class="quiz-submit" onclick="checkAnswer(this, 3)">Check Answer</button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+             <!-- Topic 4: Image Formation by Concave Mirrors -->
+             <div class="topic-segment" id="topic-4">
+                <h2>4. Image Formation by Concave Mirrors</h2>
+                <p>The position, size, and nature (real/virtual, inverted/erect) of the image depend on the object's position.</p>
+                <p><strong>Ray Diagrams Rules (any two needed):</strong></p>
+                <ul>
+                    <li>Ray parallel to principal axis passes through F after reflection.</li>
+                    <li>Ray passing through F becomes parallel to principal axis after reflection.</li>
+                    <li>Ray passing through C reflects back along the same path.</li>
+                    <li>Ray incident obliquely to P reflects obliquely, making equal angles with the principal axis.</li>
+                </ul>
+                <p><strong>Common Cases (Object Position -> Image Position, Nature, Size):</strong></p>
+                <ul>
+                    <li>Infinity -> At F, Real, Inverted, Point-sized</li>
+                    <li>Beyond C -> Between F and C, Real, Inverted, Diminished</li>
+                    <li>At C -> At C, Real, Inverted, Same size</li>
+                    <li>Between C and F -> Beyond C, Real, Inverted, Enlarged</li>
+                    <li>At F -> At Infinity, Real, Inverted, Highly enlarged</li>
+                    <li>Between P and F -> Behind mirror, Virtual, Erect, Enlarged (Used in shaving mirrors/dentist mirrors)</li>
+                </ul>
+                 <p>[Image: Ray diagrams for a couple of concave mirror cases, e.g., object beyond C and object between P and F]</p>
+
+                <div class="quiz" data-correct-answer="b">
+                    <p>Quiz: When an object is placed between the Pole (P) and Focus (F) of a concave mirror, the image formed is:</p>
+                    <label><input type="radio" name="q4" value="a"> Real, Inverted, Enlarged</label>
+                    <label><input type="radio" name="q4" value="b"> Virtual, Erect, Enlarged</label>
+                    <label><input type="radio" name="q4" value="c"> Real, Inverted, Diminished</label>
+                    <button class="quiz-submit" onclick="checkAnswer(this, 4)">Check Answer</button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Topic 5: Image Formation by Convex Mirrors -->
+            <div class="topic-segment" id="topic-5">
+                <h2>5. Image Formation by Convex Mirrors</h2>
+                <p>Convex mirrors always form virtual, erect, and diminished images, regardless of the object's position (except at infinity).</p>
+                 <p><strong>Ray Diagrams Rules (similar to concave, but rays appear to diverge from F or C):</strong></p>
+                 <ul>
+                    <li>Ray parallel to principal axis appears to diverge from F after reflection.</li>
+                    <li>Ray directed towards F becomes parallel after reflection.</li>
+                    <li>Ray directed towards C reflects back along the same path.</li>
+                 </ul>
+                 <p><strong>Common Cases:</strong></p>
+                 <ul>
+                    <li>Infinity -> At F (behind mirror), Virtual, Erect, Point-sized</li>
+                    <li>Anywhere between Infinity and P -> Between P and F (behind mirror), Virtual, Erect, Diminished</li>
+                 </ul>
+                <p><strong>Uses:</strong> Rear-view mirrors in vehicles (provide wider field of view), security mirrors.</p>
+                <p>[Image: Ray diagram for a convex mirror showing object and image formation]</p>
+
+                <div class="quiz" data-correct-answer="a">
+                    <p>Quiz: Convex mirrors are used as rear-view mirrors in cars because they:</p>
+                    <label><input type="radio" name="q5" value="a"> Give an erect, diminished image and have a wider field of view.</label>
+                    <label><input type="radio" name="q5" value="b"> Give an inverted, enlarged image.</label>
+                    <label><input type="radio" name="q5" value="c"> Form real images.</label>
+                    <button class="quiz-submit" onclick="checkAnswer(this, 5)">Check Answer</button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Topic 6: Mirror Formula and Magnification -->
+             <div class="topic-segment" id="topic-6">
+                <h2>6. Mirror Formula and Magnification</h2>
+                <p>These formulas relate object distance, image distance, and focal length.</p>
+                <p><strong>Sign Convention (New Cartesian Sign Convention):</strong></p>
+                <ul>
+                    <li>Pole (P) is the origin. Principal axis is the X-axis.</li>
+                    <li>Distances measured in the direction of incident light are positive (+).</li>
+                    <li>Distances measured against the direction of incident light are negative (-).</li>
+                    <li>Heights measured upwards (perpendicular to axis) are positive (+).</li>
+                    <li>Heights measured downwards (perpendicular to axis) are negative (-).</li>
+                    <li>Focal length (f) is negative for concave, positive for convex.</li>
+                    <li>Object distance (u) is always negative (usually).</li>
+                </ul>
+                 <p><strong>Mirror Formula:</strong></p>
+                 <p style="font-size: 1.2em; text-align: center;">
+                    <sup>1</sup>⁄<sub>v</sub> + <sup>1</sup>⁄<sub>u</sub> = <sup>1</sup>⁄<sub>f</sub>
+                 </p>
+                 <p>Where: v = image distance, u = object distance, f = focal length</p>
+                <p><strong>Magnification (m):</strong> Ratio of image height (h') to object height (h).</p>
+                 <p style="font-size: 1.2em; text-align: center;">
+                    m = <sup>h'</sup>⁄<sub>h</sub> = - <sup>v</sup>⁄<sub>u</sub>
+                 </p>
+                 <ul>
+                    <li>If m is negative, image is Real & Inverted.</li>
+                    <li>If m is positive, image is Virtual & Erect.</li>
+                    <li>If |m| > 1, image is Enlarged.</li>
+                    <li>If |m| < 1, image is Diminished.</li>
+                    <li>If |m| = 1, image is Same Size.</li>
+                 </ul>
+
+                <div class="quiz" data-correct-answer="c">
+                    <p>Quiz: According to the sign convention, the focal length of a convex mirror is always:</p>
+                    <label><input type="radio" name="q6" value="a"> Negative</label>
+                    <label><input type="radio" name="q6" value="b"> Zero</label>
+                    <label><input type="radio" name="q6" value="c"> Positive</label>
+                    <button class="quiz-submit" onclick="checkAnswer(this, 6)">Check Answer</button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Topic 7: Refraction of Light -->
+            <div class="topic-segment" id="topic-7">
+                <h2>7. Refraction of Light</h2>
+                <p>Refraction is the bending of light as it passes obliquely from one transparent medium to another.</p>
+                <p><strong>Cause:</strong> Change in the speed of light as it enters a different medium.</p>
+                <ul>
+                    <li>Light bends <strong>towards the normal</strong> when going from a rarer medium (e.g., air) to a denser medium (e.g., glass). Speed decreases.</li>
+                    <li>Light bends <strong>away from the normal</strong> when going from a denser medium (e.g., glass) to a rarer medium (e.g., air). Speed increases.</li>
+                </ul>
+                <p><strong>Laws of Refraction (Snell's Law):</strong></p>
+                <ul>
+                    <li>The incident ray, the refracted ray, and the normal to the interface at the point of incidence all lie in the same plane.</li>
+                    <li>The ratio of the sine of the angle of incidence (∠i) to the sine of the angle of refraction (∠r) is constant for a given pair of media and color of light. This constant is the refractive index (n) of the second medium with respect to the first.</li>
+                    <li><strong>Snell's Law:</strong> n<sub>21</sub> = <sup>sin i</sup>⁄<sub>sin r</sub> = <sup>n<sub>2</sub></sup>⁄<sub>n<sub>1</sub></sub> = <sup>v<sub>1</sub></sup>⁄<sub>v<sub>2</sub></sub></li>
+                </ul>
+                <p><strong>Refractive Index (n):</strong> Measure of how much light bends. Higher n means denser medium (optically). n = c/v (where c is speed of light in vacuum, v is speed in medium).</p>
+                <p>[Image: Diagram showing refraction - light bending towards and away from normal, interface, angles i and r]</p>
+
+                <div class="quiz" data-correct-answer="a">
+                    <p>Quiz: When light travels from air into water (denser medium), it bends:</p>
+                    <label><input type="radio" name="q7" value="a"> Towards the normal</label>
+                    <label><input type="radio" name="q7" value="b"> Away from the normal</label>
+                    <label><input type="radio" name="q7" value="c"> Does not bend</label>
+                    <button class="quiz-submit" onclick="checkAnswer(this, 7)">Check Answer</button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+             <!-- Topic 8: Spherical Lenses -->
+            <div class="topic-segment" id="topic-8">
+                <h2>8. Spherical Lenses</h2>
+                <p>A lens is a transparent material bound by two surfaces, at least one of which is curved.</p>
+                 <ul>
+                    <li><strong>Convex Lens (Converging Lens):</strong> Thicker at the center, thinner at the edges. Converges parallel light rays.</li>
+                    <li><strong>Concave Lens (Diverging Lens):</strong> Thinner at the center, thicker at the edges. Diverges parallel light rays.</li>
+                </ul>
+                 <p><strong>Important Terms:</strong></p>
+                 <ul>
+                     <li><strong>Optical Centre (O):</strong> Central point of the lens. Ray passing through O goes undeviated.</li>
+                     <li><strong>Principal Axis:</strong> Line passing through the two centers of curvature of the lens surfaces.</li>
+                     <li><strong>Principal Focus (F):</strong> Convex lens has two foci (F1, F2). Parallel rays converge at F2 after refraction. Concave lens also has two foci; parallel rays appear to diverge from F1 after refraction. Lenses have two principal foci because light can pass through from either side.</li>
+                    <li><strong>Focal Length (f):</strong> Distance between O and F.</li>
+                 </ul>
+                <p>[Image: Diagrams of Convex and Concave lenses showing O, F1, F2, 2F1, 2F2]</p>
+
+                <div class="quiz" data-correct-answer="b">
+                    <p>Quiz: Which lens is known as a converging lens?</p>
+                    <label><input type="radio" name="q8" value="a"> Concave Lens</label>
+                    <label><input type="radio" name="q8" value="b"> Convex Lens</label>
+                    <label><input type="radio" name="q8" value="c"> Plano-Concave Lens</label>
+                    <button class="quiz-submit" onclick="checkAnswer(this, 8)">Check Answer</button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+             <!-- Topic 9: Image Formation by Lenses -->
+             <div class="topic-segment" id="topic-9">
+                <h2>9. Image Formation by Lenses</h2>
+                 <p>Similar to mirrors, image formation depends on object position. Ray diagrams follow specific rules.</p>
+                 <p><strong>Ray Diagram Rules for Convex Lens:</strong></p>
+                 <ul>
+                    <li>Ray parallel to principal axis passes through F2 after refraction.</li>
+                    <li>Ray passing through F1 becomes parallel to principal axis after refraction.</li>
+                    <li>Ray passing through O goes undeviated.</li>
+                </ul>
+                 <p><strong>Convex Lens Cases (Similar pattern to Concave Mirror):</strong> Object at Infinity -> Image at F2; Object beyond 2F1 -> Image between F2 and 2F2; etc.</p>
+
+                 <p><strong>Ray Diagram Rules for Concave Lens:</strong></p>
+                 <ul>
+                    <li>Ray parallel to principal axis appears to diverge from F1 after refraction.</li>
+                    <li>Ray appearing to meet at F2 becomes parallel to principal axis after refraction.</li>
+                    <li>Ray passing through O goes undeviated.</li>
+                 </ul>
+                 <p><strong>Concave Lens Cases:</strong> Always forms Virtual, Erect, Diminished image between O and F1 (except object at infinity -> image at F1).</p>
+                 <p>[Image: Ray diagrams for convex lens (e.g., object beyond 2F1) and concave lens]</p>
+
+                <div class="quiz" data-correct-answer="c">
+                    <p>Quiz: A concave lens always produces an image that is:</p>
+                    <label><input type="radio" name="q9" value="a"> Real and Inverted</label>
+                    <label><input type="radio" name="q9" value="b"> Real and Erect</label>
+                    <label><input type="radio" name="q9" value="c"> Virtual and Erect</label>
+                    <button class="quiz-submit" onclick="checkAnswer(this, 9)">Check Answer</button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+             <!-- Topic 10: Lens Formula, Magnification & Power -->
+             <div class="topic-segment" id="topic-10">
+                <h2>10. Lens Formula, Magnification & Power</h2>
+                 <p>Formulas relating object/image distance, focal length, and lens power.</p>
+                 <p><strong>Sign Convention (Same as mirrors, but origin is Optical Centre O):</strong></p>
+                 <ul>
+                    <li>f is positive (+) for Convex Lens.</li>
+                    <li>f is negative (-) for Concave Lens.</li>
+                    <li>Object distance (u) is always negative (-).</li>
+                 </ul>
+                 <p><strong>Lens Formula:</strong></p>
+                 <p style="font-size: 1.2em; text-align: center;">
+                    <sup>1</sup>⁄<sub>v</sub> - <sup>1</sup>⁄<sub>u</sub> = <sup>1</sup>⁄<sub>f</sub>
+                 </p>
+                 <p><strong>Magnification (m):</strong></p>
+                 <p style="font-size: 1.2em; text-align: center;">
+                    m = <sup>h'</sup>⁄<sub>h</sub> = <sup>v</sup>⁄<sub>u</sub>  (Note: No negative sign like mirror formula)
+                 </p>
+                 <p>Interpretation of m (sign and magnitude) is the same as for mirrors.</p>
+                 <p><strong>Power of a Lens (P):</strong> Degree of convergence or divergence. Reciprocal of focal length (in meters).</p>
+                 <p style="font-size: 1.2em; text-align: center;">
+                    P = <sup>1</sup>⁄<sub>f (in meters)</sub>
+                 </p>
+                 <ul>
+                    <li>Unit of Power: Dioptre (D).</li>
+                    <li>Power is positive (+) for Convex Lens (converging).</li>
+                    <li>Power is negative (-) for Concave Lens (diverging).</li>
+                    <li>Power of combination of lenses: P = P1 + P2 + ...</li>
+                 </ul>
+
+                <div class="quiz" data-correct-answer="a">
+                    <p>Quiz: The unit of Power of a lens is:</p>
+                    <label><input type="radio" name="q10" value="a"> Dioptre</label>
+                    <label><input type="radio" name="q10" value="b"> Meter</label>
+                    <label><input type="radio" name="q10" value="c"> Watt</label>
+                    <button class="quiz-submit" onclick="checkAnswer(this, 10)">Check Answer</button>
+                    <div class="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Completion Message -->
+            <div id="completion-message">
+                <h2>Congratulations!</h2>
+                <p>You have completed the learning module for the Light chapter. Review the topics or try solving NCERT exercises!</p>
+            </div>
+
+        </div> <!-- End Topics Container -->
+    </div> <!-- End Container -->
+
+    <script>
+        const topics = document.querySelectorAll('.topic-segment');
+        const totalTopics = topics.length;
+        const progressBar = document.getElementById('progress-bar');
+        const completionMessage = document.getElementById('completion-message');
+        let currentTopicIndex = 0; // Start with the first topic (index 0)
+
+        function updateProgressBar() {
+            // Calculate progress: +1 because we count completion *after* finishing a topic
+            const progressPercentage = Math.round(((currentTopicIndex) / totalTopics) * 100);
+            progressBar.style.width = progressPercentage + '%';
+            progressBar.textContent = progressPercentage + '%';
+        }
+
+        function showTopic(index) {
+            // Hide all topics first
+            topics.forEach(topic => topic.classList.remove('active'));
+
+            // Show the target topic if it exists
+            if (index >= 0 && index < totalTopics) {
+                topics[index].classList.add('active');
+                currentTopicIndex = index; // Update the current index
+            } else if (index === totalTopics) {
+                 // If index reaches totalTopics, show completion message
+                 completionMessage.style.display = 'block';
+                 currentTopicIndex = index; // Mark as completed
+            }
+             updateProgressBar(); // Update progress bar whenever topic changes
+        }
+
+        function checkAnswer(button, topicNum) {
+            const quizDiv = button.closest('.quiz');
+            const feedbackDiv = quizDiv.querySelector('.feedback');
+            const correctAnswer = quizDiv.getAttribute('data-correct-answer');
+            const selectedOption = quizDiv.querySelector(`input[name="q${topicNum}"]:checked`);
+
+            // Clear previous feedback
+            feedbackDiv.textContent = '';
+            feedbackDiv.className = 'feedback'; // Reset class
+
+            if (!selectedOption) {
+                feedbackDiv.textContent = 'Please select an answer.';
+                feedbackDiv.classList.add('incorrect'); // Use incorrect styling for prompt
+                return; // Stop if no answer is selected
+            }
+
+            const userAnswer = selectedOption.value;
+
+            if (userAnswer === correctAnswer) {
+                feedbackDiv.textContent = 'Correct! Well done.';
+                feedbackDiv.classList.add('correct');
+                button.disabled = true; // Disable button after correct answer
+                 // Disable radio buttons too
+                quizDiv.querySelectorAll(`input[name="q${topicNum}"]`).forEach(radio => radio.disabled = true);
+
+                // Unlock and show the next topic
+                const nextTopicIndex = currentTopicIndex + 1;
+                showTopic(nextTopicIndex);
+
+            } else {
+                feedbackDiv.textContent = 'Incorrect. Please review the topic and try again.';
+                feedbackDiv.classList.add('incorrect');
+                 // Optionally, allow retry by not disabling the button or radios
+                 // button.disabled = true; // Uncomment if you want only one try
+            }
+        }
+
+        // --- Initialization ---
+        // Ensure the DOM is fully loaded before running scripts
+        document.addEventListener('DOMContentLoaded', () => {
+            // Show the first topic initially
+             showTopic(0);
+        });
+
+    </script>
+
+</body>
+</html>
