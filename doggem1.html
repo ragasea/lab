@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play with the Cute Dog!</title>
+    <style>
+        /* Basic Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f8ff; /* AliceBlue */
+            color: #333;
+            text-align: center;
+            flex-direction: column; /* Stack title, dog, buttons vertically */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #4682b4; /* SteelBlue */
+            margin-bottom: 20px;
+        }
+
+        /* Dog Area */
+        .dog-container {
+            position: relative; /* Needed for absolute positioning of buttons if we chose that */
+            margin-bottom: 30px;
+            width: 300px; /* Match image width */
+            height: 300px; /* Match image height */
+        }
+
+        #dog-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Adjust if needed */
+            border-radius: 15px; /* Slightly rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.5s ease, filter 0.5s ease; /* Smooth transitions for animations */
+            cursor: default; /* Indicate it's not directly clickable everywhere */
+            border: 5px solid #add8e6; /* LightBlue border */
+        }
+
+        /* Interaction Buttons Area */
+        .interaction-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            max-width: 600px; /* Limit button area width */
+            width: 100%; /* Take available width up to max */
+        }
+
+        .interaction-buttons button {
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #87ceeb; /* SkyBlue */
+            color: white;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .interaction-buttons button:hover {
+            background-color: #4682b4; /* SteelBlue */
+        }
+
+        .interaction-buttons button:active {
+            transform: scale(0.95);
+        }
+
+        /* --- Animations --- */
+        @keyframes happyWiggle {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-8px) rotate(-3deg); }
+            75% { transform: translateX(8px) rotate(3deg); }
+        }
+        .animate-happy-wiggle {
+            animation: happyWiggle 0.6s ease-in-out;
+        }
+
+        @keyframes headTilt {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(10deg); }
+        }
+        .animate-head-tilt {
+            animation: headTilt 0.5s ease-in-out;
+        }
+
+        @keyframes bellyRub {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(-5deg) scale(1.05); }
+        }
+        .animate-belly-rub {
+            animation: bellyRub 0.7s ease-in-out;
+        }
+
+        @keyframes shakeAnnoyed {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+            20%, 40%, 60%, 80% { transform: translateX(6px); }
+        }
+        .animate-shake-annoyed {
+            animation: shakeAnnoyed 0.5s linear;
+        }
+
+        @keyframes growlShake {
+             0%, 100% { transform: translate(1px, 1px) rotate(0deg); }
+             10%, 90% { transform: translate(-1px, -2px) rotate(-1deg); }
+             20%, 80% { transform: translate(-3px, 0px) rotate(1deg); }
+             30%, 50%, 70% { transform: translate(3px, 2px) rotate(0deg); }
+             40%, 60% { transform: translate(1px, -1px) rotate(1deg); }
+        }
+       .animate-growl {
+            animation: growlShake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes sadDroop {
+            0%, 100% { filter: brightness(1); transform: scale(1) translateY(0); }
+            50% { filter: brightness(0.8); transform: scale(0.98) translateY(5px); }
+        }
+        .animate-sad-droop {
+            animation: sadDroop 1s ease-in-out;
+        }
+
+         @keyframes perkUp {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05) translateY(-5px); }
+        }
+        .animate-perk-up {
+            animation: perkUp 0.4s ease-out;
+        }
+
+        @keyframes excitedJump {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(1.05); }
+        }
+        .animate-excited-jump {
+             animation: excitedJump 0.5s ease-out;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Play With The Virtual Pup!</h1>
+    <p>Click the buttons below to interact with the dog.</p>
+
+    <div class="dog-container">
+        <img id="dog-image" src="https://placedog.net/300/300?random" alt="Cute Dog">
+        <!-- You can replace the src above with a permanent URL to a specific royalty-free dog image -->
+    </div>
+
+    <div class="interaction-buttons">
+        <!-- Loving Interactions -->
+        <button data-action="pet-head">Pet Head</button>
+        <button data-action="scratch-ears">Scratch Ears</button>
+        <button data-action="rub-belly">Rub Belly</button>
+        <button data-action="give-treat">Give Treat</button>
+        <button data-action="good-dog">Say "Good Dog!"</button>
+
+        <!-- Annoying/Wrong Interactions -->
+        <button data-action="pull-tail">Pull Tail (Gently!)</button>
+        <button data-action="poke-nose">Poke Nose</button>
+        <button data-action="stare">Stare Intensely</button>
+        <button data-action="take-toy">Pretend Take Toy</button>
+
+        <!-- Neutral Interaction -->
+        <button data-action="call-name">Call Name</button>
+    </div>
+
+    <script>
+        const dogImage = document.getElementById('dog-image');
+        const buttons = document.querySelectorAll('.interaction-buttons button');
+        let currentAnimationTimeout = null; // To manage animation resets
+        let currentAudio = null; // To manage audio playback
+
+        // --- Royalty-Free Sound URLs (Examples from Pixabay) ---
+        // Please verify these links or find alternatives if they stop working.
+        const sounds = {
+            happyBark: 'https://cdn.pixabay.com/audio/2022/03/15/audio_38cba04937.mp3', // Short happy bark
+            panting: 'https://cdn.pixabay.com/audio/2022/03/10/audio_84b4791c08.mp3', // Happy panting
+            whimper: 'https://cdn.pixabay.com/audio/2021/09/08/audio_3a9a62963d.mp3', // Cute whimper
+            contentSigh: 'https://cdn.pixabay.com/audio/2023/08/07/audio_c89ff64239.mp3', // Dog sigh/grunt
+            excitedBark: 'https://cdn.pixabay.com/audio/2022/11/17/audio_1e5c7118b9.mp3', // Excited multiple barks
+            growl: 'https://cdn.pixabay.com/audio/2022/04/11/audio_c401e396f0.mp3', // Low growl
+            yelp: 'https://cdn.pixabay.com/audio/2022/11/20/audio_72a48a6756.mp3', // Short yelp/pain
+            annoyedBark: 'https://cdn.pixabay.com/audio/2022/08/16/audio_573136a1d8.mp3', // Short annoyed bark
+            sadWhine: 'https://cdn.pixabay.com/audio/2022/05/13/audio_f880634a15.mp3', // Sad whine
+            curiousWoof: 'https://cdn.pixabay.com/audio/2022/08/14/audio_837e153a97.mp3' // Short, questioning bark
+        };
+
+        // Function to play sound
+        function playSound(soundUrl) {
+            // Stop any currently playing sound
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+            // Create and play the new sound
+            currentAudio = new Audio(soundUrl);
+            currentAudio.play().catch(e => console.error("Audio playback error:", e)); // Basic error handling
+        }
+
+        // Function to apply animation
+        function applyAnimation(animationClass, duration = 1000) {
+            // Clear previous timeout if exists
+            if (currentAnimationTimeout) {
+                clearTimeout(currentAnimationTimeout);
+            }
+            // Remove all existing animation classes first
+            dogImage.className = ''; // Reset classes (simplest way here)
+            dogImage.offsetWidth; // Trigger reflow to restart animation if class is the same
+            dogImage.classList.add(animationClass);
+
+            // Set a timeout to remove the class after the animation duration
+            currentAnimationTimeout = setTimeout(() => {
+                dogImage.classList.remove(animationClass);
+                currentAnimationTimeout = null; // Clear the timeout reference
+            }, duration);
+        }
+
+        // Event Listener for Buttons
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const action = button.getAttribute('data-action');
+
+                switch (action) {
+                    case 'pet-head':
+                        playSound(sounds.panting);
+                        applyAnimation('animate-happy-wiggle', 600);
+                        break;
+                    case 'scratch-ears':
+                        playSound(sounds.contentSigh);
+                        applyAnimation('animate-head-tilt', 500);
+                        break;
+                    case 'rub-belly':
+                        playSound(sounds.whimper);
+                        applyAnimation('animate-belly-rub', 700);
+                        break;
+                    case 'give-treat':
+                        playSound(sounds.excitedBark);
+                        applyAnimation('animate-excited-jump', 500);
+                        break;
+                    case 'good-dog':
+                        playSound(sounds.happyBark);
+                        applyAnimation('animate-perk-up', 400);
+                        break;
+                    case 'pull-tail':
+                        playSound(sounds.yelp);
+                        applyAnimation('animate-shake-annoyed', 500);
+                        break;
+                    case 'poke-nose':
+                        playSound(sounds.annoyedBark);
+                        applyAnimation('animate-shake-annoyed', 500);
+                        break;
+                    case 'stare':
+                        playSound(sounds.growl);
+                        applyAnimation('animate-growl', 400);
+                        break;
+                    case 'take-toy':
+                        playSound(sounds.sadWhine);
+                        applyAnimation('animate-sad-droop', 1000);
+                        break;
+                    case 'call-name':
+                        playSound(sounds.curiousWoof);
+                        applyAnimation('animate-perk-up', 400);
+                        break;
+                    default:
+                        console.log('Unknown action:', action);
+                }
+            });
+        });
+
+         // Preload audio slightly on first interaction possibility (hover over button area)
+         // This is optional but can reduce delay on the *very first* click.
+         let preloaded = false;
+         document.querySelector('.interaction-buttons').addEventListener('mouseover', () => {
+            if (!preloaded) {
+                console.log("Preloading sounds...");
+                Object.values(sounds).forEach(url => {
+                    const audio = new Audio();
+                    audio.src = url;
+                });
+                preloaded = true;
+            }
+         }, { once: true }); // Only run this once
+
+    </script>
+
+</body>
+</html>
