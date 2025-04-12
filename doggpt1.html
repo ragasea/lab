@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cute Dog Interactive Fun</title>
+  <style>
+    body {
+      background-color: #f0f8ff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    #dogContainer {
+      position: relative;
+      display: inline-block;
+      margin: 20px;
+    }
+    #dog {
+      width: 400px;
+      transition: transform 0.5s ease;
+    }
+    /* Animation classes */
+    .scaleUp { transform: scale(1.1); }
+    .shake {
+      animation: shakeAnim 0.5s;
+    }
+    .shake-aggressive {
+      animation: shakeAnim 0.8s;
+    }
+    .moveRight {
+      animation: moveRightAnim 1s forwards;
+    }
+    .droop {
+      transform: translateY(20px) opacity: 0.6;
+      transition: transform 0.5s, opacity 0.5s;
+    }
+    .jump {
+      animation: jumpAnim 0.5s;
+    }
+    .pawLift {
+      animation: pawLiftAnim 0.5s;
+    }
+    .heart {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 30px;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .showHeart {
+      opacity: 1;
+    }
+    /* Keyframes */
+    @keyframes shakeAnim {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
+      100% { transform: translateX(0); }
+    }
+    @keyframes moveRightAnim {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(300px); }
+    }
+    @keyframes jumpAnim {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-30px); }
+      100% { transform: translateY(0); }
+    }
+    @keyframes pawLiftAnim {
+      0% { transform: rotate(0); }
+      50% { transform: rotate(-30deg); }
+      100% { transform: rotate(0); }
+    }
+    /* Button styling */
+    .action-btn {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: #fff;
+      background-color: #007bff;
+      transition: background-color 0.3s;
+    }
+    .action-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Welcome to the Cute Dog Playground!</h1>
+  <div id="dogContainer">
+    <!-- Dog image (sourced from a free dog placeholder: https://placedog.net) -->
+    <img src="https://placedog.net/400" id="dog" alt="Cute Dog">
+    <div id="heart" class="heart">❤️</div>
+  </div>
+  
+  <div>
+    <!-- 10 Action Buttons -->
+    <button class="action-btn" onclick="handleAction('pet')">Pet Gently</button>
+    <button class="action-btn" onclick="handleAction('hug')">Hug Dog</button>
+    <button class="action-btn" onclick="handleAction('feed')">Feed Dog</button>
+    <button class="action-btn" onclick="handleAction('throwBall')">Throw Ball</button>
+    <button class="action-btn" onclick="handleAction('sing')">Sing to Dog</button>
+    <button class="action-btn" onclick="handleAction('scold')">Scold Dog</button>
+    <button class="action-btn" onclick="handleAction('ignore')">Ignore Dog</button>
+    <button class="action-btn" onclick="handleAction('scratch')">Scratch Belly</button>
+    <button class="action-btn" onclick="handleAction('treat')">Give Treat</button>
+    <button class="action-btn" onclick="handleAction('highFive')">High-Five</button>
+  </div>
+
+  <!-- Audio elements: using full URL links from Google Actions Sound Library and others -->
+  <audio id="audioPet" src="https://actions.google.com/sounds/v1/animals/dog_bark.ogg"></audio>
+  <audio id="audioHug" src="https://actions.google.com/sounds/v1/animals/dog_bark.ogg"></audio>
+  <audio id="audioFeed" src="https://actions.google.com/sounds/v1/foley/chomp.ogg"></audio>
+  <audio id="audioThrowBall" src="https://actions.google.com/sounds/v1/animals/dog_bark.ogg"></audio>
+  <audio id="audioSing" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
+  <audio id="audioScold" src="https://actions.google.com/sounds/v1/cartoon/sad_trombone.ogg"></audio>
+  <audio id="audioIgnore" src="https://actions.google.com/sounds/v1/animals/dog_whine.ogg"></audio>
+  <audio id="audioScratch" src="https://actions.google.com/sounds/v1/animals/dog_bark.ogg"></audio>
+  <audio id="audioTreat" src="https://actions.google.com/sounds/v1/animals/dog_bark.ogg"></audio>
+  <audio id="audioHighFive" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+
+  <script>
+    // Map actions to corresponding audio element IDs and animation functions.
+    function handleAction(action) {
+      const dog = document.getElementById("dog");
+      const heart = document.getElementById("heart");
+
+      // Clear any previous animation classes
+      dog.className = "";
+      heart.className = "heart";  // reset heart
+
+      // Pause all audios first (in case a user clicks quickly)
+      const audios = document.getElementsByTagName("audio");
+      for (let audio of audios) {
+        audio.pause();
+        audio.currentTime = 0;
+      }
+
+      // Use a switch to determine the response
+      switch(action) {
+        case "pet":
+          playSound("audioPet");
+          dog.classList.add("scaleUp");
+          break;
+        case "hug":
+          playSound("audioHug");
+          dog.classList.add("scaleUp");
+          heart.classList.add("showHeart");
+          setTimeout(() => heart.classList.remove("showHeart"), 800);
+          break;
+        case "feed":
+          playSound("audioFeed");
+          // simulate a small feed motion by a quick scale effect
+          dog.style.transform = "scale(1.05) translateX(10px)";
+          setTimeout(() => dog.style.transform = "", 500);
+          break;
+        case "throwBall":
+          playSound("audioThrowBall");
+          // move the dog to right and then back (using CSS animation)
+          dog.classList.add("moveRight");
+          setTimeout(() => { 
+            dog.classList.remove("moveRight");
+            dog.style.transform = "";
+          }, 1200);
+          break;
+        case "sing":
+          playSound("audioSing");
+          // gentle sway
+          dog.style.transform = "rotate(5deg)";
+          setTimeout(() => dog.style.transform = "", 500);
+          break;
+        case "scold":
+          playSound("audioScold");
+          dog.classList.add("shake-aggressive");
+          break;
+        case "ignore":
+          playSound("audioIgnore");
+          dog.classList.add("droop");
+          break;
+        case "scratch":
+          playSound("audioScratch");
+          dog.classList.add("shake");
+          break;
+        case "treat":
+          playSound("audioTreat");
+          dog.classList.add("jump");
+          break;
+        case "highFive":
+          playSound("audioHighFive");
+          // simulate a paw lift by a brief rotation
+          dog.classList.add("pawLift");
+          break;
+        default:
+          console.log("Unknown action");
+      }
+    }
+    
+    function playSound(audioId) {
+      const audio = document.getElementById(audioId);
+      if(audio) {
+        audio.play();
+      }
+    }
+  </script>
+  
+  <footer style="margin-top: 30px; font-size: 14px; color: #777;">
+    Made with a lot of love – come back soon for more fun!
+  </footer>
+  
+</body>
+</html>
