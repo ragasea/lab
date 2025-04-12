@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Cricket Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #e0f7fa;
+            margin: 0;
+            padding: 10px;
+            touch-action: manipulation;
+        }
+        #game-area {
+            width: 90%;
+            max-width: 400px;
+            height: 400px;
+            background-color: #4caf50;
+            border: 2px solid #333;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        .emoji {
+            position: absolute;
+            font-size: 24px;
+            user-select: none;
+        }
+        #bat {
+            font-size: 30px;
+        }
+        #ball {
+            font-size: 20px;
+        }
+        #stumps {
+            font-size: 28px;
+        }
+        #score {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+        #controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #2196f3;
+            color: white;
+            width: 200px;
+            max-width: 90%;
+        }
+        button:hover {
+            background-color: #1976d2;
+        }
+        .hidden {
+            display: none;
+        }
+        #sub-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+        #result {
+            font-size: 18px;
+            margin-top: 10px;
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div id="score">Score: <span id="score-value">0</span> | Balls: <span id="balls">0/6</span></div>
+    <div id="game-area">
+        <div id="bat" class="emoji" style="left: 180px; top: 350px;">🏏</div>
+        <div id="ball" class="emoji hidden" style="left: 190px; top: 50px;">⚽</div>
+        <div id="stumps" class="emoji" style="left: 175px; top: 370px;">🥍</div>
+        <div id="fielder1" class="emoji hidden" style="left: 50px; top: 100px;">🧑</div>
+        <div id="fielder2" class="emoji hidden" style="left: 300px; top: 100px;">🧑</div>
+    </div>
+    <div id="result"></div>
+    <div id="controls">
+        <button id="batting-btn">Batting</button>
+        <button id="bowling-btn">Bowling</button>
+        <button id="fielding-btn">Fielding</button>
+        <div id="sub-options" class="hidden"></div>
+        <button id="action-btn" class="hidden">Swing Bat</button>
+    </div>
+
+    <script>
+        let score = 0;
+        let balls = 0;
+        let mode = '';
+        let subOption = '';
+        let ballSpeed = 5;
+        let gameActive = false;
+
+        const bat = document.getElementById('bat');
+        const ball = document.getElementById('ball');
+        const stumps = document.getElementById('stumps');
+        const fielder1 = document.getElementById('fielder1');
+        const fielder2 = document.getElementById('fielder2');
+        const gameArea = document.getElementById('game-area');
+        const scoreDisplay = document.getElementById('score-value');
+        const ballsDisplay = document.getElementById('balls');
+        const resultDisplay = document.getElementById('result');
+        const battingBtn = document.getElementById('batting-btn');
+        const bowlingBtn = document.getElementById('bowling-btn');
+        const fieldingBtn = document.getElementById('fielding-btn');
+        const actionBtn = document.getElementById('action-btn');
+        const subOptions = document.getElementById('sub-options');
+
+        function resetGame() {
+            score = 0;
+            balls = 0;
+            scoreDisplay.textContent = score;
+            ballsDisplay.textContent = `${balls}/6`;
+            resultDisplay.textContent = '';
+            ball.classList.add('hidden');
+            fielder1.classList.add('hidden');
+            fielder2.classList.add('hidden');
+            bat.style.left = '180px';
+            bat.style.top = '350px';
+            ball.style.left = '190px';
+            ball.style.top = '50px';
+            subOptions.classList.add('hidden');
+            subOptions.innerHTML = '';
+            actionBtn.classList.add('hidden');
+            gameActive = false;
+        }
+
+        function showSubOptions(options, callback) {
+            subOptions.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.textContent = opt;
+                btn.style.width = '100px';
+                btn.addEventListener('click', () => {
+                    subOption = opt;
+                    callback(opt);
+                    subOptions.querySelectorAll('button').forEach(b => b.style.backgroundColor = '#2196f3');
+                    btn.style.backgroundColor = '#1976d2';
+                });
+                subOptions.appendChild(btn);
+            });
+            subOptions.classList.remove('hidden');
+        }
+
+        function moveBall(type) {
+            let posY = 50;
+            let posX = 190;
+            let direction = 0;
+            ball.classList.remove('hidden');
+            gameActive = true;
+
+            if (type === 'Yorker') {
+                ballSpeed = 6;
+                direction = (Math.random() - 0.5) * 20;
+            } else if (type === 'Bouncer') {
+                ballSpeed = 4;
+                direction = (Math.random() - 0.5) * 40;
+            } else if (type === 'Spin') {
+                ballSpeed = 3;
+                direction = (Math.random() - 0.5) * 60;
+            } else {
+                ballSpeed = 5;
+                direction = (Math.random() - 0.5) * 30;
+            }
+
+            const animate = setInterval(() => {
+                posY += ballSpeed;
+                posX += direction / 50;
+                ball.style.top = `${posY}px`;
+                ball.style.left = `${posX}px`;
+
+                if (posY > 400) {
+                    clearInterval(animate);
+                    ball.classList.add('hidden');
+                    balls++;
+                    ballsDisplay.textContent = `${balls}/6`;
+                    if (Math.abs(posX - 190) < 20 && mode === 'batting') {
+                        resultDisplay.textContent = 'Out! Hit the stumps!';
+                        gameActive = false;
+                    } else if (mode === 'bowling') {
+                        resultDisplay.textContent = 'Missed the stumps!';
+                    }
+                    resetBall();
+                    if (balls >= 6) {
+                        resultDisplay.textContent = `Game Over! Final Score: ${score}`;
+                        gameActive = false;
+                    }
+                }
+            }, 20);
+        }
+
+        function resetBall() {
+            ball.style.top = '50px';
+            ball.style.left = '190px';
+            ball.classList.add('hidden');
+        }
+
+        function checkCollision() {
+            const batRect = bat.getBoundingClientRect();
+            const ballRect = ball.getBoundingClientRect();
+            return (
+                batRect.left < ballRect.right &&
+                batRect.right > ballRect.left &&
+                batRect.top < ballRect.bottom &&
+                batRect.bottom > ballRect.top
+            );
+        }
+
+        battingBtn.addEventListener('click', () => {
+            mode = 'batting';
+            resetGame();
+            battingBtn.style.backgroundColor = '#1976d2';
+            bowlingBtn.style.backgroundColor = '#2196f3';
+            fieldingBtn.style.backgroundColor = '#2196f3';
+            actionBtn.textContent = 'Swing Bat';
+            actionBtn.classList.remove('hidden');
+            showSubOptions(['Straight', 'Cover', 'Loft'], (shot) => {
+                actionBtn.onclick = () => {
+                    if (!gameActive) {
+                        moveBall(['Yorker', 'Bouncer', 'Spin', 'Fast'][Math.floor(Math.random() * 4)]);
+                    }
+                    let moveX = 0;
+                    if (shot === 'Cover') moveX = 50;
+                    else if (shot === 'Loft') moveX = -50;
+                    bat.style.left = `${180 + moveX}px`;
+                    setTimeout(() => {
+                        bat.style.left = '180px';
+                        if (checkCollision() && gameActive) {
+                            score += Math.floor(Math.random() * 6) + 1;
+                            scoreDisplay.textContent = score;
+                            resultDisplay.textContent = `Hit! Scored ${score - (score - (Math.floor(Math.random() * 6) + 1))} runs!`;
+                            ball.classList.add('hidden');
+                            balls++;
+                            ballsDisplay.textContent = `${balls}/6`;
+                            resetBall();
+                            if (balls >= 6) {
+                                resultDisplay.textContent = `Game Over! Final Score: ${score}`;
+                                gameActive = false;
+                            }
+                        }
+                    }, 200);
+                };
+            });
+        });
+
+        bowlingBtn.addEventListener('click', () => {
+            mode = 'bowling';
+            resetGame();
+            battingBtn.style.backgroundColor = '#2196f3';
+            bowlingBtn.style.backgroundColor = '#1976d2';
+            fieldingBtn.style.backgroundColor = '#2196f3';
+            actionBtn.textContent = 'Bowl';
+            actionBtn.classList.remove('hidden');
+            showSubOptions(['Yorker', 'Bouncer', 'Spin'], (type) => {
+                actionBtn.onclick = () => {
+                    if (!gameActive) {
+                        moveBall(type);
+                        setTimeout(() => {
+                            if (Math.random() > 0.5) {
+                                score += Math.floor(Math.random() * 6) + 1;
+                                scoreDisplay.textContent = score;
+                                resultDisplay.textContent = 'Ball was hit!';
+                            }
+                            balls++;
+                            ballsDisplay.textContent = `${balls}/6`;
+                            if (balls >= 6) {
+                                resultDisplay.textContent = `Game Over! Runs Conceded: ${score}`;
+                                gameActive = false;
+                            }
+                        }, 1000);
+                    }
+                };
+            });
+        });
+
+        fieldingBtn.addEventListener('click', () => {
+            mode = 'fielding';
+            resetGame();
+            battingBtn.style.backgroundColor = '#2196f3';
+            bowlingBtn.style.backgroundColor = '#2196f3';
+            fieldingBtn.style.backgroundColor = '#1976d2';
+            fielder1.classList.remove('hidden');
+            fielder2.classList.remove('hidden');
+            actionBtn.textContent = 'Catch';
+            actionBtn.classList.remove('hidden');
+            showSubOptions(['Left', 'Right'], (side) => {
+                actionBtn.onclick = () => {
+                    if (!gameActive) {
+                        gameActive = true;
+                        ball.classList.remove('hidden');
+                        let targetX = side === 'Left' ? 50 : 300;
+                        let posY = 50;
+                        let posX = 190;
+                        const animate = setInterval(() => {
+                            posY += 5;
+                            posX += (targetX - 190) / 70;
+                            ball.style.top = `${posY}px`;
+                            ball.style.left = `${posX}px`;
+                            if (posY > 200) {
+                                clearInterval(animate);
+                                ball.classList.add('hidden');
+                                balls++;
+                                ballsDisplay.textContent = `${balls}/6`;
+                                let fielder = side === 'Left' ? fielder1 : fielder2;
+                                if (Math.abs(posX - parseInt(fielder.style.left)) < 30) {
+                                    resultDisplay.textContent = 'Caught!';
+                                } else {
+                                    score += Math.floor(Math.random() * 6) + 1;
+                                    scoreDisplay.textContent = score;
+                                    resultDisplay.textContent = 'Missed! Runs scored!';
+                                }
+                                resetBall();
+                                if (balls >= 6) {
+                                    resultDisplay.textContent = `Game Over! Runs Conceded: ${score}`;
+                                    gameActive = false;
+                                }
+                                gameActive = false;
+                            }
+                        }, 20);
+                    }
+                };
+            });
+        });
+
+        gameArea.addEventListener('touchstart', (e) => {
+            if (mode === 'batting' && gameActive) {
+                e.preventDefault();
+                actionBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
