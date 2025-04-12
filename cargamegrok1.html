@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emoji Car Racing Game</title>
+  <style>
+    #game {
+      width: 300px;
+      height: 500px;
+      position: relative;
+      background-color: #ccc;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .car, .obstacle {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+    }
+    .car {
+      top: 450px;
+      left: 125px; /* Center lane initially */
+    }
+    #score {
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    #gameover {
+      text-align: center;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="score">Score: 0</div>
+  <div id="game">
+    <div class="car">🚗</div>
+  </div>
+  <div id="gameover">
+    <p>Game Over! Final Score: <span id="finalscore"></span></p>
+    <button id="restart">Restart</button>
+  </div>
+  <script>
+    // Define lanes (left positions for three lanes)
+    const lanes = [25, 125, 225];
+
+    // Car variables
+    const car = document.querySelector('.car');
+    let carLane = 1; // 0: left, 1: center, 2: right
+
+    // Obstacles array
+    let obstacles = [];
+
+    // Score variables
+    let score = 0;
+    const scoreElement = document.getElementById('score');
+
+    // Game over elements
+    const gameoverElement = document.getElementById('gameover');
+    const finalscoreElement = document.getElementById('finalscore');
+    const restartButton = document.getElementById('restart');
+
+    // Interval variables
+    let gameLoopInterval;
+    let obstacleGeneratorInterval;
+    let scoreInterval;
+
+    // Function to move the car
+    function moveCar(direction) {
+      if (direction === 'left' && carLane > 0) {
+        carLane--;
+      } else if (direction === 'right' && carLane < 2) {
+        carLane++;
+      }
+      car.style.left = lanes[carLane] + 'px';
+    }
+
+    // Touch and click event listeners for interactivity
+    const game = document.getElementById('game');
+    game.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      const gameRect = game.getBoundingClientRect();
+      const touchX = e.touches[0].clientX - gameRect.left;
+      if (touchX < gameRect.width / 2) {
+        moveCar('left');
+      } else {
+        moveCar('right');
+      }
+    });
+    game.addEventListener('click', function(e) {
+      const gameRect = game.getBoundingClientRect();
+      const clickX = e.clientX - gameRect.left;
+      if (clickX < gameRect.width / 2) {
+        moveCar('left');
+      } else {
+        moveCar('right');
+      }
+    });
+
+    // Function to create a new obstacle
+    function createObstacle() {
+      const obstacleEmojis = ['🚕', '🚙', '🚚', '🚧', '🛑', '🌳'];
+      const emoji = obstacleEmojis[Math.floor(Math.random() * obstacleEmojis.length)];
+      const lane = Math.floor(Math.random() * 3);
+      const obstacle = document.createElement('div');
+      obstacle.className = 'obstacle';
+      obstacle.textContent = emoji;
+      obstacle.style.left = lanes[lane] + 'px';
+      obstacle.style.top = '0px';
+      game.appendChild(obstacle);
+      obstacles.push({ element: obstacle, lane: lane });
+    }
+
+    // Function to update obstacle positions and check collisions
+    function updateObstacles() {
+      obstacles.forEach(obstacle => {
+        let top = parseInt(obstacle.element.style.top);
+        top += 10;
+        obstacle.element.style.top = top + 'px';
+      });
+      // Filter out obstacles that are off-screen or cause a collision
+      obstacles = obstacles.filter(obstacle => {
+        let top = parseInt(obstacle.element.style.top);
+        if (top >= 500) {
+          obstacle.element.remove();
+          return false;
+        } else if (top > 400 && obstacle.lane === carLane) {
+          gameOver();
+          return false;
+        }
+        return true;
+      });
+    }
+
+    // Function to increase the score
+    function increaseScore() {
+      score++;
+      scoreElement.textContent = 'Score: ' + score;
+    }
+
+    // Function to start or restart the game
+    function startGame() {
+      // Reset game state
+      obstacles.forEach(obstacle => obstacle.element.remove());
+      obstacles = [];
+      carLane = 1;
+      car.style.left = lanes[carLane] + 'px';
+      score = 0;
+      scoreElement.textContent = 'Score: 0';
+      gameoverElement.style.display = 'none';
+      // Start game loops
+      gameLoopInterval = setInterval(updateObstacles, 50);
+      obstacleGeneratorInterval = setInterval(createObstacle, 1000);
+      scoreInterval = setInterval(increaseScore, 100);
+    }
+
+    // Function to end the game
+    function gameOver() {
+      clearInterval(gameLoopInterval);
+      clearInterval(obstacleGeneratorInterval);
+      clearInterval(scoreInterval);
+      finalscoreElement.textContent = score;
+      gameoverElement.style.display = 'block';
+    }
+
+    // Restart button event listener
+    restartButton.addEventListener('click', startGame);
+
+    // Start the game when the page loads
+    startGame();
+  </script>
+</body>
+</html>
