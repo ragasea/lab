@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Dog Experience</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            user-select: none;
+        }
+        
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            background: url('https://cdn.jsdelivr.net/gh/joshmarinacci/general-files@master/images/grass.jpg') bottom center;
+            background-size: cover;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        #dog {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 300px;
+            background-color: #FFCA97;
+            border-radius: 50%;
+            border: 8px solid #B87A45;
+            transition: transform 0.3s;
+            cursor: pointer;
+            z-index: 2;
+            overflow: visible;
+        }
+        
+        /* Dog face elements */
+        #dog:before, #dog:after {
+            content: '';
+            position: absolute;
+            background-color: #B87A45;
+            border-radius: 50%;
+        }
+        
+        /* Dog ears */
+        #dog:before {
+            width: 100px;
+            height: 120px;
+            top: -30px;
+            left: -20px;
+            transform: rotate(-20deg);
+            z-index: -1;
+        }
+        
+        #dog:after {
+            width: 100px;
+            height: 120px;
+            top: -30px;
+            right: -20px;
+            transform: rotate(20deg);
+            z-index: -1;
+        }
+        
+        /* Dog face elements */
+        .dog-eyes, .dog-nose, .dog-mouth, .dog-tongue {
+            position: absolute;
+            z-index: 3;
+        }
+        
+        .dog-eyes {
+            top: 30%;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .dog-eye {
+            width: 40px;
+            height: 40px;
+            background-color: #000;
+            border-radius: 50%;
+            position: relative;
+        }
+        
+        .dog-eye:before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: #fff;
+            border-radius: 50%;
+            top: 5px;
+            left: 5px;
+        }
+        
+        .dog-nose {
+            width: 50px;
+            height: 30px;
+            background-color: #000;
+            border-radius: 25px;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .dog-mouth {
+            width: 120px;
+            height: 60px;
+            border-bottom: 8px solid #000;
+            border-radius: 0 0 120px 120px;
+            top: 60%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .dog-tongue {
+            width: 60px;
+            height: 40px;
+            background-color: #FF6B6B;
+            border-radius: 30px;
+            top: 75%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: pant 1s infinite alternate;
+        }
+        
+        @keyframes pant {
+            from { transform: translateX(-50%) translateY(0); }
+            to { transform: translateX(-50%) translateY(5px); }
+        }
+        
+        .bubble {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-140%);
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 3;
+            max-width: 200px;
+            font-size: 18px;
+            text-align: center;
+        }
+        
+        .bubble:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: white transparent;
+        }
+        
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .option {
+            padding: 12px 18px;
+            background: #FF9800;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background: #F57C00;
+        }
+        
+        .option:active {
+            transform: translateY(1px);
+        }
+        
+        .love-particles {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .bone {
+            position: absolute;
+            width: 60px;
+            height: 30px;
+            background: url('https://cdn.pixabay.com/photo/2014/04/03/00/41/bone-309446_960_720.png') no-repeat center;
+            background-size: contain;
+            cursor: pointer;
+            z-index: 1;
+            transition: transform 0.3s;
+        }
+        
+        .ball {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: url('https://cdn.pixabay.com/photo/2014/04/03/10/31/ball-311364_960_720.png') no-repeat center;
+            background-size: contain;
+            cursor: pointer;
+            z-index: 1;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        
+        .mood-meter {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 150px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .mood-level {
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(to right, #FF5252, #FF9800, #4CAF50);
+            transition: width 0.5s;
+        }
+        
+        .treats-count {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 5px 15px;
+            font-weight: bold;
+        }
+        
+        @keyframes jump {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-100px); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(-50%) rotate(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-55%) rotate(-5deg); }
+            20%, 40%, 60%, 80% { transform: translateX(-45%) rotate(5deg); }
+        }
+        
+        @keyframes wag {
+            0%, 100% { transform: translateX(-50%) rotate(0); }
+            25% { transform: translateX(-48%) rotate(3deg); }
+            50% { transform: translateX(-50%) rotate(0); }
+            75% { transform: translateX(-52%) rotate(-3deg); }
+        }
+        
+        @keyframes spin {
+            0% { transform: translateX(-50%) rotate(0); }
+            100% { transform: translateX(-50%) rotate(360deg); }
+        }
+        
+        @keyframes sleep {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(0.95); }
+        }
+        
+        @keyframes growl {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+        }
+        
+        @keyframes dance {
+            0%, 100% { transform: translateX(-50%) rotate(0) translateY(0); }
+            25% { transform: translateX(-60%) rotate(-10deg) translateY(-20px); }
+            50% { transform: translateX(-40%) rotate(10deg) translateY(0); }
+            75% { transform: translateX(-60%) rotate(-10deg) translateY(-20px); }
+        }
+        
+        @keyframes cower {
+            0%, 100% { transform: translateX(-50%) scale(0.8); }
+            25% { transform: translateX(-55%) scale(0.8); }
+            75% { transform: translateX(-45%) scale(0.8); }
+        }
+        
+        @keyframes hide {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(-50%) translateY(100px); opacity: 0.5; }
+        }
+        
+        @keyframes scared {
+            0%, 100% { transform: translateX(-50%); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-55%) rotate(-2deg); }
+            20%, 40%, 60%, 80% { transform: translateX(-45%) rotate(2deg); }
+        }
+        
+        .title {
+            font-size: 2.5em;
+            color: #3E2723;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        /* Falling treats animation */
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        .treat {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: url('https://cdn.pixabay.com/photo/2012/04/12/12/30/dog-biscuit-29593_960_720.png') no-repeat center;
+            background-size: contain;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">Play with the Dog!</h1>
+    
+    <div class="container">
+        <div id="dog">
+            <div class="dog-eyes">
+                <div class="dog-eye"></div>
+                <div class="dog-eye"></div>
+            </div>
+            <div class="dog-nose"></div>
+            <div class="dog-mouth"></div>
+            <div class="dog-tongue"></div>
+        </div>
+        <div id="bubble" class="bubble"></div>
+        <div class="mood-meter">
+            <div id="mood-level" class="mood-level"></div>
+        </div>
+        <div id="treats-count" class="treats-count">Treats: 0</div>
+    </div>
+    
+    <div class="options">
+        <button class="option" onclick="petDog()">Pet gently</button>
+        <button class="option" onclick="giveTreat()">Give treat</button>
+        <button class="option" onclick="playFetch()">Play fetch</button>
+        <button class="option" onclick="pullTail()">Pull tail (careful!)</button>
+        <button class="option" onclick="tellJoke()">Tell a joke</button>
+        <button class="option" onclick="napTime()">Nap time</button>
+        <button class="option" onclick="danceTime()">Dance time</button>
+        <button class="option" onclick="rainTreats()">Rain treats</button>
+        <button class="option" style="background: #F44336;" onclick="screamAtDog()">Scream at dog</button>
+        <button class="option" style="background: #F44336;" onclick="punishDog()">Punish dog</button>
+        <button class="option" style="background: #F44336;" onclick="ignoreDog()">Ignore dog</button>
+        <button class="option" onclick="resetDog()">Reset</button>
+    </div>
+    
+    <script>
+        // Audio sources (royalty-free)
+        const SOUNDS = {
+            bark: 'https://cdn.freesound.org/previews/457/457507_7882190-lq.mp3',
+            happy: 'https://cdn.freesound.org/previews/9/9499_13323-lq.mp3',
+            whine: 'https://cdn.freesound.org/previews/122/122922_2034781-lq.mp3',
+            growl: 'https://cdn.freesound.org/previews/435/435438_8077442-lq.mp3',
+            yawn: 'https://cdn.freesound.org/previews/368/368765_6687864-lq.mp3',
+            pant: 'https://cdn.freesound.org/previews/439/439893_2865798-lq.mp3',
+            excited: 'https://cdn.freesound.org/previews/277/277422_5235555-lq.mp3',
+            cry: 'https://cdn.freesound.org/previews/442/442272_8077442-lq.mp3',
+            scared: 'https://cdn.freesound.org/previews/243/243686_4269206-lq.mp3',
+            sad: 'https://cdn.freesound.org/previews/39/39660_364894-lq.mp3'
+        };
+        
+        // Game state
+        let dogMood = 50; // 0-100
+        let treatsGiven = 0;
+        let currentAnimation = '';
+        let currentTimeout = null;
+        let isAnimating = false;
+        let isIgnored = false;
+        let ignoredTimer = null;
+        
+        // DOM elements
+        const dog = document.getElementById('dog');
+        const bubble = document.getElementById('bubble');
+        const moodLevel = document.getElementById('mood-level');
+        const treatsCounter = document.getElementById('treats-count');
+        const container = document.querySelector('.container');
+        
+        // Update UI based on mood
+        function updateMood(change) {
+            dogMood = Math.max(0, Math.min(100, dogMood + change));
+            moodLevel.style.width = `${dogMood}%`;
+            
+            if (dogMood < 30) {
+                moodLevel.style.background = '#FF5252';
+            } else if (dogMood < 70) {
+                moodLevel.style.background = '#FF9800';
+            } else {
+                moodLevel.style.background = '#4CAF50';
+            }
+        }
+        
+        // Show message bubble
+        function showMessage(text, duration = 3000) {
+            bubble.textContent = text;
+            bubble.style.opacity = '1';
+            
+            setTimeout(() => {
+                bubble.style.opacity = '0';
+            }, duration);
+        }
+        
+        // Play sound
+        function playSound(soundName) {
+            const audio = new Audio(SOUNDS[soundName]);
+            audio.volume = 0.5;
+            audio.play();
+        }
+        
+        // Animate dog
+        function animateDog(animationName, duration = 1000) {
+            if (isAnimating) return;
+            
+            isAnimating = true;
+            currentAnimation = animationName;
+            dog.style.animation = `${animationName} ${duration}ms ease-in-out`;
+            
+            currentTimeout = setTimeout(() => {
+                dog.style.animation = '';
+                isAnimating = false;
+            }, duration);
+        }
+        
+        // Create love particles
+        function createLoveParticles() {
+            const dogRect = dog.getBoundingClientRect();
+            const centerX = dogRect.left + dogRect.width / 2;
+            const centerY = dogRect.top + dogRect.height / 3;
+            
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.innerHTML = '❤️';
+                particle.style.position = 'absolute';
+                particle.style.left = `${centerX}px`;
+                particle.style.top = `${centerY}px`;
+                particle.style.fontSize = `${Math.random() * 20 + 10}px`;
+                particle.style.transform = `translate(-50%, -50%)`;
+                particle.style.opacity = '1';
+                particle.style.transition = 'all 1.5s ease-out';
+                particle.style.zIndex = '10';
+                particle.style.pointerEvents = 'none';
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => {
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 100 + 50;
+                    particle.style.left = `${centerX + Math.cos(angle) * distance}px`;
+                    particle.style.top = `${centerY + Math.sin(angle) * distance}px`;
+                    particle.style.opacity = '0';
+                }, 50);
+                
+                setTimeout(() => {
+                    document.body.removeChild(particle);
+                }, 1550);
+            }
+        }
+        
+        // Pet the dog
+        function petDog() {
+            if (isAnimating) return;
+            
+            playSound('happy');
+            animateDog('wag', 2000);
+            createLoveParticles();
+            updateMood(10);
+            
+            const messages = [
+                "Aww, that feels nice!",
+                "I love you too!",
+                "*happy tail wagging*",
+                "You're the best human!",
+                "More pets please!"
+            ];
+            
+            showMessage(messages[Math.floor(Math.random() * messages.length)]);
+        }
+        
+        // Give treat
+        function giveTreat() {
+            if (isAnimating) return;
+            
+            treatsGiven++;
+            treatsCounter.textContent = `Treats: ${treatsGiven}`;
+            
+            playSound('excited');
+            animateDog('jump', 1500);
+            updateMood(5);
+            
+            const messages = [
+                "Yummy! More treats please!",
+                "That was delicious!",
+                "*chomps happily*",
+                "Treats are my favorite!",
+                "Thank you for the snack!"
+            ];
+            
+            showMessage(messages[Math.floor(Math.random() * messages.length)]);
+        }
+        
+        // Play fetch
+        function playFetch() {
+            if (isAnimating) return;
+            
+            // Create a ball
+            const ball = document.createElement('div');
+            ball.className = 'ball';
+            ball.style.left = '20%';
+            ball.style.top = '50%';
+            container.appendChild(ball);
+            
+            // Animate ball throw
+            setTimeout(() => {
+                ball.style.left = '70%';
+                ball.style.top = '60%';
+                ball.style.transform = 'rotate(360deg)';
+            }, 100);
+            
+            // Dog fetches ball
+            setTimeout(() => {
+                playSound('excited');
+                animateDog('jump', 1500);
+                updateMood(15);
+                
+                setTimeout(() => {
+                    container.removeChild(ball);
+                }, 1000);
+            }, 800);
+            
+            showMessage("Ball! I'll get it!");
+        }
+        
+        // Pull tail
+        function pullTail() {
+            if (isAnimating) return;
+            
+            playSound('growl');
+            animateDog('growl', 1500);
+            updateMood(-20);
+            
+            const messages = [
+                "Hey! That hurts!",
+                "Grrrr! Don't do that!",
+                "*angry growl*",
+                "That's not nice!",
+                "Ouch! My tail!"
+            ];
+            
+            showMessage(messages[Math.floor(Math.random() * messages.length)]);
+        }
+        
+        // Tell joke
+        function tellJoke() {
+            if (isAnimating) return;
+            
+            playSound('bark');
+            animateDog('shake', 1500);
+            updateMood(5);
+            
+            const jokes = [
+                "What do you call a dog magician? A labracadabrador!",
+                "Why don't dogs make good dancers? Because they have two left feet!",
+                "What's a dog's favorite musical? Cats!",
+                "Why did the dog sit in the shade? Because he didn't want to be a hot dog!",
+                "How do dogs stop videos? They press the paws button!"
+            ];
+            
+            showMessage(jokes[Math.floor(Math.random() * jokes.length)]);
+        }
+        
+        // Nap time
+        function napTime() {
+            if (isAnimating) return;
+            
+            playSound('yawn');
+            animateDog('sleep', 3000);
+            updateMood(0);
+            
+            const messages = [
+                "Zzzzz...",
+                "*soft snoring*",
+                "Just five more minutes...",
+                "*dreams of chasing squirrels*",
+                "Nap time is the best time"
+            ];
+            
+            showMessage(messages[Math.floor(Math.random() * messages.length)]);
+        }
+        
+        // Dance time
+        function danceTime() {
+            if (isAnimating) return;
+            
+            playSound('excited');
+            animateDog('dance', 3000);
+            updateMood(15);
+            
+            const messages = [
+                "I'm dancing!",
+                "Look at my moves!",
+                "Pawty time!",
+                "I'm the king of the dance floor!",
+                "Dancing is fun!"
+            ];
+            
+            showMessage(messages[Math.floor(Math.random() * messages.length)]);
+        }
+        
+        // Rain treats
+        function rainTreats() {
+            if (isAnimating) return;
+            
+            playSound('excited');
+            animateDog('jump', 1500);
+            updateMood(20);
+            
+            for (let i = 0; i < 15; i++) {
+                setTimeout(() => {
+                    const treat = document.createElement('div');
+                    treat.className = 'treat';
+                    treat.style.left = `${Math.random() * 100}%`;
+                    treat.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                    container.appendChild(treat);
+                    
+                    setTimeout(() => {
+                        container.removeChild(treat);
+                    }, 5000);
+                }, i * 200);
+            }
+            
+            treatsGiven += 5;
+            treatsCounter.textContent = `Treats: ${treatsGiven}`;
+            
+            showMessage("It's raining treats! Best day ever!");
+        }
+        
+        // Scream at dog
+        function screamAtDog() {
+            if (isAnimating) return;
+            
+            playSound('scared');
+            animateDog('scared', 2000);
+            updateMood(-15);
+            
+            const messages = [
+                "Please don't yell at me!",
+                "*whimpers and backs away*",
+                "I'm sorry! What did I do?",
+                "That's scary...",
+                "*ears down, tail tucked*"
+            ];
+            
+            showMessage(messages[Math.floor(Math.random() * messages.length)]);
+        }
+        
+        // Punish dog
+        function punishDog() {
+            if (isAnimating) return;
+            
+            playSound('cry');
+            animateDog('cower', 3000);
+            updateMood(-25);
+            
+            const messages = [
+                "I'll be good, I promise!",
+                "*sad puppy eyes*",
+                "What did I do wrong?",
+                "*trembling with fear*",
+                "Please forgive me!"
+            ];
+            
+            showMessage(messages[Math.floor(Math.random() * messages.length)]);
+        }
+        
+        // Ignore dog
+        function ignoreDog() {
+            if (isAnimating) return;
+            
+            playSound('sad');
+            animateDog('hide', 2000);
+            updateMood(-10);
+            isIgnored = true;
+            
+            const messages = [
+                "Hello? Can you see me?",
+                "*sad whining*",
+                "Did I do something wrong?",
+                "Please don't ignore me...",
+                "*lonely whimper*"
+            ];
+            
+            showMessage(messages[Math.floor(Math.random() * messages.length)]);
+            
+            // Dog tries to get attention after being ignored
+            if (ignoredTimer) clearTimeout(ignoredTimer);
+            ignoredTimer = setTimeout(() => {
+                if (isIgnored) {
+                    playSound('whine');
+                    animateDog('shake', 1500);
+                    showMessage("*pawing at you for attention*");
+                    isIgnored = false;
+                }
+            }, 5000);
+        }
+        
+        // Reset dog state
+        function resetDog() {
+            dogMood = 50;
+            treatsGiven = 0;
+            moodLevel.style.width = '50%';
+            moodLevel.style.background = '#FF9800';
+            treatsCounter.textContent = 'Treats: 0';
+            
+            if (currentTimeout) {
+                clearTimeout(currentTimeout);
+            }
+            
+            if (ignoredTimer) {
+                clearTimeout(ignoredTimer);
+            }
+            
+            isIgnored = false;
+            dog.style.animation = '';
+            isAnimating = false;
+            
+            playSound('bark');
+            showMessage("Let's play again!");
+        }
+        
+        // Initialize
+        updateMood(0);
+        
+        // Make dog react to being clicked
+        dog.addEventListener('click', function() {
+            if (isAnimating) return;
+            
+            playSound('bark');
+            animateDog('shake', 1000);
+            showMessage("Woof! Play with me!");
+        });
+        
+        // Add smooth hover effect to dog
+        dog.addEventListener('mouseover', function() {
+            if (!isAnimating) {
+                dog.style.transform = 'translateX(-50%) scale(1.05)';
+            }
+        });
+        
+        dog.addEventListener('mouseout', function() {
+            if (!isAnimating) {
+                dog.style.transform = 'translateX(-50%) scale(1)';
+            }
+        });
+    </script>
+</body>
+</html>
