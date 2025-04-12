@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play with Puppy</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        h1 {
+            color: #ff6f61;
+            text-shadow: 2px 2px #fff;
+            font-size: 3em;
+            margin: 20px;
+        }
+        #dogCanvas {
+            border: 5px solid #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            background: #e0f7fa;
+        }
+        #options {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px;
+            max-width: 800px;
+        }
+        button {
+            padding: 15px 25px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+            color: #fff;
+            box-shadow: 0 5px #999;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        button:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px #666;
+        }
+        #pet { background: #ff6f61; }
+        #feed { background: #4caf50; }
+        #play { background: #2196f3; }
+        #tickle { background: #ffeb3b; color: #333; }
+        #call { background: #9c27b0; }
+        #scratch { background: #ff9800; }
+        #ignore { background: #607d8b; }
+        #poke { background: #e91e63; }
+        #chase { background: #009688; }
+        #hug { background: #f06292; }
+        #message {
+            color: #333;
+            font-size: 1.5em;
+            margin-top: 10px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        #attribution {
+            font-size: 0.9em;
+            color: #555;
+            text-align: center;
+            margin-top: 20px;
+            max-width: 800px;
+        }
+        #attribution a {
+            color: #ff6f61;
+            text-decoration: none;
+        }
+        #attribution a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            h1 { font-size: 2em; }
+            #dogCanvas { width: 300px; height: 300px; }
+            button { font-size: 1em; padding: 10px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Play with Your Puppy!</h1>
+    <canvas id="dogCanvas" width="400" height="400"></canvas>
+    <div id="options">
+        <button id="pet">Pet Gently</button>
+        <button id="feed">Feed Treat</button>
+        <button id="play">Throw Ball</button>
+        <button id="tickle">Tickle Belly</button>
+        <button id="call">Call Name</button>
+        <button id="scratch">Scratch Ears</button>
+        <button id="ignore">Ignore</button>
+        <button id="poke">Poke</button>
+        <button id="chase">Chase Tail</button>
+        <button id="hug">Big Hug</button>
+    </div>
+    <div id="message"></div>
+    <div id="attribution">
+        Audio files provided by <a href="https://orangefreesounds.com" target="_blank">Orange Free Sounds</a>,
+        <a href="https://mixkit.co" target="_blank">Mixkit</a>,
+        <a href="https://pixabay.com" target="_blank">Pixabay</a>, and
+        <a href="https://freesound.org" target="_blank">Freesound</a> under royalty-free licenses.
+    </div>
+
+    <audio id="happyBark" src="https://orangefreesounds.com/wp-content/uploads/2021/01/Dog-barking-sound.mp3"></audio>
+    <audio id="excitedYip" src="https://cdn.pixabay.com/audio/2024/09/10/audio_6fd75b2c23.mp3"></audio>
+    <audio id="contentSigh" src="https://assets.mixkit.co/sfx/preview/mixkit-dog-panting-voice-1257.mp3"></audio>
+    <audio id="playfulWoof" src="https://orangefreesounds.com/wp-content/uploads/2023/03/Dog-bark.mp3"></audio>
+    <audio id="sadWhine" src="https://cdn.pixabay.com/audio/2024/09/10/audio_ee5b94dacb.mp3"></audio>
+    <audio id="angryGrowl" src="https://assets.mixkit.co/sfx/preview/mixkit-aggressive-angry-dog-growl-45.mp3"></audio>
+    <audio id="confusedYelp" src="https://cdn.pixabay.com/audio/2022/03/15/audio_6c34e7d639.mp3"></audio>
+
+    <script>
+        const canvas = document.getElementById('dogCanvas');
+        const ctx = canvas.getContext('2d');
+        const message = document.getElementById('message');
+        let dogState = 'idle';
+        let animationFrame = 0;
+
+        // Dog properties
+        let dog = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            size: 100,
+            tailAngle: 0,
+            earFlop: 0,
+            eyeBlink: 0
+        };
+
+        // Audio elements
+        const sounds = {
+            happy: document.getElementById('happyBark'),
+            excited: document.getElementById('excitedYip'),
+            content: document.getElementById('contentSigh'),
+            playful: document.getElementById('playfulWoof'),
+            sad: document.getElementById('sadWhine'),
+            angry: document.getElementById('angryGrowl'),
+            confused: document.getElementById('confusedYelp')
+        };
+
+        // Draw dog
+        function drawDog() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(dog.x, dog.y);
+
+            // Body
+            ctx.fillStyle = '#8B4513';
+            ctx.beginPath();
+            ctx.ellipse(0, 20, dog.size * 0.6, dog.size * 0.4, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Head
+            ctx.beginPath();
+            ctx.arc(0, -dog.size * 0.2, dog.size * 0.4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Ears
+            ctx.fillStyle = '#A0522D';
+            ctx.beginPath();
+            ctx.ellipse(-dog.size * 0.3, -dog.size * 0.3, dog.size * 0.2, dog.size * 0.1, Math.PI / 4 + dog.earFlop, 0, Math.PI * 2);
+            ctx.ellipse(dog.size * 0.3, -dog.size * 0.3, dog.size * 0.2, dog.size * 0.1, -Math.PI / 4 - dog.earFlop, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyes
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.ellipse(-dog.size * 0.15, -dog.size * 0.25, dog.size * 0.05, dog.size * 0.05 * (1 - dog.eyeBlink), 0, 0, Math.PI * 2);
+            ctx.ellipse(dog.size * 0.15, -dog.size * 0.25, dog.size * 0.05, dog.size * 0.05 * (1 - dog.eyeBlink), 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Nose
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(0, -dog.size * 0.15, dog.size * 0.05, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Tail
+            ctx.strokeStyle = '#8B4513';
+            ctx.lineWidth = 10;
+            ctx.beginPath();
+            ctx.moveTo(0, dog.size * 0.5);
+            ctx.quadraticCurveTo(
+                dog.size * 0.2 * Math.sin(dog.tailAngle),
+                dog.size * 0.7,
+                dog.size * 0.4 * Math.sin(dog.tailAngle),
+                dog.size * 0.9
+            );
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        // Animate dog based on state
+        function animate() {
+            animationFrame++;
+            if (dogState === 'happy') {
+                dog.tailAngle = Math.sin(animationFrame * 0.2) * Math.PI / 4;
+                dog.y = canvas.height / 2 + Math.sin(animationFrame * 0.1) * 10;
+                dog.eyeBlink = Math.random() < 0.05 ? 0.5 : 0;
+            } else if (dogState === 'excited') {
+                dog.x = canvas.width / 2 + Math.sin(animationFrame * 0.3) * 20;
+                dog.tailAngle = Math.sin(animationFrame * 0.4) * Math.PI / 3;
+                dog.size = 100 + Math.sin(animationFrame * 0.2) * 10;
+            } else if (dogState === 'content') {
+                dog.earFlop = Math.sin(animationFrame * 0.05) * 0.1;
+                dog.eyeBlink = Math.sin(animationFrame * 0.1) * 0.3;
+            } else if (dogState === 'playful') {
+                dog.x = canvas.width / 2 + Math.cos(animationFrame * 0.2) * 30;
+                dog.tailAngle = Math.sin(animationFrame * 0.3) * Math.PI / 4;
+            } else if (dogState === 'sad') {
+                dog.earFlop = -0.2;
+                dog.y = canvas.height / 2 + 20;
+                dog.eyeBlink = 0.5;
+            } else if (dogState === 'angry') {
+                dog.tailAngle = 0;
+                dog.y = canvas.height / 2 + Math.sin(animationFrame * 0.5) * 5;
+                dog.size = 110;
+            } else if (dogState === 'confused') {
+                dog.earFlop = Math.sin(animationFrame * 0.2) * 0.2;
+                dog.x = canvas.width / 2 + Math.sin(animationFrame * 0.1) * 10;
+            } else {
+                dog.tailAngle = Math.sin(animationFrame * 0.05) * Math.PI / 8;
+                dog.earFlop = 0;
+                dog.x = canvas.width / 2;
+                dog.y = canvas.height / 2;
+                dog.size = 100;
+                dog.eyeBlink = Math.random() < 0.02 ? 0.5 : 0;
+            }
+            drawDog();
+            requestAnimationFrame(animate);
+        }
+
+        // Show message
+        function showMessage(text) {
+            message.textContent = text;
+            message.style.opacity = 1;
+            setTimeout(() => { message.style.opacity = 0; }, 2000);
+        }
+
+        // Reset dog state after delay
+        function resetState() {
+            setTimeout(() => { dogState = 'idle'; }, 3000);
+        }
+
+        // Button interactions
+        document.getElementById('pet').addEventListener('click', () => {
+            dogState = 'happy';
+            sounds.happy.play();
+            showMessage('Puppy loves your pets!');
+            resetState();
+        });
+
+        document.getElementById('feed').addEventListener('click', () => {
+            dogState = 'content';
+            sounds.content.play();
+            showMessage('Yum, tasty treat!');
+            resetState();
+        });
+
+        document.getElementById('play').addEventListener('click', () => {
+            dogState = 'excited';
+            sounds.excited.play();
+            showMessage('Ball time! Woof!');
+            resetState();
+        });
+
+        document.getElementById('tickle').addEventListener('click', () => {
+            dogState = 'playful';
+            sounds.playful.play();
+            showMessage('Hehe, that tickles!');
+            resetState();
+        });
+
+        document.getElementById('call').addEventListener('click', () => {
+            dogState = 'happy';
+            sounds.happy.play();
+            showMessage('Puppy runs to you!');
+            resetState();
+        });
+
+        document.getElementById('scratch').addEventListener('click', () => {
+            dogState = 'content';
+            sounds.content.play();
+            showMessage('Ooh, perfect scratch!');
+            resetState();
+        });
+
+        document.getElementById('ignore').addEventListener('click', () => {
+            dogState = 'sad';
+            sounds.sad.play();
+            showMessage('Puppy feels ignored...');
+            resetState();
+        });
+
+        document.getElementById('poke').addEventListener('click', () => {
+            dogState = 'angry';
+            sounds.angry.play();
+            showMessage('Grr, don’t poke!');
+            resetState();
+        });
+
+        document.getElementById('chase').addEventListener('click', () => {
+            dogState = 'excited';
+            sounds.excited.play();
+            showMessage('Tail chase frenzy!');
+            resetState();
+        });
+
+        document.getElementById('hug').addEventListener('click', () => {
+            dogState = 'happy';
+            sounds.happy.play();
+            showMessage('Puppy loves hugs!');
+            resetState();
+        });
+
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>
