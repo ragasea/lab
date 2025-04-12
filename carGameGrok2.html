@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emoji Car Racing Game</title>
+  <style>
+    #game {
+      width: 300px;
+      height: 500px;
+      position: relative;
+      background-color: #ccc;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .car, .obstacle {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 40px;
+    }
+    .car {
+      top: 450px;
+      left: 125px; /* Start in center lane */
+    }
+    #score {
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    #gameover {
+      text-align: center;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="score">Score: 0</div>
+  <div id="game">
+    <div class="car">🚗</div>
+  </div>
+  <div id="gameover">
+    <p>Game Over! Final Score: <span id="finalscore"></span></p>
+    <button id="restart">Restart</button>
+  </div>
+  <script>
+    // Game elements
+    const game = document.getElementById('game');
+    const car = document.querySelector('.car');
+    const scoreElement = document.getElementById('score');
+    const gameoverElement = document.getElementById('gameover');
+    const finalscoreElement = document.getElementById('finalscore');
+    const restartButton = document.getElementById('restart');
+
+    // Lane positions (left values in pixels)
+    const lanes = [25, 125, 225];
+    let carLane = 1; // Start in center lane (0: left, 1: center, 2: right)
+    let obstacles = [];
+    let score = 0;
+    let gameLoopInterval, obstacleGeneratorInterval, scoreInterval;
+
+    // Move the car based on direction
+    function moveCar(direction) {
+      if (direction === 'left' && carLane > 0) {
+        carLane--; // Move left if not in leftmost lane
+      } else if (direction === 'right' && carLane < 2) {
+        carLane++; // Move right if not in rightmost lane
+      }
+      car.style.left = lanes[carLane] + 'px'; // Update car's
