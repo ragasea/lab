@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhagavad Gita Wisdom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: #0f0f0f;
+            color: #ffffff;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(180deg, #1a1a1a, transparent);
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #aaaaaa;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .mood-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 40px 20px;
+            gap: 20px;
+        }
+
+        .mood-card {
+            background: #1c1c1c;
+            border-radius: 15px;
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .mood-card:hover {
+            transform: translateY(-5px);
+            background: #252525;
+        }
+
+        .mood-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .mood-card .emoji {
+            font-size: 2rem;
+        }
+
+        .shloka-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: none;
+        }
+
+        .shloka-card {
+            background: #1c1c1c;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .shloka-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .shloka-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shloka-card .text {
+            margin-bottom: 20px;
+        }
+
+        .shloka-card .text p {
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .shloka-card .sanskrit {
+            font-style: italic;
+            color: #ffd700;
+        }
+
+        .shloka-card .hindi {
+            color: #ffaa33;
+        }
+
+        .shloka-card .english {
+            color: #ffffff;
+        }
+
+        .shloka-card .explanation {
+            background: #252525;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #cccccc;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #aaaaaa;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            .mood-card {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bhagavad Gita Wisdom</h1>
+        <p>Explore timeless wisdom through shlokas, tailored to your mood and life’s moments.</p>
+    </header>
+
+    <div class="mood-container">
+        <div class="mood-card" data-mood="happy">
+            <h3>Happy</h3>
+            <div class="emoji">😊🌟</div>
+        </div>
+        <div class="mood-card" data-mood="sadness">
+            <h3>Sadness</h3>
+            <div class="emoji">😔🌧️</div>
+        </div>
+        <div class="mood-card" data-mood="breakup">
+            <h3>Breakup</h3>
+            <div class="emoji">💔</div>
+        </div>
+        <div class="mood-card" data-mood="courage">
+            <h3>Courage</h3>
+            <div class="emoji">🛡️💪</div>
+        </div>
+    </div>
+
+    <div class="shloka-container" id="shloka-container"></div>
+
+    <footer>
+        <p>Inspired by the eternal teachings of the Bhagavad Gita &copy; 2025</p>
+    </footer>
+
+    <script>
+        // Sample shloka data (expand with full Gita text as needed)
+        const shlokas = {
+            happy: [
+                {
+                    chapter: 2,
+                    verse: 14,
+                    sanskrit: "मात्रास्पर्शास्तु कौन्तेय शीतोष्णसुखदुःखदाः। आगमापायिनोऽनित्यास्तांस्तितिक्षस्व भारत॥",
+                    hindi: "हे कुन्तीपुत्र! सुख-दुख, शीत-उष्ण आदि इन्द्रिय और उनके विषयों के संयोग से होते हैं। ये अनित्य हैं, आते-जाते रहते हैं। हे भारत! इनको तुम सहन करो।",
+                    english: "O son of Kunti, the contact between the senses and their objects gives rise to fleeting perceptions of happiness and distress. These are temporary; endure them, O Bharata.",
+                    explanation: "This shloka reminds us that happiness is transient, like waves in the ocean. True joy lies in staying balanced and finding contentment within, regardless of external changes. 🌞",
+                    emoji: "😊🌟"
+                }
+            ],
+            sadness: [
+                {
+                    chapter: 2,
+                    verse: 27,
+                    sanskrit: "जातस्य हि ध्रुवो मृत्युर्ध्रुवं जन्म मृतस्य च। तस्मादपरिहार्येऽर्थे न त्वं शोचितुमर्हसि॥",
+                    hindi: "जो पैदा हुआ है, उसकी मृत्यु निश्चित है और मृत्यु के बाद जन्म भी निश्चित है। इसलिए अपरिहार्य कार्य के लिए तुम्हें शोक नहीं करना चाहिए।",
+                    english: "For one who is born, death is certain; and for one who dies, birth is certain. Therefore, you should not grieve over the inevitable.",
+                    explanation: "This shloka comforts us in times of loss, teaching that life and death are part of an eternal cycle. Grieving is natural, but understanding this truth brings peace. 🌧️",
+                    emoji: "😔🌧️"
+                }
+            ],
+            breakup: [
+                {
+                    chapter: 5,
+                    verse: 29,
+                    sanskrit: "भोक्तारं यज्ञतपसां सर्वलोकमहेश्वरम्। सुहृदं सर्वभूतानां ज्ञात्वा मां शान्तिमृच्छति॥",
+                    hindi: "मुझे सभी यज्ञ और तपों का भोक्ता, सभी लोकों का महान ईश्वर और सभी प्राणियों का सच्चा मित्र जानकर मनुष्य शांति प्राप्त करता है।",
+                    english: "Knowing Me as the enjoyer of all sacrifices and austerities, the Supreme Lord of all worlds, and the friend of all beings, one attains peace.",
+                    explanation: "In heartbreak, this shloka reminds us to turn inward and connect with the divine, our eternal friend, who brings solace and heals our wounds. 💔",
+                    emoji: "💔"
+                }
+            ],
+            courage: [
+                {
+                    chapter: 3,
+                    verse: 30,
+                    sanskrit: "मयि सर्वं समर्प्य कर्मण्यभियुक्तः सदा। निराशीर्निर्ममो भूत्वा युध्यस्व विगतज्वरः॥",
+                    hindi: "सभी कर्म मुझे समर्पित करके, निराशा और ममता से रहित होकर, सदा कर्म में संलग्न रहो और बिना किसी चिंता के युद्ध करो।",
+                    english: "Dedicate all your actions to Me, engage in your duties without attachment or expectation, and fight free from mental fever.",
+                    explanation: "This shloka inspires courage, urging us to act selflessly with focus and strength, trusting in a higher purpose to guide us. 🛡️",
+                    emoji: "🛡️💪"
+                }
+            ]
+        };
+
+        // DOM elements
+        const moodCards = document.querySelectorAll('.mood-card');
+        const shlokaContainer = document.getElementById('shloka-container');
+
+        // Event listeners for mood cards
+        moodCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const mood = card.dataset.mood;
+                displayShloka(mood);
+            });
+        });
+
+        // Function to display shlokas based on mood
+        function displayShloka(mood) {
+            shlokaContainer.innerHTML = '';
+            const selectedShlokas = shlokas[mood] || [];
+
+            if (selectedShlokas.length === 0) {
+                shlokaContainer.innerHTML = '<p>No shlokas available for this mood.</p>';
+                shlokaContainer.style.display = 'block';
+                return;
+            }
+
+            selectedShlokas.forEach(shloka => {
+                const shlokaCard = document.createElement('div');
+                shlokaCard.classList.add('shloka-card');
+                shlokaCard.innerHTML = `
+                    <h2>Chapter ${shloka.chapter}, Verse ${shloka.verse} <span>${shloka.emoji}</span></h2>
+                    <div class="text">
+                        <p class="sanskrit">${shloka.sanskrit}</p>
+                        <p class="hindi">${shloka.hindi}</p>
+                        <p class="english">${shloka.english}</p>
+                    </div>
+                    <div class="explanation">${shloka.explanation}</div>
+                `;
+                shlokaContainer.appendChild(shlokaCard);
+
+                // Trigger animation
+                setTimeout(() => {
+                    shlokaCard.classList.add('show');
+                }, 100);
+            });
+
+            shlokaContainer.style.display = 'block';
+            shlokaContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
