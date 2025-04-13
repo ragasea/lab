@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhagavad Gita Insights</title>
+    <style>
+        /* Basic Reset & Font */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Martel:wght@400;700&display=swap');
+        /* Martel for Sanskrit/Hindi (adjust if needed), Inter for English/UI */
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212; /* Dark background */
+            color: #e0e0e0; /* Light text */
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 5px;
+             /* Subtle gradient text - might not work everywhere */
+            background: linear-gradient(90deg, #eee, #aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #a0a0a0;
+        }
+
+        /* Mood Selection */
+        .mood-selector {
+            margin-bottom: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .mood-button {
+            font-family: 'Inter', sans-serif;
+            background-color: #282828; /* Slightly lighter dark */
+            color: #e0e0e0;
+            border: 1px solid #404040;
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .mood-button:hover {
+            background-color: #383838;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .mood-button:active {
+            transform: translateY(0);
+            background-color: #404040;
+        }
+
+        /* Shloka Display */
+        .shloka-display {
+            background-color: #1e1e1e; /* Darker card background */
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 20px;
+            text-align: left;
+            border: 1px solid #333;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .shloka-display h2 {
+            font-size: 1.2rem;
+            color: #bb86fc; /* Accent color */
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .shloka-section {
+            margin-bottom: 25px;
+            padding-left: 15px;
+            border-left: 3px solid #bb86fc; /* Accent border */
+        }
+
+        .shloka-section h3 {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .shloka-text {
+            font-size: 1.1rem;
+            color: #cccccc;
+            line-height: 1.7;
+        }
+
+        .shloka-text.sanskrit {
+            font-family: 'Martel', serif;
+            font-size: 1.3rem; /* Larger for Devanagari */
+             color: #f0e68c; /* Khaki-like color for Sanskrit */
+        }
+         .shloka-text.hindi {
+            font-family: 'Martel', serif;
+            font-size: 1.2rem; /* Larger for Devanagari */
+        }
+
+        .explanation {
+            font-style: italic;
+            color: #a0a0a0;
+            margin-top: 10px;
+            font-size: 0.95rem;
+        }
+
+        .emojis {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-top: 25px;
+        }
+
+        /* Initial Message / Loading */
+        #initial-message {
+            color: #777;
+            font-style: italic;
+        }
+
+        /* Footer */
+         .footer {
+            margin-top: 50px;
+            font-size: 0.85rem;
+            color: #666;
+         }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <h1>Bhagavad Gita Insights</h1>
+            <p>Find wisdom for your state of mind.</p>
+        </header>
+
+        <div class="mood-selector" id="moodSelector">
+            <button class="mood-button" data-mood="happy">😊 Happy</button>
+            <button class="mood-button" data-mood="sad">😢 Sadness</button>
+            <button class="mood-button" data-mood="confused">🤔 Confused</button>
+            <button class="mood-button" data-mood="anxious">😟 Anxious / Fearful</button>
+            <button class="mood-button" data-mood="angry">😠 Angry</button>
+            <button class="mood-button" data-mood="motivated">🚀 Motivated / Duty</button>
+             <button class="mood-button" data-mood="breakup">💔 Breakup / Loss</button>
+             <button class="mood-button" data-mood="peace">🧘 Peace / Calm</button>
+            <!-- Add more mood buttons as needed -->
+        </div>
+
+        <div class="shloka-display" id="shlokaDisplay">
+            <h2 id="shloka-identifier">Chapter X, Verse Y</h2>
+
+            <div class="shloka-section">
+                <h3>Sanskrit</h3>
+                <p class="shloka-text sanskrit" id="sanskrit-text">...</p>
+            </div>
+
+            <div class="shloka-section">
+                <h3>Hindi</h3>
+                <p class="shloka-text hindi" id="hindi-text">...</p>
+            </div>
+
+            <div class="shloka-section">
+                <h3>English</h3>
+                <p class="shloka-text" id="english-text">...</p>
+            </div>
+
+            <div class="shloka-section">
+                <h3>Explanation</h3>
+                <p class="explanation" id="explanation-text">...</p>
+            </div>
+
+            <div class="emojis" id="emoji-display">
+                <!-- Emojis will be loaded here -->
+            </div>
+        </div>
+
+        <div id="initial-message">
+            <p>Select a mood above to see a relevant Shloka.</p>
+        </div>
+
+        <footer class="footer">
+            <p>Based on the timeless wisdom of the Bhagavad Gita.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Shloka Data ---
+        // IMPORTANT: This is a VERY small sample. A full app needs all 700 shlokas with translations and tags.
+        const gitaShlokas = [
+            {
+                chapter: 2, verse: 7,
+                sanskrit: "कार्पण्यदोषोपहतस्वभावः पृच्छामि त्वां धर्मसम्मूढचेताः । यच्छ्रेयः स्यान्निश्चितं ब्रूहि तन्मे शिष्यस्तेऽहं शाधि मां त्वां प्रपन्नम् ॥",
+                hindi: "कायरता रूपी दोषसे उपहत हुए स्वभाववाला तथा धर्मके विषयमें मोहितचित्त हुआ मैं आपसे पूछता हूँ कि जो साधन निश्चित कल्याणकारक हो, वह मेरे लिये कहिये; क्योंकि मैं आपका शिष्य हूँ, इसलिये आपके शरण हुए मुझको शिक्षा दीजिये ।",
+                english: "My heart is overcome by the flaw of pity, and my mind is confused about Dharma (duty). I ask You - tell me decisively what is good for me. I am Your disciple. Instruct me, who has taken refuge in You.",
+                moods: ["confused", "sad", "seeking_guidance"],
+                explanation: "Arjuna expresses his deep confusion and distress, surrendering to Krishna and asking for clear guidance on his duty.",
+                emojis: ["🤔", "🙏", "😥"]
+            },
+            {
+                chapter: 2, verse: 14,
+                sanskrit: "मात्रास्पर्शास्तु कौन्तेय शीतोष्णसुखदुःखदाः । आगमापायिनोऽनित्यास्तांस्तितिक्षस्व भारत ॥",
+                hindi: "हे कुन्तीपुत्र! सर्दी-गर्मी और सुख-दुःख देने वाले इन्द्रिय और विषयोंके संयोग तो उत्पत्ति-विनाशशील और अनित्य हैं, इसलिये हे भारत! उनको तू सहन कर ।",
+                english: "O son of Kunti, the nonpermanent appearance of happiness and distress, and their disappearance in due course, are like the appearance and disappearance of winter and summer seasons. They arise from sense perception, O scion of Bharata, and one must learn to tolerate them without being disturbed.",
+                moods: ["anxious", "sad", "breakup", "peace"],
+                explanation: "Krishna advises Arjuna to tolerate temporary happiness and distress, as they are fleeting like seasons and arise from sensory contact.",
+                emojis: ["🧘", "↔️", "☀️", "❄️"]
+            },
+            {
+                chapter: 2, verse: 47,
+                sanskrit: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन । मा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि ॥",
+                hindi: "कर्म करनेमें ही तेरा अधिकार है, उसके फलोंमें कभी नहीं । इसलिये तू कर्मोंके फलका हेतु मत बन और तेरी कर्म न करनेमें भी आसक्ति न हो ।",
+                english: "You have a right to perform your prescribed duties, but you are not entitled to the fruits of your actions. Never consider yourself the cause of the results of your activities, nor be attached to inaction.",
+                moods: ["motivated", "anxious", "confused", "duty"],
+                explanation: "The famous verse on Nishkama Karma - act without attachment to the results. Focus on your duty, not the outcome.",
+                emojis: ["🎯", "💪", "🚫", "🍎"]
+            },
+             {
+                chapter: 2, verse: 48,
+                sanskrit: "योगस्थः कुरु कर्माणि सङ्गं त्यक्त्वा धनञ्जय | सिद्ध्यसिद्ध्योः समो भूत्वा समत्वं योग उच्यते ||",
+                hindi: "हे धनञ्जय ! तू आसक्तिको त्यागकर तथा सिद्धि और असिद्धिमें समान बुद्धिवाला होकर योगमें स्थित हुआ कर्तव्य कर्मोंको कर; क्योंकि समत्व ही योग कहलाता है ।",
+                english: "Perform your duty equipoised, O Arjuna, abandoning all attachment to success or failure. Such equanimity is called yoga.",
+                moods: ["motivated", "peace", "anxious", "duty"],
+                explanation: "Perform actions while remaining steady in yoga, abandoning attachment, and being balanced in success and failure. This evenness of mind is called Yoga.",
+                emojis: ["🧘‍♂️", "⚖️", "💼"]
+             },
+             {
+                chapter: 2, verse: 62,
+                sanskrit: "ध्यायतो विषयान्पुंसः सङ्गस्तेषूपजायते । सङ्गात्सञ्जायते कामः कामात्क्रोधोऽभिजायते ॥",
+                hindi: "विषयोंका चिन्तन करनेवाले पुरुषकी उन विषयोंमें आसक्ति हो जाती है, आसक्तिसे कामना उत्पन्न होती है और कामनामें विघ्न पड़नेसे क्रोध उत्पन्न होता है ।",
+                english: "While contemplating the objects of the senses, a person develops attachment for them, and from such attachment lust develops, and from lust anger arises.",
+                moods: ["angry", "anxious", "breakup"],
+                explanation: "Krishna explains the chain reaction leading from contemplation of sense objects to attachment, desire, and ultimately anger when desire is frustrated.",
+                emojis: ["🤔", "➡️", "😍", "➡️", "😠"]
+             },
+              {
+                chapter: 2, verse: 63,
+                sanskrit: "क्रोधाद्भवति संमोहः संमोहात्स्मृतिविभ्रमः | स्मृतिभ्रंशाद् बुद्धिनाशो बुद्धिनाशात्प्रणश्यति ||",
+                hindi: "क्रोधसे अत्यन्त मूढ़भाव उत्पन्न हो जाता है, मूढ़भावसे स्मृतिमें भ्रम हो जाता है, स्मृतिमें भ्रम हो जानेसे बुद्धिका नाश हो जाता है और बुद्धिका नाश हो जानेसे वह पुरुष अपनी स्थितिसे गिर जाता है ।",
+                english: "From anger, complete delusion arises, and from delusion, bewilderment of memory. When memory is bewildered, intelligence is lost, and when intelligence is lost, one falls down again into the material pool.",
+                moods: ["angry", "confused"],
+                explanation: "The destructive cascade continues: anger leads to delusion, delusion to loss of memory, loss of memory to loss of reason, and loss of reason leads to ruin.",
+                emojis: ["😠", "➡️", "😵‍💫", "➡️", "🤯", "➡️", "📉"]
+              },
+             {
+                chapter: 6, verse: 5,
+                sanskrit: "उद्धरेदात्मनात्मानं नात्मानमवसादयेत् । आत्मैव ह्यात्मनो बन्धुरात्मैव रिपुरात्मनः ॥",
+                hindi: "मनुष्यको चाहिये कि वह अपने-द्वारा अपना उद्धार करे, अपना पतन न करे; क्योंकि मनुष्य आप ही अपना मित्र है और आप ही अपना शत्रु है ।",
+                english: "One must elevate oneself by one's own mind, and not degrade oneself. The mind is the friend of the conditioned soul, and its enemy as well.",
+                moods: ["motivated", "sad", "breakup"],
+                explanation: "Elevate yourself through your own efforts; do not degrade yourself. For the mind can be your greatest friend or your worst enemy.",
+                emojis: ["💪", "🧠", "📈", "🤝", "⚔️"]
+             },
+              {
+                chapter: 9, verse: 22,
+                sanskrit: "अनन्याश्चिन्तयन्तो मां ये जनाः पर्युपासते | तेषां नित्याभियुक्तानां योगक्षेमं वहाम्यहम् ||",
+                hindi: "जो अनन्य भक्त मेरा चिन्तन करते हुए मुझे सब ओरसे भजते हैं, उन नित्य निरन्तर मेरा चिन्तन करने वालोंका योगक्षेम मैं स्वयं वहन करता हूँ।",
+                english: "But those who always worship Me with exclusive devotion, meditating on My transcendental form – to them I carry what they lack, and I preserve what they have.",
+                moods: ["happy", "peace", "motivated", "anxious"],
+                explanation: "Krishna assures that He personally takes care of the needs and security of those who are constantly devoted to Him without deviation.",
+                emojis: ["🙏", "💖", "🕉️", "🛡️"]
+              },
+              {
+                chapter: 12, verse: 13-14, // Combining two verses for context
+                sanskrit: "अद्वेष्टा सर्वभूतानां मैत्रः करुण एव च | निर्ममो निरहंकारः समदुःखसुखः क्षमी || संतुष्टः सततं योगी यतात्मा दृढनिश्चयः | मय्यर्पितमनोबुद्धिर्यो मद्भक्तः स मे प्रियः ||",
+                hindi: "जो सम्पूर्ण प्राणियोंमें द्वेषभावसे रहित, सबका मित्र और दयालु है तथा ममता और अहंकारसे रहित, सुख-दुःखोंकी प्राप्तिमें सम और क्षमावान् है । तथा जो योगी निरन्तर सन्तुष्ट है, मन और इन्द्रियोंसहित शरीरको वशमें किये हुए है और मुझमें दृढ़ निश्चयवाला है - वह मुझमें अर्पण किये हुए मन-बुद्धिवाला मेरा भक्त मुझको प्रिय है ।",
+                english: "One who is not envious but is a kind friend to all living entities, who does not think himself a proprietor and is free from false ego, who is equal in both happiness and distress, who is tolerant, always satisfied, self-controlled, and engaged in devotional service with determination, his mind and intelligence fixed on Me – such a devotee of Mine is very dear to Me.",
+                moods: ["happy", "peace", "motivated"],
+                explanation: "Describes the qualities of a devotee dear to Krishna: non-envious, kind, free from ego, equipoised in joy and sorrow, tolerant, content, self-controlled, and dedicated.",
+                emojis: ["😊", "💖", "🤝", "🧘‍♂️", "⚖️"]
+              },
+              {
+                chapter: 18, verse: 66,
+                sanskrit: "सर्वधर्मान्परित्यज्य मामेकं शरणं व्रज | अहं त्वा सर्वपापेभ्यो मोक्षयिष्यामि मा शुचः ||",
+                hindi: "सम्पूर्ण धर्मोंका आश्रय छोड़कर तू केवल मेरी शरणमें आ जा । मैं तुझे सम्पूर्ण पापोंसे मुक्त कर दूँगा, तू शोक मत कर ।",
+                english: "Abandon all varieties of religion and just surrender unto Me. I shall deliver you from all sinful reactions. Do not fear.",
+                moods: ["sad", "anxious", "confused", "breakup", "peace", "seeking_guidance"],
+                explanation: "The ultimate instruction: Abandon all other duties and paths and surrender completely to the Supreme. Krishna promises liberation and freedom from all sins and anxieties.",
+                emojis: ["🙏", "🛐", "🕊️", "😌", "❤️"]
+              }
+        ];
+
+        // --- DOM Elements ---
+        const moodSelector = document.getElementById('moodSelector');
+        const shlokaDisplay = document.getElementById('shlokaDisplay');
+        const initialMessage = document.getElementById('initial-message');
+
+        const shlokaIdentifier = document.getElementById('shloka-identifier');
+        const sanskritText = document.getElementById('sanskrit-text');
+        const hindiText = document.getElementById('hindi-text');
+        const englishText = document.getElementById('english-text');
+        const explanationText = document.getElementById('explanation-text');
+        const emojiDisplay = document.getElementById('emoji-display');
+
+        // --- Event Listener ---
+        moodSelector.addEventListener('click', (event) => {
+            if (event.target.classList.contains('mood-button')) {
+                const selectedMood = event.target.dataset.mood;
+                displayRelevantShloka(selectedMood);
+            }
+        });
+
+        // --- Function to Display Shloka ---
+        function displayRelevantShloka(mood) {
+            // Filter shlokas that contain the selected mood in their 'moods' array
+            const relevantShlokas = gitaShlokas.filter(shloka =>
+                shloka.moods.includes(mood)
+            );
+
+            if (relevantShlokas.length > 0) {
+                // Select a random shloka from the relevant ones
+                const randomIndex = Math.floor(Math.random() * relevantShlokas.length);
+                const shloka = relevantShlokas[randomIndex];
+
+                // Update the display area
+                shlokaIdentifier.textContent = `Chapter ${shloka.chapter}, Verse ${shloka.verse}`;
+                sanskritText.textContent = shloka.sanskrit;
+                hindiText.textContent = shloka.hindi;
+                englishText.textContent = shloka.english;
+                explanationText.textContent = shloka.explanation;
+                emojiDisplay.textContent = shloka.emojis.join(' '); // Join emojis with space
+
+                // Show the display area and hide the initial message
+                shlokaDisplay.style.display = 'block';
+                initialMessage.style.display = 'none';
+
+                 // Optional: Scroll smoothly to the shloka
+                shlokaDisplay.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+
+            } else {
+                // Handle case where no shloka matches the mood (in this limited dataset)
+                initialMessage.textContent = `No specific shloka found for '${mood}' in this sample. Try another mood!`;
+                initialMessage.style.display = 'block';
+                shlokaDisplay.style.display = 'none';
+            }
+        }
+
+    </script>
+
+</body>
+</html>
