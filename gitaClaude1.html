@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhagavad Gita by Mood</title>
+    <style>
+        :root {
+            --primary-color: #e9e2d9;
+            --secondary-color: #8c6239;
+            --accent-color: #ffa726;
+            --text-color: #333;
+            --light-text: #766e66;
+            --bg-color: #f9f6f2;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 32px;
+        }
+        
+        h2 {
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 24px;
+        }
+        
+        .search-container {
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .search-input {
+            width: 100%;
+            max-width: 600px;
+            padding: 14px 20px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            box-shadow: 0 0 0 2px var(--accent-color);
+        }
+        
+        .moods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .mood-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        
+        .mood-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .mood-emoji {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .mood-name {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .shloka-container {
+            background-color: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+        
+        .shloka-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .current-mood-emoji {
+            font-size: 36px;
+            margin-right: 15px;
+        }
+        
+        .current-mood-name {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .shloka-content {
+            margin-bottom: 25px;
+        }
+        
+        .shloka-sanskrit {
+            font-family: 'Sanskrit Text', serif;
+            font-size: 20px;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
+        .shloka-hindi {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .shloka-english {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .shloka-citation {
+            font-style: italic;
+            color: var(--light-text);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .shloka-explanation {
+            background-color: var(--primary-color);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+        
+        .explanation-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .nav-button {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+        
+        .nav-button:hover {
+            background-color: #ddd6ca;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+            color: var(--light-text);
+            font-size: 14px;
+        }
+        
+        .back-to-moods {
+            display: inline-flex;
+            align-items: center;
+            color: var(--secondary-color);
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .back-to-moods svg {
+            margin-right: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .moods-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .shloka-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Bhagavad Gita by Mood</div>
+    </header>
+    
+    <div class="container">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search for a mood or scenario..." id="searchMood">
+        </div>
+        
+        <section id="moodsSection">
+            <h1>Find wisdom for every moment</h1>
+            <p>Discover Bhagavad Gita shlokas based on your current mood or situation</p>
+            
+            <div class="moods-grid" id="moodsGrid">
+                <!-- Moods will be populated from JavaScript -->
+            </div>
+        </section>
+        
+        <section id="shlokaSection" class="shloka-container">
+            <div class="back-to-moods" onclick="showMoods()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back to moods
+            </div>
+            
+            <div class="shloka-header">
+                <span class="current-mood-emoji" id="currentMoodEmoji"></span>
+                <span class="current-mood-name" id="currentMoodName"></span>
+            </div>
+            
+            <div class="shloka-content">
+                <div class="shloka-sanskrit" id="shlokaSanskrit"></div>
+                <div class="shloka-hindi" id="shlokaHindi"></div>
+                <div class="shloka-english" id="shlokaEnglish"></div>
+                <div class="shloka-citation" id="shlokaCitation"></div>
+                
+                <div class="shloka-explanation">
+                    <div class="explanation-title">How this helps:</div>
+                    <div id="shlokaExplanation"></div>
+                </div>
+            </div>
+            
+            <div class="navigation-buttons">
+                <button class="nav-button" onclick="previousShloka()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 8px;">
+                        <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Previous
+                </button>
+                <button class="nav-button" onclick="nextShloka()">
+                    Next
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 8px;">
+                        <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>© 2025 Bhagavad Gita by Mood | All shlokas from the sacred Bhagavad Gita</p>
+    </footer>
+    
+    <script>
+        // Moods Database with Emojis
+        const moods = [
+            { name: "Happy", emoji: "😊", id: "happy" },
+            { name: "Sad", emoji: "😢", id: "sad" },
+            { name: "Anxious", emoji: "😰", id: "anxious" },
+            { name: "Confused", emoji: "😕", id: "confused" },
+            { name: "Motivated", emoji: "💪", id: "motivated" },
+            { name: "Angry", emoji: "😡", id: "angry" },
+            { name: "Peaceful", emoji: "😌", id: "peaceful" },
+            { name: "Fearful", emoji: "😨", id: "fearful" },
+            { name: "Grateful", emoji: "🙏", id: "grateful" },
+            { name: "Lost", emoji: "🔍", id: "lost" },
+            { name: "Hopeful", emoji: "🌱", id: "hopeful" },
+            { name: "Discouraged", emoji: "😞", id: "discouraged" },
+            { name: "Confident", emoji: "🦁", id: "confident" },
+            { name: "Doubtful", emoji: "🤔", id: "doubtful" },
+            { name: "Jealous", emoji: "😒", id: "jealous" },
+            { name: "Content", emoji: "😊", id: "content" },
+            { name: "Overwhelmed", emoji: "😩", id: "overwhelmed" },
+            { name: "Inspired", emoji: "✨", id: "inspired" },
+            { name: "Heartbroken", emoji: "💔", id: "heartbroken" },
+            { name: "Lonely", emoji: "🕰️", id: "lonely" },
+            { name: "Stressed", emoji: "😫", id: "stressed" },
+            { name: "Grateful", emoji: "🙏", id: "grateful" },
+            { name: "Ambitious", emoji: "🚀", id: "ambitious" },
+            { name: "Spiritual", emoji: "🧘", id: "spiritual" },
+            { name: "New Beginning", emoji: "🌅", id: "new-beginning" },
+            { name: "Failure", emoji: "📉", id: "failure" },
+            { name: "Success", emoji: "🏆", id: "success" },
+            { name: "Betrayed", emoji: "🔪", id: "betrayed" },
+            { name: "Uncertain", emoji: "❓", id: "uncertain" },
+            { name: "Purposeful", emoji: "🎯", id: "purposeful" },
+            { name: "Attached", emoji: "🔗", id: "attached" },
+            { name: "Detached", emoji: "🧘‍♂️", id: "detached" },
+            { name: "Disciplined", emoji: "⏰", id: "disciplined" },
+            { name: "Learning", emoji: "📚", id: "learning" },
+            { name: "Leading", emoji: "👑", id: "leading" },
+            { name: "Challenged", emoji: "🏋️", id: "challenged" },
+            { name: "Growth", emoji: "📈", id: "growth" },
+            { name: "Balanced", emoji: "⚖️", id: "balanced" },
+            { name: "Passionate", emoji: "🔥", id: "passionate" },
+            { name: "Calm", emoji: "🌊", id: "calm" },
+            { name: "Focused", emoji: "🔭", id: "focused" },
+            { name: "Regretful", emoji: "😔", id: "regretful" },
+            { name: "Brave", emoji: "🦸", id: "brave" },
+            { name: "Nurturing", emoji: "🌱", id: "nurturing" },
+            { name: "Resilient", emoji: "🌿", id: "resilient" },
+            { name: "Envious", emoji: "👀", id: "envious" },
+            { name: "Selfless", emoji: "🤲", id: "selfless" },
+            { name: "Duty-bound", emoji: "📋", id: "duty" },
+            { name: "Crisis", emoji: "🌪️", id: "crisis" },
+            { name: "Seeking Purpose", emoji: "🧭", id: "seeking-purpose" },
+            { name: "Indecisive", emoji: "🤷", id: "indecisive" },
+            { name: "Dedicated", emoji: "🔒", id: "dedicated" },
+            { name: "Skeptical", emoji: "🔬", id: "skeptical" },
+            { name: "Family Issues", emoji: "👪", id: "family" },
+            { name: "Work Issues", emoji: "💼", id: "work" },
+            { name: "Friendship", emoji: "👭", id: "friendship" },
+            { name: "Religious", emoji: "🕉️", id: "religious" },
+            { name: "Victorious", emoji: "🏆", id: "victorious" },
+            { name: "Defeated", emoji: "🥀", id: "defeated" },
+            { name: "Addicted", emoji: "⛓️", id: "addicted" },
+            { name: "Mindful", emoji: "🧠", id: "mindful" },
+            { name: "Righteous", emoji: "⚡", id: "righteous" },
+            { name: "Seeking Truth", emoji: "🔍", id: "truth" },
+            { name: "Struggling", emoji: "🥊", id: "struggling" },
+            { name: "Health Issues", emoji: "🏥", id: "health" },
+            { name: "Financial Worry", emoji: "💰", id: "financial" },
+            { name: "Self-Discovery", emoji: "🔮", id: "self-discovery" },
+            { name: "Selfish", emoji: "🦹", id: "selfish" },
+            { name: "Humble", emoji: "🙇", id: "humble" },
+            { name: "Honest", emoji: "✓", id: "honest" },
+            { name: "Dishonest", emoji: "❌", id: "dishonest" },
+            { name: "Awakened", emoji: "🌞", id: "awakened" },
+            { name: "Sleepy", emoji: "😴", id: "sleepy" },
+            { name: "Tempted", emoji: "🍪", id: "tempted" },
+            { name: "Curious", emoji: "🧐", id: "curious" },
+            { name: "Discriminating", emoji: "⚖️", id: "discriminating" },
+            { name: "Devotional", emoji: "🙏", id: "devotional" },
+            { name: "Determined", emoji: "⚡", id: "determined" },
+            { name: "Merciful", emoji: "💖", id: "merciful" },
+            { name: "Impermanence", emoji: "⏳", id: "impermanence" },
+            { name: "Grief", emoji: "😭", id: "grief" },
+            { name: "Joy", emoji: "🎉", id: "joy" },
+            { name: "Wise", emoji: "🦉", id: "wise" },
+            { name: "Present", emoji: "⏱️", id: "present" },
+            { name: "Past-dwelling", emoji: "⌛", id: "past" },
+            { name: "Future-anxious", emoji: "🔮", id: "future" },
+            { name: "Breakup", emoji: "💔", id: "breakup" },
+            { name: "New Love", emoji: "❤️", id: "new-love" },
+            { name: "Enlightened", emoji: "💫", id: "enlightened" },
+            { name: "Competitive", emoji: "🏁", id: "competitive" },
+            { name: "Cooperative", emoji: "🤝", id: "cooperative" },
+            { name: "Surrendered", emoji: "🏳️", id: "surrendered" },
+            { name: "Resistant", emoji: "⚔️", id: "resistant" },
+            { name: "Egotistical", emoji: "👑", id: "egotistical" },
+            { name: "Self-Aware", emoji: "🪞", id: "self-aware" },
+            { name: "Transforming", emoji: "🦋", id: "transforming" },
+            { name: "Trapped", emoji: "🕸️", id: "trapped" },
+            { name: "Free", emoji: "🕊️", id: "free" },
+            { name: "Judgmental", emoji: "👨‍⚖️", id: "judgmental" },
+            { name: "Accepting", emoji: "🫂", id: "accepting" },
+            { name: "Worldly", emoji: "🌎", id: "worldly" },
+            { name: "Finding Balance", emoji: "☯️", id: "balance" },
+            { name: "Searching", emoji: "🔎", id: "searching" },
+            { name: "Karmic", emoji: "♻️", id: "karmic" },
+            { name: "Desiring", emoji: "🌟", id: "desiring" },
+            { name: "Contentment", emoji: "😌", id: "contentment" }
+        ];
+
+        // Bhagavad Gita Shlokas database with Sanskrit, Hindi, and English translations
+        const shlokas = {
+            "happy": [
+                {
+                    sanskrit: "सुखदुःखे समे कृत्वा लाभालाभौ जयाजयौ। ततो युद्धाय युज्यस्व नैवं पापमवाप्स्यसि॥",
+                    hindi: "सुख और दुःख को समान समझकर, लाभ और हानि, जीत और हार को समान मानकर युद्ध कर। इस प्रकार से तू पाप का भागी नहीं होगा।",
+                    english: "Having made pleasure and pain, gain and loss, victory and defeat the same, engage in battle for the sake of battle; thus you will incur no sin.",
+                    citation: "Bhagavad Gita, Chapter 2, Verse 38",
+                    explanation: "This verse reminds us that true happiness comes from equanimity - treating success and failure, joy and sorrow as equal. When we're happy, this teaching helps us remain grounded, knowing that all emotions are temporary. This balanced perspective brings lasting contentment rather than fleeting happiness dependent on circumstances."
+                },
+                {
+                    sanskrit: "प्रशान्तमनसं ह्येनं योगिनं सुखमुत्तमम्। उपैति शान्तरजसं ब्रह्मभूतमकल्मषम्॥",
+                    hindi: "क्योंकि शांत मन वाले इस योगी को, जिसका रजोगुण शांत हो गया है, जो ब्रह्म से एकीभूत हो गया है और जिसके सारे पाप नष्ट हो गए हैं, उत्तम सुख प्राप्त होता है।",
+                    english: "The yogi whose mind is peaceful, whose passion is calmed, who has become Brahman, and who is free from sin experiences the supreme happiness.",
+                    citation: "Bhagavad Gita, Chapter 6, Verse 27",
+                    explanation: "This verse speaks to the profound happiness that comes from inner peace and spiritual connection. When you're feeling happy, this teaching encourages you to deepen that happiness through meditation and spiritual practices, transforming momentary pleasure into lasting joy by connecting with your higher self."
+                }
+            ],
+            "sad": [
+                {
+                    sanskrit: "अशोच्यानन्वशोचस्त्वं प्रज्ञावादांश्च भाषसे। गतासूनगतासूंश्च नानुशोचन्ति पण्डिताः॥",
+                    hindi: "तू अशोच्य (न शोक करने योग्य) के लिए शोक करता है और पंडितों की तरह बातें करता है। ज्ञानी पुरुष न तो मृतों के लिए शोक करते हैं और न ही जीवितों के लिए।",
+                    english: "You grieve for those who should not be grieved for, yet you speak words of wisdom. The wise grieve neither for the living nor for the dead.",
+                    citation: "Bhagavad Gita, Chapter 2, Verse 11",
+                    explanation: "When you're feeling sad, this verse reminds you that attachment to temporary things inevitably brings sorrow. The teaching encourages you to look beyond the transient nature of life and connect with the eternal. By understanding the impermanence of all things, you can find peace even in sadness, knowing that this too shall pass."
+                },
+                {
+                    sanskrit: "यं हि न व्यथयन्त्येते पुरुषं पुरुषर्षभ। समदुःखसुखं धीरं सोऽमृतत्वाय कल्पते॥",
+                    hindi: "हे पुरुषश्रेष्ठ! जिस धीर पुरुष को सुख और दुःख दोनों समान हैं और जो इन दोनों से विचलित नहीं होता, वह मोक्ष का अधिकारी बनता है।",
+                    english: "O best among men, the person who is not disturbed by happiness and distress and is steady in both is certainly eligible for liberation.",
+                    citation: "Bhagavad Gita, Chapter 2, Verse 15",
+                    explanation: "When you're sad, this verse offers profound comfort by teaching that embracing both joy and sorrow equally is the path to inner freedom. Instead of fighting against sadness, see it as part of life's complete experience. This balanced perspective helps you find strength during difficult times and moves you toward spiritual growth through emotional equanimity."
+                }
+            ],
+            "anxious": [
+                {
+                    sanskrit: "प्रकृतेः क्रियमाणानि गुणैः कर्माणि सर्वशः। अहङ्कारविमूढात्मा कर्ताहमिति मन्यते॥",
+                    hindi: "वास्तव में प्रकृति के गुणों द्वारा सभी कर्म किए जाते हैं, फिर भी अहंकार से मोहित व्यक्ति सोचता है, 'मैं कर्ता हूँ।'",
+                    english: "All activities are carried out by the three modes of material nature. But in ignorance, one who is confused by false ego thinks oneself to be the doer.",
+                    citation: "Bhagavad Gita, Chapter 3, Verse 27",
+                    explanation: "When anxiety overtakes you, this verse offers relief by reminding you that you're not personally responsible for controlling everything. Much of what happens is beyond our control and part of nature's process. Recognizing this truth can help release the burden of constant worry and perfectionism that fuels anxiety, allowing you to act with awareness while surrendering outcomes."
+                },
+                {
+                    sanskrit: "योगस्थः कुरु कर्माणि सङ्गं त्यक्त्वा धनञ्जय। सिद्ध्यसिद्ध्योः समो भूत्वा समत्वं योग उच्यते॥",
+                    hindi: "हे धनंजय! आसक्ति को त्यागकर, सफलता और असफलता में समभाव रखते हुए, योग में स्थित होकर कर्म करो। इस समत्व को ही योग कहते हैं।",
+                    english: "Perform your duty equipoised, O Arjuna, abandoning all attachment to success or failure. Such equanimity is called yoga.",
+                    citation: "Bhagavad Gita, Chapter 2, Verse 48",
+                    explanation: "When anxiety stems from fear of outcomes, this verse provides a practical approach to finding peace. By focusing on doing your best without obsessing over results, you can reduce anxiety significantly. This teaching encourages 'action without attachment' - doing what's right while releasing the need to control everything, which is particularly helpful during uncertain times."
+                }
+            ],
+            "confused": [
+                {
+                    sanskrit: "संशयात्मा विनश्यति नायं लोको'स्ति न परो न सुखं संशयात्मनः॥",
+                    hindi: "संशय से भरे हुए व्यक्ति का पतन होता है। उसे न इस लोक का सुख मिलता है, न परलोक का और न आनंद ही।",
+                    english: "A person with doubts can never be happy in this world or the next. The self-doubting person achieves neither material happiness nor spiritual success.",
+                    citation: "Bhagavad Gita, Chapter 4, Verse 40",
+                    explanation: "When you're confused or doubting, this verse highlights how indecision and overthinking can paralyze progress in all areas of life. It encourages you to seek clarity through knowledge and commitment to a path. Rather than endlessly questioning, the teaching suggests studying deeper, consulting wise guides, and then making decisive choices to overcome confusion."
+                },
+                {
+                    sanskrit: "अर्जुन उवाच - कार्पण्यदोषोपहतस्वभावः पृच्छामि त्वां धर्मसम्मूढचेताः। यच्छ्रेयः स्यान्निश्चितं ब्रूहि तन्मे शिष्यस्तेऽहं शाधि मां त्वां प्रपन्नम्॥",
+                    hindi: "अर्जुन ने कहा - कायरता के दोष से मेरा स्वभाव दूषित हो गया है और मैं धर्म के विषय में मोहित हो गया हूँ। मैं आपसे पूछता हूँ कि जो निश्चित रूप से कल्याणकारी हो, वह मुझे बताइए। मैं आपका शिष्य हूँ और आपकी शरण में हूँ, मुझे शिक्षा दीजिए।",
+                    english: "Arjuna said: Now I am confused about my duty and have lost all composure because of weakness. In this condition, I am asking You to tell me clearly what is best for me. Now I am Your disciple, and a soul surrendered unto You. Please instruct me.",
+                    citation: "Bhagavad Gita, Chapter 2, Verse 7",
+                    explanation: "This verse validates feelings of confusion while offering a solution: seeking guidance from trusted wisdom sources. When you're uncertain about your path, this teaching encourages humility - acknowledging your confusion and turning to spiritual teachings, mentors, or inner wisdom for direction. It shows that even great warriors like Arjuna experience confusion, and the first step toward clarity is acknowledging your need for guidance."
+                }
+            ],
+            "motivated": [
+                {
+                    sanskrit: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन। मा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि॥",
+                    hindi: "कर्म करने में ही तुम्हारा अधिकार है, फलों में कभी नहीं। इसलिए तुम कर्मफल के हेतु मत बनो, और अकर्म (कर्म न करने) में भी तुम्हारी आसक्ति न हो।",
