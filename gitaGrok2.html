@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhagavad Gita Shloka Spinner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        #spinner {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ff4500;
+            cursor: pointer;
+            animation: spin 1s linear infinite, move 3s ease-in-out infinite;
+            user-select: none;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes move {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(100px, -50px); }
+            50% { transform: translate(-100px, 50px); }
+            75% { transform: translate(50px, 100px); }
+            100% { transform: translate(0, 0); }
+        }
+        #shloka-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            text-align: center;
+            display: none;
+        }
+        #shloka-text {
+            font-size: 18px;
+            font-style: italic;
+            color: #333;
+        }
+        #explanation {
+            font-size: 16px;
+            color: #555;
+            margin-top: 10px;
+        }
+        #emoji {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+        h1 {
+            color: #2c3e50;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bhagavad Gita Shloka Spinner 🕉️</h1>
+    <div id="spinner" onclick="showShloka()">0</div>
+    <div id="shloka-container">
+        <p id="shloka-text"></p>
+        <p id="explanation"></p>
+        <p id="emoji"></p>
+    </div>
+
+    <script>
+        // Array of Bhagavad Gita shlokas with English translation, explanation, and emoji
+        const shlokas = [
+            {
+                text: "Chapter 2, Verse 47: You have a right to perform your prescribed duty, but you are not entitled to the fruits of action. Never consider yourself the cause of the results of your activities, and never be attached to not doing your duty.",
+                explanation: "This verse teaches the principle of detached action. Perform your duties diligently without attachment to the outcomes, trusting that the results are not entirely in your control. It encourages selfless work and mindfulness in action.",
+                emoji: "⚖️🙏"
+            },
+            {
+                text: "Chapter 3, Verse 19: Therefore, without being attached to the fruits of activities, one should act as a matter of duty, for by working without attachment one attains the Supreme.",
+                explanation: "This verse emphasizes performing duties selflessly to attain spiritual liberation. By focusing on the action itself rather than its rewards, one aligns with the path to the divine.",
+                emoji: "🌟🛕"
+            },
+            {
+                text: "Chapter 4, Verse 7: Whenever and wherever there is a decline in religious practice, O descendant of Bharata, and a predominant rise of irreligion—at that time I descend Myself.",
+                explanation: "Lord Krishna explains that He incarnates on Earth whenever righteousness declines to restore balance and protect dharma (duty and morality). It signifies divine intervention in times of crisis.",
+                emoji: "🛡️🌍"
+            },
+            {
+                text: "Chapter 6, Verse 16: There is no possibility of one’s becoming a yogi, O Arjuna, if one eats too much or eats too little, sleeps too much or does not sleep enough.",
+                explanation: "This verse highlights the importance of balance in life. Moderation in eating, sleeping, and other activities is essential for spiritual progress and self-discipline.",
+                emoji: "⚖️🧘‍♂️"
+            },
+            {
+                text: "Chapter 9, Verse 22: But those who always worship Me with exclusive devotion, meditating on My transcendental form—to them I carry what they lack, and I preserve what they have.",
+                explanation: "Krishna promises to provide for and protect those who devote themselves fully to Him. This verse underscores the power of sincere devotion and surrender to the divine.",
+                emoji: "🙏💖"
+            },
+            {
+                text: "Chapter 18, Verse 66: Abandon all varieties of religion and just surrender unto Me. I shall deliver you from all sinful reactions. Do not fear.",
+                explanation: "Known as the 'final instruction,' this verse urges complete surrender to Krishna, assuring liberation from sins and fears through unwavering faith and devotion.",
+                emoji: "🕉️🌈"
+            }
+        ];
+
+        // Function to update spinning number
+        function updateNumber() {
+            document.getElementById('spinner').textContent = Math.floor(Math.random() * 100);
+        }
+
+        // Update number every 100ms
+        setInterval(updateNumber, 100);
+
+        // Function to show random shloka
+        function showShloka() {
+            const randomIndex = Math.floor(Math.random() * shlokas.length);
+            const shloka = shlokas[randomIndex];
+
+            document.getElementById('shloka-text').textContent = shloka.text;
+            document.getElementById('explanation').textContent = "Explanation: " + shloka.explanation;
+            document.getElementById('emoji').textContent = shloka.emoji;
+            document.getElementById('shloka-container').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
