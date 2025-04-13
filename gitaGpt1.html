@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bhagavad Gita Shlokas & Moods</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" />
+  <style>
+    /* Reset and basic styling */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: #f4f4f4;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    /* Navigation styling */
+    #mood-nav {
+      width: 250px;
+      background: rgba(0, 0, 0, 0.4);
+      overflow-y: auto;
+      border-right: 1px solid rgba(255,255,255,0.1);
+      padding: 10px;
+    }
+    #mood-nav h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+    }
+    .mood-btn {
+      display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: #f4f4f4;
+      padding: 8px 12px;
+      margin: 4px 0;
+      text-align: left;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+    .mood-btn:hover, .mood-btn.active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    /* Main content styling */
+    #content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .shloka-box {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .shloka-box h3 { margin-bottom: 10px; }
+    .shloka {
+      margin-bottom: 8px;
+      line-height: 1.6;
+      font-size: 1.05rem;
+    }
+    .explanation { margin-top: 10px; font-style: italic; }
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      padding: 10px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+    a { color: #80cbc4; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation pane: 108 moods (only few examples filled, remaining generated as placeholders) -->
+  <nav id="mood-nav">
+    <h2>Mood Navigator 😎</h2>
+    <!-- Example fixed moods -->
+    <button class="mood-btn" data-mood="happy">Happy 😊</button>
+    <button class="mood-btn" data-mood="sad">Sad 😔</button>
+    <button class="mood-btn" data-mood="breakup">Breakup 💔</button>
+    <button class="mood-btn" data-mood="angry">Angry 😠</button>
+    <!-- Generate the remaining moods as placeholders -->
+    <div id="additional-moods"></div>
+  </nav>
+
+  <!-- Main content area -->
+  <main id="content">
+    <div class="shloka-box" id="shloka-display">
+      <h3 id="mood-title">Welcome!</h3>
+      <div class="shloka">
+        <strong>Sanskrit:</strong>
+        <p id="sanskrit-text">कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।</p>
+      </div>
+      <div class="shloka">
+        <strong>Hindi:</strong>
+        <p id="hindi-text">आपका अधिकार केवल कर्म करने में है, फल में कभी नहीं।</p>
+      </div>
+      <div class="shloka">
+        <strong>English:</strong>
+        <p id="english-text">You have the right to perform your duty only, not to the fruits thereof.</p>
+      </div>
+      <div class="explanation" id="explanation-text">
+        Explanation: Choose your actions according to your heart—Krishna would totally swipe right for a righteous act! 😄
+      </div>
+    </div>
+    <footer>
+      <p>
+        © 2025 Bhagavad Gita Project. All prices are in Indian Rupees (₹). Check details on <a href="https://www.openai.fm" target="_blank">openai.fm</a> for mood inspiration.
+      </p>
+      <p>
+        Current Indian Time: <span id="indian-time"></span>
+      </p>
+    </footer>
+  </main>
+
+  <!-- JavaScript for interactivity -->
+  <script>
+    // Sample data for a few moods.
+    // In production, include all 700 shlokas organized by mood.
+    const shlokas = {
+      happy: {
+        mood: 'Happy 😊',
+        sanskrit: 'योगः कर्मसु कौशलम्',
+        hindi: 'कर्मों में योग ही कुशलता है',
+        english: 'Yoga is skill in action',
+        explanation: 'A perfect vibe for a cheerful day! 😄'
+      },
+      sad: {
+        mood: 'Sad 😔',
+        sanskrit: 'दुःखेष्वनुद्विग्नमनाः',
+        hindi: 'दुख में मन न घबराओ',
+        english: 'Let not the heart be disturbed in sorrow',
+        explanation: 'Even in sadness, find a calm within. 😢'
+      },
+      breakup: {
+        mood: 'Breakup 💔',
+        sanskrit: 'विच्छित्तभावनां त्यज',
+        hindi: 'अपने टूटे दिल को छोड़ो',
+        english: 'Let go of the broken feelings',
+        explanation: 'Time to heal and get back to soulful strength! 💪'
+      },
+      angry: {
+        mood: 'Angry 😠',
+        sanskrit: 'क्रोधो हि संहारक',
+        hindi: 'क्रोध विनाशक है',
+        english: 'Anger indeed brings destruction',
+        explanation: 'Even Krishna advises to channel your anger wisely! 🔥'
+      }
+    };
+
+    // Generate 108 mood buttons. We already have 4 – add 104 placeholder moods.
+    const additionalMoodsContainer = document.getElementById('additional-moods');
+    // Start from index 5 since 1-4 are fixed examples.
+    const totalMoods = 108;
+    let currentCount = 4; // already added fixed moods
+    for (let i = currentCount + 1; i <= totalMoods; i++) {
+      const button = document.createElement('button');
+      button.className = 'mood-btn';
+      // For demonstration, these moods are placeholders with humorous names.
+      button.textContent = `Mood ${i} 😜`;
+      // Associate with a default shloka (could be a random or predetermined shloka)
+      button.setAttribute('data-mood', `mood${i}`);
+      shlokas[`mood${i}`] = {
+        mood: `Mood ${i} 😜`,
+        sanskrit: `Placeholder Sanskrit shloka ${i}`,
+        hindi: `प्लेसहोल्डर हिन्दी श्लोक ${i}`,
+        english: `Placeholder English shloka ${i}`,
+        explanation: `Explanation for Mood ${i} – keeping it quirky and fun! 😉`
+      };
+      additionalMoodsContainer.appendChild(button);
+    }
+
+    // Function to update current time in Indian format (using Asia/Kolkata timezone)
+    function updateIndianTime() {
+      // Create a new date instance, converting to IST.
+      const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, day: 'numeric', month: 'long', year: 'numeric' };
+      const indianTime = new Intl.DateTimeFormat('en-IN', options).format(new Date());
+      document.getElementById('indian-time').textContent = indianTime;
+    }
+    setInterval(updateIndianTime, 1000);
+    updateIndianTime();
+
+    // Add event listeners for mood buttons
+    const moodButtons = document.querySelectorAll('.mood-btn');
+    moodButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Remove active class from all buttons and add to the clicked one.
+        moodButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        const moodKey = button.getAttribute('data-mood');
+        const data = shlokas[moodKey];
+
+        // Update the main content
+        document.getElementById('mood-title').textContent = data.mood;
+        document.getElementById('sanskrit-text').textContent = data.sanskrit;
+        document.getElementById('hindi-text').textContent = data.hindi;
+        document.getElementById('english-text').textContent = data.english;
+        document.getElementById('explanation-text').textContent = data.explanation;
+      });
+    });
+  </script>
+</body>
+</html>
