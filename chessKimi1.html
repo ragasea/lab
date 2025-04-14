@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Anurag Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        h {
+1            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .nav-button {
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            perspective: 1000px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            z-index: -1;
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .content-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #f1f1f1;
+            padding-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 180px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items:;
+ center            justify-content: center;
+            color: #adb5bd;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            color: #7f8c8d;
+        }
+
+        .contact-info {
+            margin: 20px 0;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            color: #3498db;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #2980b9;
+        }
+
+        @media (max-width: 768px) {
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Chess Anurag Academy</h1>
+            <p class="tagline">Learn Chess, Master Strategy</p>
+        </header>
+
+        <div class="nav-buttons">
+            <button class="nav-button" onclick="showSection('about')">About Us</button>
+            <button class="nav-button" onclick="showSection('courses')">Courses</button>
+            <button class="nav-button" onclick="showSection('success')">Success Stories</button>
+            <button class="nav-button" onclick="showSection('contact')">Contact Us</button>
+        </div>
+
+        <div id="about" class="content-section active">
+            <h2>About Us</h2>
+            <p>Chess Anurag Academy is a premier chess training institute founded by GM Anurag Mohanty. We provide world-class chess training to students of all ages and skill levels.</p>
+            <p>Our mission is to nurture chess talent and help students achieve their full potential through systematic training, strategic guidance, and personalized coaching.</p>
+            <p>With over 20 years of experience in chess education, our academy has produced numerous national and international champions.</p>
+        </div>
+
+        <div id="courses" class="content-section">
+            <h2>Our Courses</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="image-placeholder">Beginner Course</div>
+                    <h3>Beginner Program</h3>
+                    <p>Perfect for absolute beginners. Learn the rules, basic tactics, and fundamental strategies.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="image-placeholder">Intermediate Course</div>
+                    <h3>Intermediate Program</h3>
+                    <p>Develop advanced tactics, opening principles, and strategic understanding.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="image-placeholder">Advanced Course</div>
+                    <h3>Advanced Program</h3>
+                    <p>Master endgame techniques, positional play, and tournament preparation.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="success" class="content-section">
+            <h2>Success Stories</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Student A</h3>
+                    <p>"I joined Chess Anurag Academy with a rating of 1200. After 6 months of training, I achieved a rating of 1800 and won the National U-14 Championship."</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Student B</h3>
+                    <p>"The coaching at Chess Anurag Academy transformed my understanding of the game. I went from being an average player to becoming a state champion."</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Student C</h3>
+                    <p>"The personalized training and strategic insights helped me develop a consistent winning approach. Now I regularly compete in international tournaments."</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="contact" class="content-section">
+            <h2>Contact Us</h2>
+            <p>Ready to start your chess journey? Get in touch with us today!</p>
+            <div class="contact-info">
+                <p>Email: info@chessanurag.com</p>
+                <p>Phone: +91 98765 43210</p>
+                <p>Address: 123 Chess Lane, New Delhi, India</p>
+            </div>
+            <div class="social-links">
+                <a href="#" title="Facebook">FB</a>
+                <a href="#" title="Twitter">TW</a>
+                <a href="#" title="Instagram">IG</a>
+                <a href="#" title="YouTube">YT</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Chess Anurag Academy. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // Add active class to first button on page load
+        window.onload = function() {
+            document.querySelector('.nav-button').classList.add('active');
+        };
+    </script>
+</body>
+</html>
