@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bhagavad Gita</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#happy">Happy</a></li>
+        <li><a href="#sad">Sad</a></li>
+        <li><a href="#breakup">Breakup</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section id="happy">
+      <h2>Happy</h2>
+      <p id="happy-shloka"></p>
+      <p id="happy-explanation"></p>
+    </section>
+    <section id="sad">
+      <h2>Sad</h2>
+      <p id="sad-shloka"></p>
+      <p id="sad-explanation"></p>
+    </section>
+    <section id="breakup">
+      <h2>Breakup</h2>
+      <p id="breakup-shloka"></p>
+      <p id="breakup-explanation"></p>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
+```
+**styles.css**
+```css
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 1em;
+  text-align: center;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+nav li {
+  margin-right: 20px;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2em;
+}
+
+section {
+  background-color: #f7f7f7;
+  padding: 1em;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  margin-top: 0;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+#happy-shloka, #sad-shloka, #breakup-shloka {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#happy-explanation, #sad-explanation, #breakup-explanation {
+  font-size: 1em;
+  color: #666;
+}
+```
+**script.js**
+```javascript
+const happyShloka = {
+  sanskrit: "श्रीभगवानुवाच",
+  hindi: "भगवान ने कहा",
+  english: "The Supreme Personality of Godhead said",
+  explanation: "This is the beginning of the Bhagavad Gita, where Lord Krishna is speaking to Arjuna.",
+  emojis: ["😊"]
+};
+
+const sadShloka = {
+  sanskrit: "क्रोधो दमो नित्यश्च",
+  hindi: "क्रोध, दम और नित्य है",
+  english: "Anger, self-control, and eternal existence are",
+  explanation: "This shloka highlights the importance of self-control and eternal existence.",
+  emojis: ["😔"]
+};
+
+const breakupShloka = {
+  sanskrit: "न मे भावो न मे स्पृहो",
+  hindi: "मेरा कोई भाव नहीं है, मेरा कोई स्पृह नहीं है",
+  english: "I have no attachment, nor do I have any desire",
+  explanation: "This shloka emphasizes the importance of detachment and renunciation.",
+  emojis: ["😢"]
+};
+
+const moodMap = {
+  happy: happyShloka,
+  sad: sadShloka,
+  breakup: breakupShloka
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  const navLinks = document.querySelectorAll("nav a");
+  navLinks.forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const mood = link.textContent.toLowerCase();
+      const shloka = moodMap[mood];
+      document.getElementById(`${mood}-shloka`).textContent = shloka.sanskrit;
+      document.getElementById(`${mood}-explanation`).textContent = shloka.explanation;
+      document.getElementById(`${mood}-shloka`).innerHTML += `<br>${shloka.hindi}<br>${shloka.english}`;
+      document.getElementById(`${mood}-explanation`).innerHTML += `<br>${shloka.explanation}<br>${shloka.emojis.map((emoji) => `:${emoji}:`).join(" ")}`;
+    });
+  });
+});
