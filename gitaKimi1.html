@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhagavad Gita Wisdom</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 2rem 3rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff0099, #ff7e00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 2rem;
+        }
+
+        .mood-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 0 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .mood-btn {
+            background: linear-gradient(45deg, #ff0099, #ff7e00);
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 12px rgba(255, 0, 153, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mood-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .mood-btn:hover::before {
+            left: 100%;
+        }
+
+        .mood-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(255, 0, 153, 0.4);
+        }
+
+        .mood-btn:nth-child(2n) {
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+        }
+
+        .mood-btn:nth-child(3n) {
+            background: linear-gradient(45deg, #13d357, #00b09b);
+        }
+
+        .mood-btn:nth-child(4n) {
+            background: linear-gradient(45deg, #ff9900, #ff5e00);
+        }
+
+        .mood-btn:nth-child(5n) {
+            background: linear-gradient(45deg, #9900ff, #7e00ff);
+        }
+
+        .content-area {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: rgba(20, 20, 20, 0.7);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        .shloka {
+            display: none;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .shloka.active {
+            display: block;
+        }
+
+        .shloka-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #ff7e00;
+        }
+
+        .shloka-content {
+            margin-bottom: 2rem;
+        }
+
+        .sanskrit {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #ff0099;
+        }
+
+        .hindi {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #00c6ff;
+        }
+
+        .english {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #13d357;
+        }
+
+        .explanation {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ddd;
+            margin-bottom: 1.5rem;
+        }
+
+        .emojis {
+            font-size: 1.5rem;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: auto;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .mood-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bhagavad Gita Wisdom</h1>
+        <p class="subtitle">Discover timeless wisdom through your current mood</p>
+    </header>
+
+    <div class="mood-selector">
+        <button class="mood-btn" data-mood="happiness">Happiness</button>
+        <button class="mood-btn" data-mood="sadness">Sadness</button>
+        <button class="mood-btn" data-mood="confusion">Confusion</button>
+        <button class="mood-btn" data-mood="anger">Anger</button>
+        <button class="mood-btn" data-mood="love">Love</button>
+        <button class="mood-btn" data-mood="fear">Fear</button>
+    </div>
+
+    <div class="content-area">
+        <div id="happiness" class="shloka">
+            <h2 class="shloka-title">Happiness - Chapter 2, Verse 70</h2>
+            <div class="shloka-content">
+                <p class="sanskrit">अपापविद्धं च नित्यं यं तत् त्वं विद्धि नित्यं च |<br>
+                सुखं त्वव्ययम् आतुरस्य विपर्यस्तम् उच्यते ||</p>
+                <p class="hindi">जो नित्य है, उसे तुम अपापविद्ध कहो और जो अव्यय है, उसे तुम आतुर के लिए विपरीत कहो।</p>
+                <p class="english">That which is unperishable is ever-existent, and that which is perishable is called the opposite of the eternal.</p>
+            </div>
+            <div class="explanation">
+                <p>This verse teaches us to find lasting happiness in the eternal and unchanging aspects of life rather than temporary pleasures. True joy comes from understanding what is permanent and focusing on that.</p>
+            </div>
+            <div class="emojis">😊🙏✨</div>
+        </div>
+
+        <div id="sadness" class="shloka">
+            <h2 class="shloka-title">Sadness - Chapter 6, Verse 35</h2>
+            <div class="shloka-content">
+                <p class="sanskrit">असंशयं महाबाहो मनो दुर्नियमं चलम् |<br>
+                अब्यापारम् असंशयं मनसो ह्यात्मना निग्रहम् ||</p>
+                <p class="hindi">संशय के बिना ही, महाबाहो! मन दुर्नियम और चलपल है |<br>
+                संशय के बिना ही, अत्यन्त असंशय मन को आत्मा द्वारा नियंत्रित करना है ||</p>
+                <p class="english">Undoubtedly, O mighty-armed Arjuna, the mind is difficult to restrain and restless. But without doubt, by the Self, the mind must be restrained.</p>
+            </div>
+            <div class="explanation">
+                <p>This verse acknowledges the difficulty of controlling our minds during emotional turmoil but encourages us to persist in our efforts to master our thoughts and emotions.</p>
+            </div>
+            <div class="emojis">😔❤️💫</div>
+        </div>
+
+        <div id="confusion" class="shloka">
+            <h2 class="shloka-title">Confusion - Chapter 4, Verse 38</h2>
+            <div class="shloka-content">
+                <p class="sanskrit">श्रद्धावान् लभते ज्ञानं तत्पर: संयतेन्द्रियः |<br>
+                ज्ञानं लब्ध्वा परां शान्तिम् अचिरेणाधिगच्छति ||</p>
+                <p class="hindi">श्रद्धावान् व्यक्ति ज्ञान प्राप्त करता है, वह तत्पर होता है और संयमी होता है |<br>
+                ज्ञान प्राप्त करने के बाद, वह अचिराज्ञा शांति प्राप्त कर लेता है ||</p>
+                <p class="english">One who has faith gains knowledge; he who is eager and self-controlled. Having gained knowledge, he soon attains the supreme peace.</p>
+            </div>
+            <div class="explanation">
+                <p>When faced with confusion, this verse reminds us that with faith, discipline, and focused effort, we can gain clarity and find peace through knowledge.</p>
+            </div>
+            <div class="emojis">🤔💡🌟</div>
+        </div>
+
+        <div id="anger" class="shloka">
+            <h2 class="shloka-title">Anger - Chapter 2, Verse 62</h2>
+            <div class="shloka-content">
+                <p class="sanskrit">ध्यायतो विषयान् पुंच्छः सङ्गस्तेषूपजायते |<br>
+                संगात् संजायते कामः कामात् क्रोधोऽभिजायते ||</p>
+                <p class="hindi">विषयों को ध्यान करने वाले मनुष्य में उनके प्रति संग उत्पन्न होता है |<br>
+                संग से काम और काम से क्रोध उत्पन्न होता है ||</p>
+                <p class="english">When a person dwells on the objects of the senses, attachment to them is born; from attachment arises desire, and from desire arises anger.</p>
+            </div>
+            <div class="explanation">
+                <p>This verse explains the cycle of desire and anger, teaching us that by controlling our thoughts and attachments, we can break free from destructive emotions.</p>
+            </div>
+            <div class="emojis">😡🔥🌀</div>
+        </div>
+
+        <div id="love" class="shloka">
+            <h2 class="shloka-title">Love - Chapter 12, Verse 13</h2>
+            <div class="shloka-content">
+                <p class="sanskrit">अधित्तोऽस्मि त्वया प्रोक्तं धर्मस्य ज्ञानम् उत्तमम् |<br>
+                यत्त्वया तत्त्वतः प्रोक्तं विश्वसन्न् एव मे मनः ||</p>
+                <p class="hindi">मैं तुम्हारे द्वारा कहे गए उत्तम धर्म के ज्ञान को अधित्त कर चुका हूँ |<br>
+                जो तुम्हारे द्वारा तत्त्वतः कहा गया है, मेरा मन उसमें विश्वास करता है ||</p>
+                <p class="english">I have heard from you the highest knowledge of dharma. What you have truly spoken, my mind believes in it.</p>
+            </div>
+            <div class="explanation">
+                <p>This verse expresses the ultimate love and trust in divine wisdom, teaching us that true love involves trust and surrender to higher knowledge.</p>
+            </div>
+            <div class="emojis">💖🕊️✨</div>
+        </div>
+
+        <div id="fear" class="shloka">
+            <h2 class="shloka-title">Fear - Chapter 2, Verse 56</h2>
+            <div class="shloka-content">
+                <p class="sanskrit">यः सर्वत्र गतस्याप्तः सर्वतो वस्ति न चलः |<br>
+                तस्य प्रज्ञा प्रतिष्ठिता यः सर्वत्र समचित्तः ||</p>
+                <p class="hindi">जो सर्वत्र गत होता है, वह अपने आत्मा को सर्वत्र निरंतर रखता है |<br>
+                वह समचित्त होता है, जो सर्वत्र वस्तुओं को नहीं चलता है ||</p>
+                <p class="english">One who is unmoved everywhere, who is not shaken even when faced with fear, whose intellect is unshaken in all circumstances.</p>
+            </div>
+            <div class="explanation">
+                <p>This verse teaches us to remain steady and calm in the face of fear by focusing on our inner self rather than external circumstances.</p>
+            </div>
+            <div class="emojis">😨🛡️💫</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Bhagavad Gita Wisdom App | Created with ❤️</p>
+        <p>Source code available on <a href="#" style="color: #ff7e00;">GitHub</a></p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.mood-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const mood = button.getAttribute('data-mood');
+                
+                // Hide all shlokas
+                document.querySelectorAll('.shloka').forEach(shloka => {
+                    shloka.classList.remove('active');
+                });
+                
+                // Show selected shloka
+                document.getElementById(mood).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
