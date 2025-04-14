@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chess Anurag Academy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #0d0d0d;
+      color: #f0f0f0;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 2rem;
+      background: rgba(20, 20, 20, 0.8);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    header h1 {
+      font-size: 1.5rem;
+      color: #00ff9c;
+    }
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      margin-left: 2rem;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #00e5ff;
+    }
+
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .hero h2 {
+      font-size: 3rem;
+      color: #00ff9c;
+      text-shadow: 0 0 10px #00ff9c88;
+      margin-bottom: 1rem;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      color: #ccc;
+      max-width: 700px;
+    }
+
+    .btn-3d {
+      background: #fff;
+      color: #000;
+      font-weight: 600;
+      border: none;
+      padding: 1rem 2rem;
+      margin: 1rem;
+      border-radius: 50px;
+      box-shadow: 0 10px 20px rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.3s;
+    }
+    .btn-3d:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 25px rgba(255,255,255,0.3);
+    }
+
+    .accordion-content {
+      display: none;
+      background: #1a1a1a;
+      margin: 1rem auto;
+      padding: 1.5rem;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 255, 156, 0.15);
+      max-width: 600px;
+      text-align: left;
+    }
+
+    .section {
+      padding: 4rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #1a1a1a;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 0 20px rgba(0, 255, 156, 0.2);
+      margin-bottom: 2rem;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.9rem;
+      color: #888;
+      background: #111;
+    }
+    @media(max-width: 768px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav {
+        margin-top: 1rem;
+      }
+      .hero h2 {
+        font-size: 2.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Chess Anurag Academy</h1>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#sessions">Sessions</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Master Your Mind with Chess</h2>
+    <p>Learn chess with expert training by Anurag Sharma — online, offline, and home sessions available. Elevate your game with strategic thinking and inner calm.</p>
+  </section>
+
+  <section class="section" id="sessions">
+    <div class="card" style="text-align:center;">
+      <h3>Choose Your Session</h3>
+      <button class="btn-3d" onclick="toggleAccordion('online')">Online</button>
+      <button class="btn-3d" onclick="toggleAccordion('offline')">Offline</button>
+      <button class="btn-3d" onclick="toggleAccordion('home')">Home</button>
+
+      <div id="online" class="accordion-content">
+        <h4>Online Classes – ₹1499/month</h4>
+        <p>Live sessions via Zoom or Google Meet. 45-minute classes, 5 days/week. Interactive digital board and weekly analysis of games.</p>
+      </div>
+      <div id="offline" class="accordion-content">
+        <h4>Offline Classes – ₹2999/month</h4>
+        <p>Available at Sunny Enclave, Kharar, Mohali. Personal coaching with real chess boards, practice tournaments, and in-person mentorship.</p>
+      </div>
+      <div id="home" class="accordion-content">
+        <h4>Home Coaching – ₹4999/month</h4>
+        <p>Trainer visits your home (within 10km radius). One-on-one coaching, weekly performance reports, tailored improvement plans.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="card">
+      <h3>About Us</h3>
+      <p>Chess Anurag Academy is led by Anurag Sharma — a government-certified yoga & chess master trainer with 15+ years of experience. We blend strategic thinking with holistic mental growth.</p>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <div class="card">
+      <h3>Contact Us</h3>
+      <p>Call or WhatsApp: <a href="https://wa.me/916283266268" style="color:#00e5ff;">+91 62832 66268</a></p>
+      <p>Website: <a href="https://chessanurag.blogspot.com/" target="_blank" style="color:#00e5ff;">https://chessanurag.blogspot.com/</a></p>
+      <p>Instagram: <a href="https://instagram.com/chessanurags" target="_blank" style="color:#00e5ff;">@chessanurags</a></p>
+    </div>
+  </section>
+
+  <footer>
+    &copy; 2025 Chess Anurag Academy. All rights reserved.
+  </footer>
+
+  <script>
+    function toggleAccordion(id) {
+      const all = document.querySelectorAll('.accordion-content');
+      all.forEach(el => {
+        if (el.id === id) {
+          el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
