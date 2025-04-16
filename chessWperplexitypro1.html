@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chess Anurag Academy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+    body {
+      margin: 0;
+      background: #f6f6f6;
+      font-family: 'Roboto Mono', monospace;
+      color: #222;
+    }
+    .container {
+      max-width: 420px;
+      margin: 0 auto;
+      background: #fff;
+      min-height: 100vh;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      padding-bottom: 32px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 24px 20px 0 20px;
+      justify-content: space-between;
+    }
+    .header-title {
+      font-size: 1.6rem;
+      font-weight: bold;
+      letter-spacing: -1px;
+    }
+    .header-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f2f2f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: #888;
+      margin-left: 8px;
+    }
+    .toggle {
+      width: 40px;
+      height: 24px;
+      background: #f2f2f2;
+      border-radius: 12px;
+      position: relative;
+      margin-left: 12px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .toggle:before {
+      content: '';
+      position: absolute;
+      left: 2px;
+      top: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: left 0.2s;
+    }
+    .toggle.on:before {
+      left: 18px;
+      background: #eaeaea;
+    }
+    .desc {
+      font-size: 1.05rem;
+      color: #444;
+      margin: 18px 20px 0 20px;
+      line-height: 1.5;
+    }
+    .link {
+      color: #222;
+      font-weight: bold;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-left: 2px;
+    }
+    .section-title {
+      margin: 32px 20px 8px 20px;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      color: #888;
+      font-weight: 500;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 0 20px;
+    }
+    .card {
+      background: #f6f6f6;
+      border-radius: 10px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      padding: 22px 0 18px 14px;
+      font-size: 1.1rem;
+      font-family: 'Roboto Mono', monospace;
+      color: #222;
+      position: relative;
+      min-height: 60px;
+      display: flex;
+      align-items: flex-start;
+      flex-direction: column;
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    .card.selected {
+      border: 2px solid #ff4d1a;
+      background: #fff3ed;
+    }
+    .card .dot {
+      width: 7px;
+      height: 7px;
+      background: #ff4d1a;
+      border-radius: 50%;
+      position: absolute;
+      left: 8px;
+      top: 8px;
+    }
+    .card .star {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      color: #bbb;
+      font-size: 1.1em;
+    }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 32px 20px 0 20px;
+    }
+    .footer-btn {
+      width: 56px;
+      height: 48px;
+      border-radius: 8px;
+      background: #444;
+      color: #fff;
+      border: none;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .footer-btn:last-child {
+      background: #ff4d1a;
+      margin-right: 0;
+    }
+    .footer-btn svg {
+      width: 28px;
+      height: 28px;
+    }
+    .footer-btn:active {
+      background: #222;
+    }
+    .footer-btn:last-child:active {
+      background: #e03d00;
+    }
+    @media (max-width: 500px) {
+      .container {
+        max-width: 100vw;
+        min-height: 100vh;
+        border-radius: 0;
+      }
+      .header, .desc, .section-title, .grid, .footer {
+        margin-left: 8px;
+        margin-right: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="header-title">Chess Anurag Academy</span>
+      <span class="header-icon">&#60;/&#62;</span>
+      <span class="toggle"></span>
+    </div>
+    <div class="desc">
+      An interactive demo for chess enthusiasts to explore training modules, puzzles, and lessons at Chess Anurag Academy.
+      <span class="link">START LEARNING &rarr;</span>
+    </div>
+    <div class="section-title">MODULES</div>
+    <div class="grid">
+      <div class="card"><span class="dot"></span>Openings</div>
+      <div class="card"><span class="star">&#9733;</span>Endgames</div>
+      <div class="card">Tactics</div>
+      <div class="card selected"><span class="dot"></span>Strategy</div>
+      <div class="card">Puzzles</div>
+      <div class="card"><span class="star">&#9733;</span>Lessons</div>
+      <div class="card">Practice</div>
+      <div class="card">Analysis</div>
+      <div class="card"><span class="star">&#9733;</span>Simul</div>
+    </div>
+    <div class="footer">
+      <button class="footer-btn" title="Download">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 5v14m0 0l-6-6m6 6l6-6"/>
+        </svg>
+      </button>
+      <button class="footer-btn" title="Upload">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 19V5m0 0l-6 6m6-6l6 6"/>
+        </svg>
+      </button>
+      <button class="footer-btn" style="background:#ff4d1a;" title="Start">
+        <svg fill="currentColor" viewBox="0 0 24 24">
+          <polygon points="6,4 20,12 6,20"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</body>
+</html>
