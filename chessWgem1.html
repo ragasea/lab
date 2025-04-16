@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Anurag Academy</title>
+    <style>
+        /* Define colors and fonts based on the image */
+        :root {
+            --bg-color: #f0f1f5; /* Light grey background */
+            --card-bg: #ffffff; /* White card background */
+            --text-color: #1f2328; /* Dark text */
+            --subtle-text-color: #6a737d; /* Lighter grey text */
+            --border-color: #d1d5da;
+            --accent-color-orange: #f97316; /* Orange for active elements/play button */
+            --button-dark-gray: #586069; /* Dark grey button */
+            --button-black: #24292e; /* Black button */
+            --button-medium-gray: #adb5bd; /* Medium gray for shuffle/random */
+            --icon-color: #6a737d;
+            --font-family: 'SF Mono', 'Consolas', 'Roboto Mono', 'Droid Sans Mono', 'Menlo', monospace;
+            --card-border-radius: 8px;
+            --button-border-radius: 8px;
+        }
+
+        /* Basic Reset and Body Styling */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .code-icon svg {
+            width: 28px;
+            height: 28px;
+            fill: var(--text-color);
+        }
+
+        /* Simple Toggle Switch Approximation */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px; /* Increased width */
+            height: 28px; /* Increased height */
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 28px; /* Make it round */
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px; /* Adjusted size */
+            width: 22px;  /* Adjusted size */
+            left: 3px;   /* Adjusted position */
+            bottom: 3px; /* Adjusted position */
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-color-orange); /* Use accent color when checked */
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px); /* Adjusted translation */
+        }
+
+
+        /* Main Content Area */
+        main {
+            flex-grow: 1;
+        }
+
+        .description {
+            font-size: 1.1em; /* Slightly larger text */
+            margin-bottom: 20px;
+            max-width: 600px; /* Limit width for readability */
+            line-height: 1.6;
+            color: var(--subtle-text-color); /* Softer text color for description */
+        }
+
+        .cta-link {
+            display: inline-flex; /* Use flex to align text and icon */
+            align-items: center;
+            gap: 8px; /* Space between text and icon */
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: normal; /* Was bold, making normal */
+            font-size: 1em; /* Match font size */
+            margin-bottom: 35px; /* Space below CTA */
+            transition: color 0.2s ease;
+        }
+         .cta-link svg {
+             width: 16px;
+             height: 16px;
+             fill: currentColor; /* Icon color matches text */
+         }
+
+        .cta-link:hover {
+            color: var(--accent-color-orange); /* Change color on hover */
+        }
+
+        /* Section Title (e.g., VOICE) */
+        .section-title {
+            font-size: 0.9em;
+            color: var(--subtle-text-color);
+            margin-bottom: 15px;
+            letter-spacing: 0.05em; /* Slight letter spacing */
+        }
+
+        /* Grid for Level Selection */
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns */
+            gap: 15px; /* Gap between grid items */
+            margin-bottom: 25px;
+        }
+
+        .level-card {
+            background-color: var(--card-bg);
+            border: 1px solid #e1e4e8; /* Subtle border */
+            border-radius: var(--card-border-radius);
+            padding: 15px;
+            min-height: 90px; /* Ensure cards have some height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Pushes icons to bottom */
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative; /* Needed for absolute positioning of icons */
+            font-size: 1.1em; /* Slightly larger text inside cards */
+        }
+
+        .level-card:hover {
+             transform: translateY(-2px);
+             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .level-card .card-content {
+           flex-grow: 1; /* Allows title to take available space */
+        }
+
+        .card-icons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px; /* Space above icons */
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #d1d5da; /* Default grey indicator */
+        }
+
+        .level-card.active .status-indicator {
+            background-color: var(--accent-color-orange); /* Active orange indicator */
+        }
+
+        .feature-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: var(--icon-color);
+        }
+
+         /* Special Card for 'Random' */
+         .level-card.special {
+             background-color: var(--button-medium-gray);
+             border-color: var(--button-medium-gray);
+             justify-content: center; /* Center the icon vertically */
+             align-items: center; /* Center the icon horizontally */
+         }
+         .level-card.special .card-content {
+            display: none; /* Hide title text */
+         }
+         .level-card.special .card-icons {
+            justify-content: center; /* Center icon horizontally */
+            margin-top: 0;
+         }
+         .level-card.special .feature-icon svg {
+             width: 30px; /* Larger icon */
+             height: 30px;
+             fill: var(--card-bg); /* White icon */
+         }
+         .level-card.special .status-indicator {
+            display: none; /* Hide status dot */
+         }
+
+
+        /* Footer Buttons */
+        footer {
+            display: flex;
+            gap: 10px; /* Gap between footer buttons */
+        }
+
+        .footer-button {
+            flex: 1; /* Make buttons share space equally */
+            padding: 15px;
+            border: none;
+            border-radius: var(--button-border-radius);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.2s ease;
+            min-height: 55px; /* Ensure buttons have good height */
+        }
+
+        .footer-button:hover {
+            opacity: 0.85;
+        }
+
+        .footer-button svg {
+            width: 24px; /* Icon size */
+            height: 24px;
+            fill: white; /* White icons */
+        }
+
+        .btn-download {
+            background-color: var(--button-dark-gray);
+        }
+
+        .btn-upload {
+            background-color: var(--button-black);
+        }
+
+        .btn-play {
+            background-color: var(--accent-color-orange);
+        }
+
+        /* Responsive Adjustments (Optional Example) */
+         @media (max-width: 600px) {
+             body {
+                 padding: 15px;
+             }
+             .level-grid {
+                 grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
+             }
+             header {
+                 flex-direction: column;
+                 align-items: flex-start;
+                 gap: 10px;
+                 margin-bottom: 20px;
+             }
+             .header-controls {
+                 margin-left: auto; /* Push controls to right in column layout */
+             }
+             footer {
+                 flex-direction: column; /* Stack footer buttons */
+             }
+         }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Chess Anurag Academy</div>
+        <div class="header-controls">
+            <div class="code-icon" title="View Source (Example)">
+                <!-- SVG for </> icon -->
+                <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M11.03.77a.75.75 0 010 1.06L6.81 6h2.44a.75.75 0 010 1.5H6.81l4.22 4.17a.75.75 0 11-1.06 1.06l-4.75-4.7a.75.75 0 010-1.06l4.75-4.7a.75.75 0 011.06 0zm-6.28 4.45h2.44a.75.75 0 010 1.5H4.75l4.22 4.17a.75.75 0 11-1.06 1.06L3.16 8.23a.75.75 0 010-1.06l4.75-4.7a.75.75 0 111.06 1.06L4.75 7.7v-.01z"></path></svg>
+             </div>
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </header>
+
+    <main>
+        <p class="description">
+            An interactive platform for chess enthusiasts of all levels. Choose a module below to start learning, practicing, and mastering the game.
+        </p>
+
+        <a href="#" class="cta-link">
+            START LEARNING
+            <!-- SVG for Arrow icon -->
+            <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M1.5 8.75a.75.75 0 01.75-.75h10.19l-2.22-2.22a.75.75 0 111.06-1.06l3.5 3.5a.75.75 0 010 1.06l-3.5 3.5a.75.75 0 11-1.06-1.06l2.22-2.22H2.25a.75.75 0 01-.75-.75z"></path></svg>
+        </a>
+
+        <div class="section-title">CHOOSE YOUR MODULE</div>
+
+        <div class="level-grid">
+            <!-- Row 1 -->
+            <button class="level-card">
+                <div class="card-content">Beginner</div>
+                <div class="card-icons">
+                    <span class="status-indicator"></span>
+                    <span class="feature-icon"><!-- Empty --></span>
+                </div>
+            </button>
+            <button class="level-card">
+                 <div class="card-content">Intermediate</div>
+                 <div class="card-icons">
+                     <span class="status-indicator"></span>
+                     <!-- SVG for Sparkle/Star icon -->
+                     <span class="feature-icon" title="Popular">
+                         <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M7.53 1.24a.75.75 0 01.94 0l1.69 2.83c.06.1.15.17.25.19l3.1.31a.75.75 0 01.43 1.3l-2.3 1.97c-.09.07-.13.19-.11.3l.68 3.01a.75.75 0 01-1.1.8l-2.7-1.58a.75.75 0 00-.7-.01l-2.7 1.58a.75.75 0 01-1.1-.8l.68-3.01c.02-.11-.02-.23-.1-.3L.91 5.87a.75.75 0 01.43-1.3l3.1-.31c.1-.02.2-.09.25-.19L6.37 1.24a.75.75 0 011.16 0z"></path></svg>
+                    </span>
+                 </div>
+            </button>
+            <button class="level-card">
+                 <div class="card-content">Advanced</div>
+                 <div class="card-icons">
+                     <span class="status-indicator"></span>
+                     <!-- SVG for Sparkle/Star icon -->
+                     <span class="feature-icon" title="Popular">
+                         <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M7.53 1.24a.75.75 0 01.94 0l1.69 2.83c.06.1.15.17.25.19l3.1.31a.75.75 0 01.43 1.3l-2.3 1.97c-.09.07-.13.19-.11.3l.68 3.01a.75.75 0 01-1.1.8l-2.7-1.58a.75.75 0 00-.7-.01l-2.7 1.58a.75.75 0 01-1.1-.8l.68-3.01c.02-.11-.02-.23-.1-.3L.91 5.87a.75.75 0 01.43-1.3l3.1-.31c.1-.02.2-.09.25-.19L6.37 1.24a.75.75 0 011.16 0z"></path></svg>
+                    </span>
+                 </div>
+            </button>
+
+            <!-- Row 2 -->
+            <button class="level-card active"> <!-- Example of active state -->
+                <div class="card-content">Puzzles</div>
+                <div class="card-icons">
+                    <span class="status-indicator"></span>
+                     <!-- SVG for Sparkle/Star icon -->
+                     <span class="feature-icon" title="Recommended">
+                         <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M7.53 1.24a.75.75 0 01.94 0l1.69 2.83c.06.1.15.17.25.19l3.1.31a.75.75 0 01.43 1.3l-2.3 1.97c-.09.07-.13.19-.11.3l.68 3.01a.75.75 0 01-1.1.8l-2.7-1.58a.75.75 0 00-.7-.01l-2.7 1.58a.75.75 0 01-1.1-.8l.68-3.01c.02-.11-.02-.23-.1-.3L.91 5.87a.75.75 0 01.43-1.3l3.1-.31c.1-.02.2-.09.25-.19L6.37 1.24a.75.75 0 011.16 0z"></path></svg>
+                    </span>
+                </div>
+            </button>
+            <button class="level-card">
+                <div class="card-content">Openings</div>
+                <div class="card-icons">
+                    <span class="status-indicator"></span>
+                    <span class="feature-icon"><!-- Empty --></span>
+                </div>
+            </button>
+            <button class="level-card">
+                <div class="card-content">Endgames</div>
+                 <div class="card-icons">
+                    <span class="status-indicator"></span>
+                    <span class="feature-icon"><!-- Empty --></span>
+                </div>
+            </button>
+
+            <!-- Row 3 -->
+            <button class="level-card">
+                <div class="card-content">Strategy</div>
+                 <div class="card-icons">
+                    <span class="status-indicator"></span>
+                    <span class="feature-icon"><!-- Empty --></span>
+                </div>
+            </button>
+            <button class="level-card">
+                <div class="card-content">Tactics</div>
+                 <div class="card-icons">
+                    <span class="status-indicator"></span>
+                    <span class="feature-icon"><!-- Empty --></span>
+                </div>
+            </button>
+             <button class="level-card">
+                 <div class="card-content">Analysis</div>
+                 <div class="card-icons">
+                     <span class="status-indicator"></span>
+                     <!-- SVG for Sparkle/Star icon -->
+                     <span class="feature-icon" title="New!">
+                         <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M7.53 1.24a.75.75 0 01.94 0l1.69 2.83c.06.1.15.17.25.19l3.1.31a.75.75 0 01.43 1.3l-2.3 1.97c-.09.07-.13.19-.11.3l.68 3.01a.75.75 0 01-1.1.8l-2.7-1.58a.75.75 0 00-.7-.01l-2.7 1.58a.75.75 0 01-1.1-.8l.68-3.01c.02-.11-.02-.23-.1-.3L.91 5.87a.75.75 0 01.43-1.3l3.1-.31c.1-.02.2-.09.25-.19L6.37 1.24a.75.75 0 011.16 0z"></path></svg>
+                    </span>
+                 </div>
+             </button>
+
+            <!-- Row 4 -->
+            <button class="level-card">
+                <div class="card-content">Play vs CPU</div>
+                 <div class="card-icons">
+                    <span class="status-indicator"></span>
+                    <span class="feature-icon"><!-- Empty --></span>
+                </div>
+            </button>
+            <button class="level-card">
+                 <div class="card-content">Daily Challenge</div>
+                 <div class="card-icons">
+                     <span class="status-indicator"></span>
+                     <!-- SVG for Sparkle/Star icon -->
+                     <span class="feature-icon" title="Daily">
+                         <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M7.53 1.24a.75.75 0 01.94 0l1.69 2.83c.06.1.15.17.25.19l3.1.31a.75.75 0 01.43 1.3l-2.3 1.97c-.09.07-.13.19-.11.3l.68 3.01a.75.75 0 01-1.1.8l-2.7-1.58a.75.75 0 00-.7-.01l-2.7 1.58a.75.75 0 01-1.1-.8l.68-3.01c.02-.11-.02-.23-.1-.3L.91 5.87a.75.75 0 01.43-1.3l3.1-.31c.1-.02.2-.09.25-.19L6.37 1.24a.75.75 0 011.16 0z"></path></svg>
+                    </span>
+                 </div>
+             </button>
+            <button class="level-card special" title="Random Lesson">
+                 <div class="card-content"></div>
+                 <div class="card-icons">
+                      <span class="status-indicator"></span>
+                     <!-- SVG for Shuffle icon -->
+                     <span class="feature-icon">
+                         <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M13.11 5.89a.75.75 0 01-.53 1.28H10.8l2.01 2.01a.75.75 0 11-1.06 1.06L9.74 8.23a.75.75 0 01-.22-.53V4.75a.75.75 0 011.5 0v1.77l1.59-1.59a.75.75 0 011.06 0c.29.29.29.77 0 1.06l-.56-.5zM3.72 2.89a.75.75 0 011.06 0l7.5 7.5a.75.75 0 010 1.06l-1.75 1.75a.75.75 0 11-1.06-1.06l.97-.97H5.25a.75.75 0 010-1.5h2.78l-1.5-1.5A.75.75 0 016.3 8.2l2.01 2.01a.75.75 0 11-1.06 1.06L5.24 9.26a.75.75 0 01-.22-.53V5.78l-1.59 1.59a.75.75 0 01-1.06 0 .75.75 0 010-1.06l1.35-1.35z"></path></svg>
+                     </span>
+                 </div>
+             </button>
+        </div>
+    </main>
+
+    <footer>
+        <button class="footer-button btn-download" title="Download PGN/Progress">
+             <!-- SVG for Download icon -->
+             <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M7.47 10.78a.75.75 0 001.06 0l3.75-3.75a.75.75 0 00-1.06-1.06L8.75 8.44V1.75a.75.75 0 00-1.5 0v6.69L4.78 5.97a.75.75 0 00-1.06 1.06l3.75 3.75zM3.75 13a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5z"></path></svg>
+        </button>
+        <button class="footer-button btn-upload" title="Upload PGN/Load Game">
+            <!-- SVG for Upload icon -->
+            <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M7.47 2.22a.75.75 0 011.06 0l3.75 3.75a.75.75 0 01-1.06 1.06L8.75 4.56V11.25a.75.75 0 01-1.5 0V4.56L4.78 7.03a.75.75 0 01-1.06-1.06l3.75-3.75zM3.75 13a.75.75 0 010 1.5h8.5a.75.75 0 010-1.5h-8.5z"></path></svg>
+        </button>
+        <button class="footer-button btn-play" title="Start Lesson/Play Game">
+            <!-- SVG for Play icon -->
+            <svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M4.47 2.22A.75.75 0 015 2h6a.75.75 0 01.53.22l4.25 4.25c.141.14.22.331.22.53v2c0 .2-.079.388-.22.53l-4.25 4.25A.75.75 0 0111 14H5a.75.75 0 01-.53-.22L.22 9.53A.75.75 0 010 9V7c0-.2.079-.388.22-.53L4.47 2.22zm.63 1.03L1.1 7.25v1.5L5.1 12.75H10.9l3.9-3.9V7.25l-3.9-3.9H5.1zM6.5 5.75a.75.75 0 00-1.214.558L4.5 8l.786 1.692A.75.75 0 006.5 10.25h3a.75.75 0 00.714-.958L9.5 8l-.714-1.292A.75.75 0 008.5 6.25h-2a.75.75 0 00-.5.25z"></path></svg>
+        </button>
+    </footer>
+
+</body>
+</html>
