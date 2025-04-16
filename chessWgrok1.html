@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Anurag Academy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            width: 50px;
+            margin-right: 10px;
+        }
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 20px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        /* Hero Section Styles */
+        #hero {
+            height: 500px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+        .hero-content {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+        }
+        .btn {
+            background-color: #f00;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+        }
+        /* Courses Section Styles */
+        #courses {
+            padding: 50px;
+            text-align: center;
+        }
+        .course-grid {
+            display: flex;
+            justify-content: space-around;
+        }
+        .course-card {
+            width: 30%;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+        /* Testimonials Section Styles */
+        #testimonials {
+            padding: 50px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .testimonial {
+            margin-bottom: 20px;
+        }
+        /* Footer Styles */
+        footer {
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="Chess Anurag Academy Logo">
+            <h1>Chess Anurag Academy</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Courses</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" style="background-image: url('hero.jpg');">
+            <div class="hero-content">
+                <h2>Welcome to Chess Anurag Academy</h2>
+                <p>Learn chess from the masters</p>
+                <a href="#" class="btn">Enroll Now</a>
+            </div>
+        </section>
+
+        <section id="courses">
+            <h2>Our Courses</h2>
+            <div class="course-grid">
+                <div class="course-card">
+                    <h3>Beginner Course</h3>
+                    <p>Learn the basics of chess.</p>
+                </div>
+                <div class="course-card">
+                    <h3>Intermediate Course</h3>
+                    <p>Improve your chess skills.</p>
+                </div>
+                <div class="course-card">
+                    <h3>Advanced Course</h3>
+                    <p>Master advanced chess strategies.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials">
+            <h2>What Our Students Say</h2>
+            <div class="testimonial">
+                <p>"Chess Anurag Academy has transformed my game. I highly recommend it!" - John Doe</p>
+            </div>
+            <div class="testimonial">
+                <p>"The instructors are knowledgeable and patient. I've learned so much." - Jane Smith</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Contact us: info@chessanurag.com | Follow us on social media</p>
+        <p>&copy; 2023 Chess Anurag Academy</p>
+    </footer>
+</body>
+</html>
