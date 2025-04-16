@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chess Anurag Academy</title>
+  <style>
+    /* 
+      Fonts & Colors Emulating the Attached Picture 
+      ----------------------------------------------------
+      If you want to use a particular font from Google Fonts,
+      you can embed it via a <link> tag or @import. 
+      For this offline-friendly demo, we'll simulate similar fonts.
+    */
+
+    body {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background-color: #F8F8F8; /* Light grayish-white background */
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: #333;
+    }
+
+    header {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #E0E0E0;
+    }
+
+    header h1 {
+      font-size: 2em;
+      margin: 0;
+      font-weight: 700;
+    }
+
+    header p {
+      margin: 10px 0;
+      font-size: 1em;
+      color: #666;
+    }
+
+    /* 
+      "Start Building" Button 
+      ------------------------------------
+      Styled as in the screenshot (a simple link styled as a button).
+    */
+    .start-building {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: #007AFF; /* iOS-style bright blue */
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    /* Container for the "Voice" or "Tiles" Section */
+    .tile-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+
+    .tile-section h2 {
+      font-size: 1.5em;
+      margin-bottom: 20px;
+    }
+
+    /* 
+      Grid of Rectangular Tiles 
+      ---------------------------------
+      Mimicking the squares in the screenshot.
+    */
+    .tile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+    }
+
+    /* Each individual tile style */
+    .tile {
+      background-color: #fff;
+      border: 1px solid #E0E0E0;
+      border-radius: 6px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      font-size: 0.9em;
+      font-weight: 600;
+    }
+
+    .tile:hover {
+      background-color: #fafafa;
+    }
+
+    /* 
+      Footer with some extra info:
+      - Next session date/time in India
+      - Fees in INR
+      - Distance in kilometers
+      - Relevant links
+    */
+    footer {
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid #E0E0E0;
+      background-color: #F8F8F8;
+    }
+
+    footer p {
+      margin: 8px 0;
+      line-height: 1.4;
+      color: #666;
+    }
+
+    footer a {
+      color: #007AFF;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Section -->
+  <header>
+    <h1>Chess Anurag Academy ♟️</h1>
+    <p>An interactive hub for chess lovers to learn and master the art of checkmating.</p>
+    <!-- "Start Building" as per the screenshot style, but we'll adapt it for Chess Anurag Academy -->
+    <a href="https://www.chessanuragacademy.in" class="start-building" target="_blank" rel="noopener noreferrer">
+      Start Training →
+    </a>
+  </header>
+
+  <!-- Main Content: Tiles Section -->
+  <div class="tile-section">
+    <h2>Our Specialized Chess Courses</h2>
+    <div class="tile-grid">
+      <div class="tile">Alloy</div>
+      <div class="tile">Ash</div>
+      <div class="tile">Ballad</div>
+      <div class="tile">Coral</div>
+      <div class="tile">Echo</div>
+      <div class="tile">Fable</div>
+      <div class="tile">Onyx</div>
+      <div class="tile">Nova</div>
+      <div class="tile">Sage</div>
+      <div class="tile">Shimmer</div>
+      <div class="tile">Verse</div>
+    </div>
+  </div>
+
+  <!-- Footer with extra info -->
+  <footer>
+    <p>
+      <strong>Next Training Session:</strong> 16 April 2025, 06:00 PM (IST) 
+      <br />
+      <strong>Registration Fees:</strong> ₹1,500 
+      <br />
+      <strong>Academy Distance From City Center:</strong> 10 km 
+    </p>
+    <p>
+      Feeling like a future Grandmaster? (Or at least a grand dreamer? 🤭)  
+      <br />
+      Join us at 
+      <a href="https://www.chessanuragacademy.in" target="_blank" rel="noopener noreferrer">
+        www.chessanuragacademy.in
+      </a>
+      for more details.
+    </p>
+    <p>
+      Because checkmating your opponent never gets old! ♟️
+    </p>
+  </footer>
+
+</body>
+</html>
