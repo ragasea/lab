@@ -1,0 +1,128 @@
+<!--
+Prompt: write code in single html file to create clean minimal visually appealing website similar to https://hack.chat/ so that one can communicate with one another just by sharing link without login. messages should be encrypted. one should able to generate share link on website
+Date: 19 April 2025, 12:00 IST
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🔒 Encrypted Chat</title>
+  <style>
+    :root {
+      --bg: #f9f9f9;
+      --card: #ffffff;
+      --text: #333;
+      --accent: #007aff;
+    }
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body {
+      display: flex; flex-direction: column;
+      height: 100vh; font-family: sans-serif;
+      background: var(--bg); color: var(--text);
+    }
+    #header {
+      padding: 1rem; background: var(--card);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex; justify-content: space-between;
+      align-items: center;
+    }
+    #roomLink { font-size: 0.9rem; color: var(--accent); text-decoration: none; }
+    #chat {
+      flex: 1; padding: 1rem; overflow-y: auto;
+    }
+    .msg { margin-bottom: 0.5rem; }
+    .msg .nick { font-weight: bold; margin-right: 0.3rem; }
+    #inputArea {
+      display: flex; border-top: 1px solid #ddd;
+      background: var(--card);
+    }
+    #inputArea input {
+      flex: 1; border: none; padding: 1rem;
+      font-size: 1rem;
+    }
+    #inputArea button {
+      border: none; background: var(--accent);
+      color: #fff; padding: 0 1.5rem;
+      cursor: pointer;
+    }
+    #inputArea input:focus, #inputArea button:focus { outline:none; }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <div>🔒 Encrypted Chat</div>
+    <a id="roomLink" href="#">Share this link</a>
+  </div>
+  <div id="chat"></div>
+  <div id="inputArea">
+    <input id="msgInput" type="text" placeholder="Type your message…" autocomplete="off"/>
+    <button id="sendBtn">Send</button>
+  </div>
+
+  <!-- CryptoJS for AES encryption/decryption -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <script>
+    // Utilities
+    function randStr(len) {
+      const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+      return [...Array(len)].map(()=>chars[Math.floor(Math.random()*chars.length)]).join('');
+    }
+    // Parse or generate room & key
+    let [room, key] = (location.hash.slice(1) || '').split(':');
+    if(!room || !key) {
+      room = randStr(8);
+      key  = randStr(16);
+      location.hash = room + ':' + key;
+    }
+    // Update share link
+    const shareLink = location.href;
+    document.getElementById('roomLink').href = shareLink;
+    document.getElementById('roomLink').textContent = '🔗 ' + shareLink;
+
+    // Prompt for nickname
+    const nick = prompt("Enter your nickname:")?.trim() || 'Anon_' + randStr(4);
+
+    // Connect to hack.chat WebSocket
+    const ws = new WebSocket('wss://hack.chat/chat-ws');
+    ws.addEventListener('open', ()=> {
+      ws.send(JSON.stringify({ cmd:'join', channel: room, nick }));
+    });
+
+    // Incoming messages
+    const chatEl = document.getElementById('chat');
+    ws.addEventListener('message', evt => {
+      try {
+        const msg = JSON.parse(evt.data);
+        if(msg.cmd === 'chat') {
+          // Decrypt base64 AES payload
+          const bytes = CryptoJS.AES.decrypt(msg.text, key);
+          const text  = bytes.toString(CryptoJS.enc.Utf8);
+          if(text) {
+            const div = document.createElement('div');
+            div.className = 'msg';
+            div.innerHTML = '<span class="nick">'+msg.nick+':</span> '+text;
+            chatEl.append(div);
+            chatEl.scrollTop = chatEl.scrollHeight;
+          }
+        }
+      } catch(e){ /* ignore non-chat or bad decrypt */ }
+    });
+
+    // Send message
+    function sendMessage(){
+      const input = document.getElementById('msgInput');
+      const plain = input.value.trim();
+      if(!plain) return;
+      // Encrypt with AES → Base64
+      const cipher = CryptoJS.AES.encrypt(plain, key).toString();
+      ws.send(JSON.stringify({cmd:'chat', text: cipher}));
+      input.value = '';
+    }
+    document.getElementById('sendBtn').onclick = sendMessage;
+    document.getElementById('msgInput').addEventListener('keypress', e=>{
+      if(e.key==='Enter') sendMessage();
+    });
+  </script>
+</body>
+</html>
