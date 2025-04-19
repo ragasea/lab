@@ -1,0 +1,121 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Microblog</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📝</text></svg>">
+  <style>
+    body { font-family: sans-serif; margin: 1rem; background: #fdfdfd; color: #333; transition: background 0.3s, color 0.3s; }
+    .dark { background: #1e1e1e; color: #eee; }
+    .post { border: 1px solid #ccc; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; }
+    .tags { color: #888; font-size: 0.9rem; }
+    .timestamp { font-size: 0.8rem; color: #666; }
+    .emoji { font-size: 1.2rem; }
+    textarea, input[type="text"] { width: 100%; padding: 0.5rem; margin: 0.5rem 0; }
+    button { padding: 0.5rem 1rem; margin: 0.5rem 0.2rem; }
+    .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; font-size: 1rem; text-align: center; }
+    .calendar .day { padding: 0.5rem; background: #f0f0f0; border-radius: 5px; }
+    .calendar .today { background: #ffc107; }
+  </style>
+</head>
+<body>
+  <h1>My Microblog</h1>
+  <label>Post Content (Markdown supported):</label>
+  <textarea id="postInput" rows="4"></textarea><label>Tags (comma-separated):</label> <input type="text" id="tagsInput">
+
+<label>Pick Emoji:</label> <input type="text" id="emojiInput" placeholder="😀🎉✨">
+
+<button onclick="addPost()">Post</button> <button onclick="toggleDarkMode()">Toggle Dark Mode</button> <button onclick="exportPosts()">Export JSON</button> <button onclick="exportAsText()">Export as .txt</button> <button onclick="exportAsMarkdown()">Export as .md</button> <input type="text" id="searchInput" placeholder="Search posts" oninput="renderPosts()">
+
+  <h2>Calendar View</h2>
+  <div id="calendar"></div>
+  <div id="posts"></div>  <script>
+    let posts = JSON.parse(localStorage.getItem("posts") || "[]");
+
+    function addPost() {
+      const text = document.getElementById("postInput").value;
+      const tags = document.getElementById("tagsInput").value.split(',').map(t => t.trim()).filter(Boolean);
+      const emoji = document.getElementById("emojiInput").value;
+      const fullText = text + "\n" + emoji;
+      posts.unshift({ text: fullText, tags, date: new Date() });
+      localStorage.setItem("posts", JSON.stringify(posts));
+      document.getElementById("postInput").value = "";
+      document.getElementById("tagsInput").value = "";
+      document.getElementById("emojiInput").value = "";
+      renderPosts();
+    }
+
+    function renderPosts() {
+      const container = document.getElementById("posts");
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      container.innerHTML = "";
+      posts.filter(p => p.text.toLowerCase().includes(search)).forEach(post => {
+        const el = document.createElement("div");
+        el.className = "post";
+        el.innerHTML = `<div>${marked.parse(post.text)}</div>
+          <div class='tags'>Tags: ${post.tags.map(t => `#${t}`).join(" ")}</div>
+          <div class='timestamp'>${new Date(post.date).toLocaleString('en-IN')}</div>`;
+        container.appendChild(el);
+      });
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+
+    function exportPosts() {
+      const blob = new Blob([JSON.stringify(posts)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "microblog.json";
+      a.click();
+    }
+
+    function exportAsText() {
+      const lines = posts.map(p => {
+        const date = new Date(p.date).toLocaleString('en-IN');
+        const tags = (p.tags || []).join(', ');
+        return `Post on ${date}\n${p.text}\nTags: ${tags}\n---\n`;
+      }).join('\n');
+      downloadFile("microblog.txt", lines);
+    }
+
+    function exportAsMarkdown() {
+      const md = posts.map(p => {
+        const date = new Date(p.date).toLocaleString('en-IN');
+        const tags = (p.tags || []).map(t => `\`${t}\``).join(', ');
+        return `## Post on ${date}\n\n${p.text}\n\n**Tags:** ${tags}\n\n---\n`;
+      }).join('\n');
+      downloadFile("microblog.md", md);
+    }
+
+    function downloadFile(filename, content) {
+      const blob = new Blob([content], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+    }
+
+    function renderCalendar() {
+      const container = document.getElementById("calendar");
+      const currentMonth = new Date();
+      const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+      const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
+      const today = new Date().getDate();
+
+      let calendarHTML = "";
+      for (let i = 0; i < firstDay; i++) {
+        calendarHTML += "<div></div>";
+      }
+      for (let i = 1; i <= daysInMonth; i++) {
+        const isToday = i === today ? 'today' : '';
+        calendarHTML += `<div class="day ${isToday}">${i}</div>`;
+      }
+      container.innerHTML = calendarHTML;
+    }
+
+    renderPosts();
+    renderCalendar();
+  </script>  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script></body>
+</html>
