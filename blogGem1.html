@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micro Blog</title>
+    <style>
+        /* CSS Variables for Theming */
+        :root {
+            --bg-color: #f4f4f4;
+            --text-color: #333;
+            --card-bg: #fff;
+            --border-color: #ddd;
+            --accent-color: #007bff;
+            --accent-text-color: #fff;
+            --timestamp-color: #777;
+            --link-color: #0056b3;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --toggle-bg: #ccc;
+            --toggle-knob: #fff;
+            --toggle-bg-active: #007bff;
+        }
+
+        body.dark-mode {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --card-bg: #2c2c2c;
+            --border-color: #444;
+            --accent-color: #4dabf7;
+            --accent-text-color: #111;
+            --timestamp-color: #999;
+            --link-color: #6ab0f3;
+            --shadow-color: rgba(255, 255, 255, 0.1);
+            --toggle-bg: #555;
+            --toggle-knob: #ccc;
+            --toggle-bg-active: #4dabf7;
+        }
+
+        /* General Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+            padding: 15px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            transition: background-color 0.3s;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+        }
+
+        /* Header Controls */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .theme-switch-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-switch {
+            display: inline-block;
+            height: 24px;
+            position: relative;
+            width: 50px;
+        }
+
+        .theme-switch input {
+            display: none;
+        }
+
+        .slider {
+            background-color: var(--toggle-bg);
+            bottom: 0;
+            cursor: pointer;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            background-color: var(--toggle-knob);
+            bottom: 4px;
+            content: "";
+            height: 16px;
+            left: 4px;
+            position: absolute;
+            transition: .4s;
+            width: 16px;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--toggle-bg-active);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .io-buttons button, .io-buttons label {
+            padding: 8px 12px;
+            background-color: var(--accent-color);
+            color: var(--accent-text-color);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s;
+            margin-left: 5px;
+        }
+         .io-buttons label { /* Style label like a button */
+            display: inline-block;
+         }
+
+        .io-buttons button:hover, .io-buttons label:hover {
+            opacity: 0.9;
+        }
+
+        #importFile {
+            display: none; /* Hide the actual file input */
+        }
+
+        /* Posting Area */
+        #post-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1em;
+            min-height: 80px;
+            margin-bottom: 10px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        #post-form button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: var(--accent-text-color);
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #post-form button:hover {
+            opacity: 0.9;
+        }
+
+        /* Posts Area */
+        #posts-container {
+            margin-top: 30px;
+        }
+
+        .post {
+            background-color: var(--card-bg);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+            overflow-wrap: break-word; /* Handle long words */
+            word-wrap: break-word; /* Older browsers */
+             hyphens: auto; /* Add hyphens for better word breaking */
+        }
+
+        .post-timestamp {
+            font-size: 0.8em;
+            color: var(--timestamp-color);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .post-content {
+            margin-bottom: 10px;
+        }
+
+        .post-content iframe {
+            max-width: 100%;
+            aspect-ratio: 16 / 9; /* Maintain aspect ratio */
+            border: none;
+            border-radius: 4px;
+        }
+
+        .post-content a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        .post-content a:hover {
+            text-decoration: underline;
+        }
+
+        /* Long Text Folding */
+        .post-content.collapsed {
+            max-height: 100px; /* Adjust as needed */
+            overflow: hidden;
+            position: relative;
+        }
+        .post-content.collapsed::after { /* Fade out effect */
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(to bottom, transparent, var(--card-bg));
+            pointer-events: none; /* Allow clicking through the gradient */
+        }
+
+        .toggle-content {
+            color: var(--accent-color);
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: inline-block; /* Needed if content is collapsed */
+            margin-top: 5px;
+        }
+         .toggle-content:hover {
+             text-decoration: underline;
+         }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Micro Blog</h1>
+
+        <div class="controls">
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="theme-checkbox">
+                    <input type="checkbox" id="theme-checkbox" />
+                    <div class="slider"></div>
+                </label>
+                <span>Dark Mode</span>
+            </div>
+            <div class="io-buttons">
+                 <input type="file" id="importFile" accept=".json">
+                 <label for="importFile">Import JSON</label>
+                 <button id="exportJsonBtn">Export JSON</button>
+                 <button id="exportTextBtn">Export Text</button>
+                 <button id="clearAllBtn" style="background-color: #dc3545;">Clear All</button>
+            </div>
+        </div>
+
+        <form id="post-form">
+            <textarea id="post-content" placeholder="What's on your mind? Paste text or a YouTube link..." required></textarea>
+            <button type="submit">Post</button>
+        </form>
+
+        <div id="posts-container">
+            <!-- Posts will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        const postForm = document.getElementById('post-form');
+        const postContentInput = document.getElementById('post-content');
+        const postsContainer = document.getElementById('posts-container');
+        const themeCheckbox = document.getElementById('theme-checkbox');
+        const exportJsonBtn = document.getElementById('exportJsonBtn');
+        const exportTextBtn = document.getElementById('exportTextBtn');
+        const importFileBtn = document.getElementById('importFile');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+
+        const MAX_CONTENT_LENGTH = 300; // Characters before folding
+        const LOCAL_STORAGE_KEY = 'microBlogPosts';
+        const THEME_STORAGE_KEY = 'microBlogTheme';
+
+        let posts = [];
+
+        // --- Post Rendering ---
+
+        function renderPost(post) {
+            const postDiv = document.createElement('div');
+            postDiv.classList.add('post');
+            postDiv.dataset.postId = post.id; // Add data-id for potential future use
+
+            const timestampSpan = document.createElement('span');
+            timestampSpan.classList.add('post-timestamp');
+            timestampSpan.textContent = new Date(post.timestamp).toLocaleString();
+            postDiv.appendChild(timestampSpan);
+
+            const contentDiv = document.createElement('div');
+            contentDiv.classList.add('post-content');
+
+            let processedContent = processContent(post.content);
+            contentDiv.innerHTML = processedContent.html; // Use innerHTML as processContent returns HTML strings
+
+            postDiv.appendChild(contentDiv);
+
+            // Add Read More/Less if needed
+            if (processedContent.isLong) {
+                contentDiv.classList.add('collapsed');
+                const toggleLink = document.createElement('span');
+                toggleLink.classList.add('toggle-content');
+                toggleLink.textContent = 'Read More';
+                toggleLink.addEventListener('click', () => togglePostContent(contentDiv, toggleLink));
+                postDiv.appendChild(toggleLink);
+            }
+
+            // Prepend the new post to the container
+            postsContainer.insertBefore(postDiv, postsContainer.firstChild);
+        }
+
+        function renderAllPosts() {
+            postsContainer.innerHTML = ''; // Clear existing posts
+            // Render in reverse chronological order (newest first)
+            [...posts].reverse().forEach(post => renderPost(post));
+            applyLineBreaksAndLinks(); // Re-apply formatting after initial render
+        }
+
+        function processContent(content) {
+            let htmlContent = escapeHtml(content); // Basic sanitization
+            const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const urlRegex = /(https?:\/\/[^\s]+)/g; // General URL regex
+
+            const youtubeMatch = content.match(youtubeRegex);
+
+            let isLong = content.length > MAX_CONTENT_LENGTH;
+            let requiresFolding = false; // Separate flag to decide if folding elements are needed
+
+            if (youtubeMatch && youtubeMatch[1]) {
+                const videoId = youtubeMatch[1];
+                // Replace the FIRST occurrence of the YouTube link with an embed
+                 htmlContent = htmlContent.replace(youtubeRegex, `<iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`);
+                // Don't fold YouTube posts based on original text length unless very long text *around* the video
+                 // For simplicity here, we won't fold video posts easily.
+                 isLong = false; // Disable folding for posts primarily identified as YouTube videos.
+            } else {
+                 // Make other links clickable, ensuring HTML entities in URLs are handled correctly after escaping
+                 // We need to temporarily decode potential entities within the URL part matched by regex
+                htmlContent = htmlContent.replace(urlRegex, (match) => {
+                    const decodedMatch = decodeHtmlEntities(match); // Decode entities for href
+                    return `<a href="${decodedMatch}" target="_blank" rel="noopener noreferrer">${match}</a>`;
+                });
+                // Apply line breaks
+                 htmlContent = htmlContent.replace(/\n/g, '<br>');
+                 requiresFolding = content.length > MAX_CONTENT_LENGTH;
+                 isLong = requiresFolding; // Set isLong only if folding is required
+            }
+
+
+            return { html: htmlContent, isLong: requiresFolding };
+        }
+
+         // Helper function to escape HTML characters
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                 .replace(/&/g, "&")
+                 .replace(/</g, "<")
+                 .replace(/>/g, ">")
+                 .replace(/"/g, """)
+                 .replace(/'/g, "'");
+        }
+
+        // Helper function to decode HTML entities (simple version for URLs)
+        function decodeHtmlEntities(text) {
+             var textArea = document.createElement('textarea');
+             textArea.innerHTML = text;
+             return textArea.value;
+        }
+
+
+        // Apply line breaks and link formatting dynamically (less robust than server-side)
+        // Note: This is reapplied on load and might be less efficient than processing once on save/render.
+        // Simplified approach: Handle links and line breaks primarily within processContent.
+        function applyLineBreaksAndLinks() {
+            // This function is largely replaced by the logic within processContent now.
+            // Kept here in case more complex dynamic post-render formatting was needed.
+        }
+
+        function togglePostContent(contentDiv, toggleLink) {
+            contentDiv.classList.toggle('collapsed');
+            if (contentDiv.classList.contains('collapsed')) {
+                toggleLink.textContent = 'Read More';
+            } else {
+                toggleLink.textContent = 'Read Less';
+            }
+        }
+
+
+        // --- Data Handling ---
+
+        function addPost(content) {
+            if (!content.trim()) return; // Don't add empty posts
+
+            const newPost = {
+                id: Date.now(), // Simple unique ID
+                content: content,
+                timestamp: new Date().toISOString()
+            };
+
+            posts.push(newPost);
+            savePosts();
+            renderPost(newPost); // Render only the new post for efficiency
+            postContentInput.value = ''; // Clear input
+        }
+
+        function savePosts() {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(posts));
+        }
+
+        function loadPosts() {
+            const storedPosts = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (storedPosts) {
+                try {
+                    posts = JSON.parse(storedPosts);
+                } catch (e) {
+                    console.error("Error parsing posts from localStorage:", e);
+                    posts = []; // Reset if data is corrupted
+                }
+            } else {
+                posts = [];
+            }
+            renderAllPosts();
+        }
+
+        // --- Import / Export ---
+
+        function exportToJson() {
+            const jsonString = JSON.stringify(posts, null, 2); // Pretty print JSON
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            downloadBlob(blob, 'micro-blog-posts.json');
+        }
+
+        function exportToText() {
+            let textContent = `Micro Blog Export - ${new Date().toLocaleString()}\n\n`;
+            textContent += "========================================\n\n";
+
+            [...posts].reverse().forEach(post => { // Export newest first
+                textContent += `Date: ${new Date(post.timestamp).toLocaleString()}\n`;
+                textContent += `Content:\n${post.content}\n`;
+                textContent += "========================================\n\n";
+            });
+
+            const blob = new Blob([textContent], { type: 'text/plain' });
+            downloadBlob(blob, 'micro-blog-posts.txt');
+        }
+
+        function importFromJson(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedPosts = JSON.parse(e.target.result);
+                    // Basic validation: check if it's an array
+                    if (!Array.isArray(importedPosts)) {
+                         throw new Error("Imported file is not a valid post array.");
+                    }
+                     // Optional: More validation (check structure of each post object)
+                    // For simplicity, we assume the structure is correct if it parses as an array.
+
+                    // Option 1: Replace existing posts
+                    // posts = importedPosts;
+
+                    // Option 2: Merge with existing posts (avoiding duplicates based on ID if needed)
+                     const existingIds = new Set(posts.map(p => p.id));
+                     const newPosts = importedPosts.filter(p => p.id && p.content && p.timestamp && !existingIds.has(p.id));
+                     posts = [...posts, ...newPosts];
+                     // Sort posts by timestamp after merge (newest first for saving logic)
+                     posts.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+
+                    savePosts();
+                    loadPosts(); // Reload and render all
+                    alert(`Successfully imported ${newPosts.length} new posts.`);
+                } catch (error) {
+                    console.error("Error importing JSON:", error);
+                    alert(`Import failed: ${error.message}`);
+                } finally {
+                     // Reset file input to allow importing the same file again if needed
+                    event.target.value = null;
+                }
+            };
+            reader.onerror = function() {
+                alert("Failed to read the file.");
+                 event.target.value = null;
+            };
+            reader.readAsText(file);
+        }
+
+
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a); // Required for Firefox
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url); // Clean up
+        }
+
+         function clearAllPosts() {
+             if (confirm("Are you sure you want to delete ALL posts? This cannot be undone.")) {
+                 posts = [];
+                 savePosts();
+                 renderAllPosts();
+             }
+         }
+
+        // --- Theme Handling ---
+
+        function applyTheme(isDark) {
+            if (isDark) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = themeCheckbox.checked;
+            applyTheme(isDark);
+            localStorage.setItem(THEME_STORAGE_KEY, isDark ? 'dark' : 'light');
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+            // Default to light theme if no preference saved or if system prefers light
+            // let prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            // let useDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+            let useDark = savedTheme === 'dark'; // Simpler: only use saved theme
+
+            themeCheckbox.checked = useDark;
+            applyTheme(useDark);
+        }
+
+        // --- Event Listeners ---
+
+        postForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            addPost(postContentInput.value);
+        });
+
+        themeCheckbox.addEventListener('change', toggleTheme);
+        exportJsonBtn.addEventListener('click', exportToJson);
+        exportTextBtn.addEventListener('click', exportToText);
+        importFileBtn.addEventListener('change', importFromJson);
+        clearAllBtn.addEventListener('click', clearAllPosts);
+
+         // Event delegation for "Read More/Less" clicks within the posts container
+         // Note: This is handled directly in renderPost now for simplicity. If posts
+         // were rendered differently, event delegation here would be useful:
+         // postsContainer.addEventListener('click', (e) => {
+         //     if (e.target.classList.contains('toggle-content')) {
+         //         const contentDiv = e.target.previousElementSibling; // Assuming toggle is right after content
+         //         if (contentDiv && contentDiv.classList.contains('post-content')) {
+         //             togglePostContent(contentDiv, e.target);
+         //         }
+         //     }
+         // });
+
+
+        // --- Initialization ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTheme();
+            loadPosts();
+        });
+
+    </script>
+</body>
+</html>
