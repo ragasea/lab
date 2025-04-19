@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minimal Micro Blog</title>
+  <style>
+    /* Basic Reset and Typography */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #333333;
+      line-height: 1.6;
+    }
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 1rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    /* Button and Toggle Styles */
+    .toggle-dark-mode {
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-size: 1rem;
+      padding: 0.5rem;
+    }
+    button {
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      background-color: #f0f0f0;
+      margin: 0.2rem;
+    }
+    body.dark-mode button {
+      border: 1px solid #555;
+      background-color: #333;
+      color: #fff;
+    }
+    /* Form and Post Styles */
+    form {
+      margin: 1rem 0;
+    }
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.5rem;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      resize: vertical;
+    }
+    .post {
+      border: 1px solid #ccc;
+      margin: 1rem 0;
+      padding: 1rem;
+      border-radius: 5px;
+      background-color: #fafafa;
+    }
+    body.dark-mode .post {
+      border: 1px solid #444;
+      background-color: #1e1e1e;
+    }
+    .post-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #777;
+    }
+    .post-content {
+      white-space: pre-wrap;
+      margin-top: 0.5rem;
+    }
+    .read-more {
+      color: blue;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    /* Controls and Search Bar */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .controls > div {
+      margin-top: 0.5rem;
+    }
+    .search-bar {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    /* YouTube iframe */
+    iframe {
+      width: 100%;
+      height: 315px;
+      margin-top: 1rem;
+      border: none;
+    }
+    @media (max-width:600px) {
+      iframe {
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Micro Blog</h1>
+      <button class="toggle-dark-mode" id="toggleDarkMode">Dark Mode</button>
+    </header>
+    <div class="controls">
+      <input type="text" id="searchInput" class="search-bar" placeholder="Search posts...">
+      <div>
+        <button id="exportJSON">Export JSON</button>
+        <button id="exportText">Export Text</button>
+        <button id="importPosts">Import Posts</button>
+        <input type="file" id="importFile" style="display:none;">
+      </div>
+    </div>
+    <form id="postForm">
+      <textarea id="postContent" placeholder="Write your post here..."></textarea>
+      <button type="submit">Post</button>
+    </form>
+    <div id="postsContainer">
+      <!-- Posts will appear here -->
+    </div>
+  </div>
+  
+  <script>
+    // Posts will be stored as an array of objects in localStorage under key "posts".
+    let posts = [];
+    
+    // Load posts from localStorage
+    function loadPosts() {
+      const storedPosts = localStorage.getItem("posts");
+      if (storedPosts) {
+        try {
+          posts = JSON.parse(storedPosts);
+        } catch (e) {
+          posts = [];
+        }
+      } else {
+        posts = [];
+      }
+    }
+    
+    function savePosts() {
+      localStorage.setItem("posts", JSON.stringify(posts));
+    }
+    
+    // Generate a unique ID for each post
+    function generateId() {
+      return '_' + Math.random().toString(36).substr(2, 9);
+    }
+    
+    // Render posts in the container, newest posts on top and filtering by search query
+    function renderPosts(filter = "") {
+      const container = document.getElementById("postsContainer");
+      container.innerHTML = "";
+      let filteredPosts = posts;
+      if (filter.trim() !== "") {
+        filteredPosts = posts.filter(post => post.content.toLowerCase().includes(filter.toLowerCase()));
+      }
+      // Sort posts by date descending
+      filteredPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      filteredPosts.forEach(post => {
+        const postDiv = document.createElement("div");
+        postDiv.className = "post";
+        
+        // Post header with a date/time stamp and a delete button
+        const headerDiv = document.createElement("div");
+        headerDiv.className = "post-header";
+        const timeSpan = document.createElement("span");
+        timeSpan.textContent = new Date(post.createdAt).toLocaleString();
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.onclick = () => {
+          deletePost(post.id);
+        };
+        headerDiv.appendChild(timeSpan);
+        headerDiv.appendChild(deleteBtn);
+        
+        // Post content area with link detection and message folding for long texts
+        const contentDiv = document.createElement("div");
+        contentDiv.className = "post-content";
+        
+        // Detect YouTube links and create an embedded preview if available.
+        const ytRegex = /(https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/))([\w-]+)/;
+        const match = post.content.match(ytRegex);
+        let videoEmbed = "";
+        if (match) {
+          const videoId = match[2];
+          videoEmbed = `<iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
+        }
+        
+        // Replace other URLs with clickable anchors.
+        let contentHtml = post.content.replace(/(https?:\/\/[^\s]+)/g, function(url) {
+          if (url.match(ytRegex)) return url;
+          return `<a href="${url}" target="_blank">${url}</a>`;
+        });
+        
+        // Message folding: if the content is too long, show a truncated version and a "Read more" link.
+        if (contentHtml.length > 300) {
+          const shortText = contentHtml.substring(0, 300) + '... ';
+          contentDiv.innerHTML = `<span class="short-text">${shortText}</span>
+                                  <span class="full-text" style="display:none;">${contentHtml}</span>
+                                  <span class="read-more" onclick="toggleReadMore(this)">Read more</span>`;
+        } else {
+          contentDiv.innerHTML = contentHtml;
+        }
+        
+        postDiv.appendChild(headerDiv);
+        postDiv.appendChild(contentDiv);
+        if (videoEmbed) {
+          const videoContainer = document.createElement("div");
+          videoContainer.innerHTML = videoEmbed;
+          postDiv.appendChild(videoContainer);
+        }
+        container.appendChild(postDiv);
+      });
+    }
+    
+    // Global function for toggling message folding on a post
+    function toggleReadMore(element) {
+      const parent = element.parentElement;
+      const shortText = parent.querySelector(".short-text");
+      const fullText = parent.querySelector(".full-text");
+      if (fullText.style.display === "none") {
+        fullText.style.display = "inline";
+        shortText.style.display = "none";
+        element.textContent = " Show less";
+      } else {
+        fullText.style.display = "none";
+        shortText.style.display = "inline";
+        element.textContent = " Read more";
+      }
+    }
+    
+    // Delete a post by its unique id
+    function deletePost(id) {
+      posts = posts.filter(post => post.id !== id);
+      savePosts();
+      renderPosts(document.getElementById("searchInput").value);
+    }
+    
+    // Dark mode toggle: add or remove the "dark-mode" class and save the state in localStorage
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+      const isDark = document.body.classList.contains("dark-mode");
+      localStorage.setItem("darkMode", isDark ? "true" : "false");
+      document.getElementById("toggleDarkMode").textContent = isDark ? "Light Mode" : "Dark Mode";
+    }
+    
+    function loadDarkMode() {
+      if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark-mode");
+        document.getElementById("toggleDarkMode").textContent = "Light Mode";
+      } else {
+        document.body.classList.remove("dark-mode");
+        document.getElementById("toggleDarkMode").textContent = "Dark Mode";
+      }
+    }
+    
+    document.getElementById("toggleDarkMode").addEventListener("click", toggleDarkMode);
+    
+    // Form submit event to create a new post
+    document.getElementById("postForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const textarea = document.getElementById("postContent");
+      const content = textarea.value.trim();
+      if (content === "") return;
+      const newPost = {
+        id: generateId(),
+        content: content,
+        createdAt: new Date().toISOString()
+      };
+      posts.push(newPost);
+      savePosts();
+      textarea.value = "";
+      renderPosts(document.getElementById("searchInput").value);
+    });
+    
+    // Search functionality: filter posts as the user types
+    document.getElementById("searchInput").addEventListener("input", function(e) {
+      renderPosts(e.target.value);
+    });
+    
+    // Export posts functionality in JSON format
+    document.getElementById("exportJSON").addEventListener("click", function() {
+      const dataStr = JSON.stringify(posts, null, 2);
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "posts.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    
+    // Export posts functionality in plain text format
+    document.getElementById("exportText").addEventListener("click", function() {
+      let textData = "";
+      posts.forEach(post => {
+        textData += new Date(post.createdAt).toLocaleString() + "\n" + post.content + "\n\n";
+      });
+      const blob = new Blob([textData], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "posts.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+    
+    // Import posts: open a file chooser and try to parse JSON first. If JSON parsing fails, use plain text.
+    document.getElementById("importPosts").addEventListener("click", function() {
+      document.getElementById("importFile").click();
+    });
+    
+    document.getElementById("importFile").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const importedPosts = JSON.parse(evt.target.result);
+          if (Array.isArray(importedPosts)) {
+            posts = posts.concat(importedPosts);
+          }
+        } catch(err) {
+          // Fallback: assume plain text with double newlines separating posts
+          const content = evt.target.result;
+          const parts = content.split("\n\n");
+          parts.forEach(part => {
+            if (part.trim() !== "") {
+              posts.push({
+                id: generateId(),
+                content: part.trim(),
+                createdAt: new Date().toISOString()
+              });
+            }
+          });
+        }
+        savePosts();
+        renderPosts(document.getElementById("searchInput").value);
+      };
+      reader.readAsText(file);
+    });
+    
+    // Initial load: retrieve posts and dark mode state, then render
+    loadPosts();
+    loadDarkMode();
+    renderPosts();
+  </script>
+</body>
+</html>
