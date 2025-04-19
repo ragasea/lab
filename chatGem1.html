@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ephemeral Chat</title>
+    <style>
+        :root {
+            --bg-color: #f0f0f0;
+            --text-color: #333;
+            --input-bg: #fff;
+            --border-color: #ccc;
+            --link-color: #007bff;
+            --message-bg-other: #e0e0e0;
+            --message-bg-mine: #d1e7dd;
+            --system-color: #888;
+            --error-color: #dc3545;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1a1a1a;
+                --text-color: #e0e0e0;
+                --input-bg: #2a2a2a;
+                --border-color: #555;
+                --link-color: #58a6ff;
+                --message-bg-other: #3a3a3a;
+                --message-bg-mine: #2a4b37;
+                --system-color: #aaa;
+                --error-color: #ff8484;
+            }
+        }
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 14px;
+        }
+        #header {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            text-align: center;
+            font-size: 0.9em;
+        }
+        #header a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+        #header a:hover {
+            text-decoration: underline;
+        }
+        #chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        #messages {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .message {
+            padding: 8px 12px;
+            border-radius: 12px;
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+        .message.other {
+            background-color: var(--message-bg-other);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .message.mine {
+            background-color: var(--message-bg-mine);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .message .sender {
+            font-weight: bold;
+            font-size: 0.85em;
+            margin-bottom: 3px;
+            display: block;
+            color: var(--link-color);
+        }
+         .message .timestamp {
+            font-size: 0.75em;
+            color: var(--system-color);
+            margin-top: 4px;
+            display: block;
+            text-align: right;
+        }
+        .message.system, .message.error {
+            background-color: transparent;
+            color: var(--system-color);
+            font-style: italic;
+            align-self: center;
+            text-align: center;
+            font-size: 0.9em;
+            padding: 4px;
+        }
+        .message.error {
+            color: var(--error-color);
+            font-style: normal;
+            font-weight: bold;
+        }
+        #input-area {
+            display: flex;
+            padding: 10px 15px;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+        }
+        #messageInput {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin-right: 10px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 1em;
+        }
+        #messageInput:focus {
+            outline: none;
+            border-color: var(--link-color);
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+        #sendButton {
+            padding: 10px 15px;
+            border: none;
+            background-color: var(--link-color);
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        #sendButton:hover {
+            opacity: 0.9;
+        }
+        #sendButton:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+
+    </style>
+    <!-- Include Paho MQTT Client Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.min.js"
+            integrity="sha512-DbXVnu8iN3j+xq9R+48n78erPtzO64567CHAFzY75U+S/eN865S+J7j4n9uX4J+tVYMKn290m9/3/6kU6o5wSg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    <div id="header">
+        Chatting on channel: <strong id="channelName">...</strong> | Your Nick: <strong id="nickname">...</strong> | <a href="https://github.com/your-repo/ephemeral-chat" target="_blank" rel="noopener noreferrer">About</a>
+        <div id="status" style="font-size: 0.8em; margin-top: 4px;">Connecting...</div>
+    </div>
+
+    <div id="chat-container">
+        <div id="messages"></div>
+    </div>
+
+    <div id="input-area">
+        <input type="text" id="messageInput" placeholder="Type your message (max 250 chars)..." autocomplete="off" maxlength="250">
+        <button id="sendButton" disabled>Send</button>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const MQTT_BROKER = "wss://broker.hivemq.com:8884/mqtt"; // Public MQTT broker over WSS
+        const MAX_MESSAGE_LENGTH = 250;
+        const MAX_NICK_LENGTH = 20;
+
+        // --- Elements ---
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const statusDiv = document.getElementById('status');
+        const channelNameSpan = document.getElementById('channelName');
+        const nicknameSpan = document.getElementById('nickname');
+
+        // --- State ---
+        let client = null;
+        let channel = '';
+        let secret = '';
+        let nickname = '';
+        let encryptionKey = null;
+        let joined = false;
+        let clientId = `ephemChat-${Math.random().toString(16).substr(2, 8)}`;
+
+        // --- Crypto Functions ---
+        // Derive a key from the secret using PBKDF2
+        async function deriveKey(password, salt) {
+            const enc = new TextEncoder();
+            const keyMaterial = await window.crypto.subtle.importKey(
+                "raw",
+                enc.encode(password),
+                { name: "PBKDF2" },
+                false,
+                ["deriveKey"]
+            );
+            return window.crypto.subtle.deriveKey(
+                {
+                    name: "PBKDF2",
+                    salt: enc.encode(salt),
+                    iterations: 100000,
+                    hash: "SHA-256",
+                },
+                keyMaterial,
+                { name: "AES-GCM", length: 256 },
+                true,
+                ["encrypt", "decrypt"]
+            );
+        }
+
+        // Encrypt message using AES-GCM
+        async function encryptMessage(key, plaintext) {
+            const enc = new TextEncoder();
+            const iv = window.crypto.getRandomValues(new Uint8Array(12)); // 96 bits is recommended for GCM
+            const encoded = enc.encode(plaintext);
+            const ciphertext = await window.crypto.subtle.encrypt(
+                { name: "AES-GCM", iv: iv },
+                key,
+                encoded
+            );
+            // Combine IV and ciphertext. Store IV length first (always 12)
+            const ivAndCiphertext = new Uint8Array(iv.length + ciphertext.byteLength);
+            ivAndCiphertext.set(iv, 0);
+            ivAndCiphertext.set(new Uint8Array(ciphertext), iv.length);
+            return btoa(String.fromCharCode(...ivAndCiphertext)); // Base64 encode
+        }
+
+        // Decrypt message using AES-GCM
+        async function decryptMessage(key, b64Ciphertext) {
+            try {
+                const data = Uint8Array.from(atob(b64Ciphertext), c => c.charCodeAt(0));
+                const iv = data.slice(0, 12);
+                const ciphertext = data.slice(12);
+                const decrypted = await window.crypto.subtle.decrypt(
+                    { name: "AES-GCM", iv: iv },
+                    key,
+                    ciphertext
+                );
+                const dec = new TextDecoder();
+                return dec.decode(decrypted);
+            } catch (e) {
+                console.error("Decryption failed:", e);
+                return null; // Indicate decryption failure
+            }
+        }
+
+        // --- UI Functions ---
+        function displayMessage(sender, text, type = 'other', timestamp = null) {
+            if (!text) return;
+
+            const messageEl = document.createElement('div');
+            messageEl.classList.add('message', type); // type = 'mine', 'other', 'system', 'error'
+
+            const senderEl = document.createElement('span');
+            senderEl.classList.add('sender');
+            senderEl.textContent = sender;
+
+            const textEl = document.createElement('div');
+            textEl.textContent = text; // Use textContent to prevent XSS
+
+             const timeEl = document.createElement('span');
+            timeEl.classList.add('timestamp');
+            timeEl.textContent = timestamp ? new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit'}) : '';
+
+
+            if (type === 'mine' || type === 'other') {
+                messageEl.appendChild(senderEl);
+            }
+            messageEl.appendChild(textEl);
+            if (timestamp && (type === 'mine' || type === 'other')) {
+                 messageEl.appendChild(timeEl);
+            }
+
+
+            messagesDiv.appendChild(messageEl);
+            // Only scroll if user is near the bottom
+            const isScrolledToBottom = messagesDiv.scrollHeight - messagesDiv.clientHeight <= messagesDiv.scrollTop + 50; // 50px tolerance
+            if (isScrolledToBottom || type === 'mine') {
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+        }
+
+        function displaySystemMessage(text) {
+            displayMessage('System', text, 'system');
+        }
+         function displayErrorMessage(text) {
+            displayMessage('Error', text, 'error');
+        }
+
+        function setStatus(text, isError = false) {
+            statusDiv.textContent = text;
+            statusDiv.style.color = isError ? 'var(--error-color)' : 'var(--system-color)';
+        }
+
+        // --- MQTT Logic ---
+        function connectMQTT() {
+            setStatus(`Connecting to ${channel}...`);
+            client = new Paho.MQTT.Client(MQTT_BROKER, clientId);
+
+            client.onConnectionLost = (responseObject) => {
+                if (responseObject.errorCode !== 0) {
+                    setStatus(`Connection Lost: ${responseObject.errorMessage}`, true);
+                    displayErrorMessage(`Connection lost. Attempting to reconnect...`);
+                    sendButton.disabled = true;
+                    joined = false;
+                    // Attempt to reconnect after a delay
+                    setTimeout(connectMQTT, 5000);
+                }
+            };
+
+            client.onMessageArrived = async (message) => {
+                try {
+                    const payloadString = message.payloadString;
+                    const data = JSON.parse(payloadString);
+
+                    // Ignore own messages if broker echoes them (some might)
+                    if (data.clientId === clientId) return;
+
+                    if (!data.encrypted || !data.sender || !data.ts) {
+                        console.warn("Received malformed message:", data);
+                        return;
+                    }
+
+                    const decryptedText = await decryptMessage(encryptionKey, data.encrypted);
+
+                    if (decryptedText !== null) {
+                        // Basic rate limiting check (very naive)
+                        if (decryptedText.length > MAX_MESSAGE_LENGTH * 1.5) { // Allow some overhead
+                            console.warn("Received oversized message after decryption.");
+                            return;
+                        }
+                        displayMessage(data.sender, decryptedText, 'other', data.ts);
+                    } else {
+                        console.warn(`Failed to decrypt message from ${data.sender || 'unknown'}`);
+                         // Optionally display a placeholder for undecryptable messages
+                         // displayMessage(data.sender || '???', '[Could not decrypt message]', 'other', data.ts);
+                    }
+                } catch (e) {
+                    console.error("Error processing received message:", e);
+                }
+            };
+
+            client.connect({
+                onSuccess: onConnect,
+                onFailure: onFailure,
+                useSSL: true, // Important for wss://
+                cleanSession: true // Ensures no old messages are delivered, crucial for ephemerality
+            });
+        }
+
+        function onConnect() {
+            setStatus(`Connected to ${channel}. Joining...`);
+            // Topic MUST be carefully constructed to avoid collisions and be valid
+            // Let's sanitize and prefix channel name
+            const topic = `ephemeralChat/channel/${encodeURIComponent(channel)}`;
+
+            client.subscribe(topic, {
+                onSuccess: () => {
+                    setStatus(`Joined channel: ${channel}`);
+                    sendButton.disabled = false;
+                    joined = true;
+                    displaySystemMessage(`You joined as ${nickname}.`);
+                     // Optional: Send a "join" notification (unencrypted or differently encrypted)
+                    // Not implemented here for simplicity and potential noise.
+                },
+                onFailure: (err) => {
+                     setStatus(`Failed to subscribe: ${err.errorMessage}`, true);
+                     displayErrorMessage(`Could not subscribe to channel ${channel}. Please check the name/link.`);
+                     client.disconnect();
+                }
+            });
+        }
+
+        function onFailure(message) {
+            setStatus(`Connection Failed: ${message.errorMessage}`, true);
+            displayErrorMessage(`Could not connect to the chat broker. The service might be down or the URL incorrect.`);
+            sendButton.disabled = true;
+            // Optional: Retry connection after delay
+             // setTimeout(connectMQTT, 10000);
+        }
+
+        async function sendMessage() {
+            if (!client || !client.isConnected() || !joined || !encryptionKey) {
+                displayErrorMessage("Not connected or ready to send.");
+                return;
+            }
+            let messageText = messageInput.value.trim();
+            if (!messageText) return;
+
+            if (messageText.length > MAX_MESSAGE_LENGTH) {
+                 displayErrorMessage(`Message too long (max ${MAX_MESSAGE_LENGTH} chars).`);
+                 return;
+            }
+
+            try {
+                // Disable input while encrypting/sending
+                messageInput.disabled = true;
+                sendButton.disabled = true;
+
+                const encryptedMessage = await encryptMessage(encryptionKey, messageText);
+                const payload = {
+                    sender: nickname,
+                    encrypted: encryptedMessage,
+                    clientId: clientId, // To potentially ignore own messages
+                    ts: Date.now() // Timestamp
+                };
+
+                const topic = `ephemeralChat/channel/${encodeURIComponent(channel)}`;
+                const message = new Paho.MQTT.Message(JSON.stringify(payload));
+                message.destinationName = topic;
+                message.qos = 0; // At most once delivery
+
+                client.send(message);
+
+                // Display own message immediately
+                displayMessage(nickname, messageText, 'mine', payload.ts);
+
+                messageInput.value = '';
+
+            } catch (e) {
+                console.error("Error sending message:", e);
+                displayErrorMessage("Failed to encrypt or send message.");
+            } finally {
+                 // Re-enable input
+                messageInput.disabled = false;
+                sendButton.disabled = false;
+                messageInput.focus();
+            }
+        }
+
+        // --- Initialization ---
+        function init() {
+            // 1. Get Channel and Secret from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            channel = urlParams.get('channel') || 'default';
+            secret = window.location.hash.substring(1); // Get secret from fragment (#secret)
+
+            channelNameSpan.textContent = channel;
+
+            if (!secret) {
+                displayErrorMessage("No secret key provided in the URL fragment (#). Append '#yoursecret' to the URL.");
+                setStatus("Initialization failed: Missing secret", true);
+                return;
+            }
+
+             // 2. Generate/Get Nickname
+            nickname = sessionStorage.getItem(`ephemChatNick_${channel}`);
+            if (!nickname) {
+                nickname = `User_${Math.random().toString(36).substr(2, 6)}`;
+                // Basic sanitation
+                 nickname = nickname.replace(/[^a-zA-Z0-9_\-]/g, '').substring(0, MAX_NICK_LENGTH);
+                 if (!nickname) nickname = `User_${Math.random().toString(36).substr(2, 6)}`; // Fallback if sanitation removed everything
+                sessionStorage.setItem(`ephemChatNick_${channel}`, nickname);
+            }
+             nicknameSpan.textContent = nickname;
+
+
+            // 3. Derive Encryption Key
+            deriveKey(secret, channel)
+                .then(key => {
+                    encryptionKey = key;
+                    // 4. Connect to MQTT Broker
+                    connectMQTT();
+                })
+                .catch(err => {
+                    console.error("Failed to derive encryption key:", err);
+                    displayErrorMessage("Could not create encryption key. Check browser compatibility (needs Web Crypto API).");
+                    setStatus("Initialization failed: Crypto error", true);
+                });
+
+
+            // 5. Setup Event Listeners
+            sendButton.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault(); // Prevent new line
+                    sendMessage();
+                }
+            });
+
+             // Basic initial message
+             displaySystemMessage("Welcome! Remember: messages are end-to-end encrypted but rely on a public broker and the URL secret. Be careful who you share the link with.");
+             displaySystemMessage("Only users with the exact same channel name and secret (part after #) can chat.");
+        }
+
+        // Start the application
+         window.addEventListener('load', init);
+
+        // Handle page unload gracefully
+        window.addEventListener('beforeunload', () => {
+             if (client && client.isConnected()) {
+                // Optional: send a 'leaving' message (unencrypted or with key)
+                // For simplicity, we just disconnect cleanly.
+                try {
+                     client.disconnect();
+                     console.log("Disconnected MQTT client.");
+                } catch (e) {
+                     console.warn("Error during disconnect:", e);
+                }
+             }
+        });
+
+    </script>
+</body>
+</html>
