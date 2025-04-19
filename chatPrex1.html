@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Minimal Chat</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        #chat-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        #messages {
+            padding: 20px;
+            height: 300px;
+            overflow-y: scroll;
+        }
+        #input-area {
+            padding: 10px;
+            background-color: #eee;
+            border-top: 1px solid #ddd;
+            display: flex;
+        }
+        #message-input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        #send-button {
+            background-color: #5cb85c;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #link-area {
+            text-align: center;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<div id="chat-container">
+    <div id="messages">
+        <!-- Messages will be added here -->
+    </div>
+    <div id="input-area">
+        <input type="text" id="message-input" placeholder="Type your message...">
+        <button id="send-button">Send</button>
+    </div>
+    <div id="link-area">
+        Share this link: <input type="text" id="chat-link" readonly>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script>
+    const messagesDiv = document.getElementById('messages');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+    const chatLinkInput = document.getElementById('chat-link');
+
+    // Generate a unique chat ID
+    const chatId = generateChatId();
+    chatLinkInput.value = window.location.href.split('#')[0] + '#' + chatId;
+
+    // Encryption key (for simplicity, keep it the same for all messages in this example)
+    const encryptionKey = CryptoJS.enc.Utf8.parse(chatId.substring(0, 16)); // Use the first 16 characters of chatId as the key
+    const iv = CryptoJS.enc.Utf8.parse(chatId.substring(16, 32)); // Use the next 16 characters as the IV
+
+    // Function to encrypt a message
+    function encryptMessage(message) {
+        const encrypted = CryptoJS.AES.encrypt(
+            CryptoJS.enc.Utf8.parse(message),
+            encryptionKey,
+            {
+                keySize: 128 / 8,
+                iv: iv,
+                mode: CryptoJS.mode.CBC,
+                padding: CryptoJS.pad.Pkcs7
+            }
+        );
+        return encrypted.toString();
+    }
+
+    // Function to decrypt a message
+    function decryptMessage(encryptedMessage) {
+        try {
+            const decrypted = CryptoJS.AES.decrypt(
+                encryptedMessage,
+                encryptionKey,
+                {
+                    keySize: 128 / 8,
+                    iv: iv,
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                }
+            );
+            return decrypted.toString(CryptoJS.enc.Utf8);
+        } catch (e) {
+            console.error("Decryption error:", e);
+            return "[Invalid Message]";
+        }
+    }
+
+    // Function to add a message to the chat
+    function addMessage(message, isLocal) {
+        const messageDiv = document.createElement('div');
+        messageDiv.textContent = message;
+        messageDiv.style.textAlign = isLocal ? 'right' : 'left';
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to bottom
+    }
+
+    // Send message
+    sendButton.addEventListener('click', () => {
+        const message = messageInput.value;
+        if (message) {
+            const encryptedMessage = encryptMessage(message);
+            addMessage(message, true); // Display the original message locally
+            sendMessageToChannel(chatId, encryptedMessage);
+            messageInput.value = '';
+        }
+    });
+
+    // Listen for messages (using local storage as a simple channel)
+    window.addEventListener('storage', (event) => {
+        if (event.key === chatId) {
+            const encryptedMessage = event.newValue;
+            if (encryptedMessage) {
+                const decryptedMessage = decryptMessage(encryptedMessage);
+                addMessage(decryptedMessage, false);
+            }
+        }
+    });
+
+    // Function to send a message to the channel (using local storage)
+    function sendMessageToChannel(channelId, message) {
+        localStorage.setItem(channelId, message);
+        localStorage.removeItem(channelId); // Trigger the storage event in other tabs
+    }
+
+    // Function to generate a unique chat ID
+    function generateChatId() {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    }
+
+    // Load existing messages if any
+    if (window.location.hash) {
+        const hashChatId = window.location.hash.substring(1);
+        chatId = hashChatId;
+        chatLinkInput.value = window.location.href.split('#')[0] + '#' + chatId;
+    }
+</script>
+
+</body>
+</html>
