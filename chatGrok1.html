@@ -1,0 +1,232 @@
+<!--
+Date: 2023-10-01
+Time: 12:00
+Prompt: write code in single html file to create clean minimal visually appealing website similar to https://hack.chat/ so that one can communicate with one another just by sharing link without login. messages should be encrypted.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Encrypted Chat</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+        }
+        #room-selection {
+            text-align: center;
+            padding: 20px;
+        }
+        #header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            display: none;
+        }
+        #chat {
+            position: fixed;
+            top: 50px;
+            bottom: 50px;
+            width: 100%;
+            overflow-y: scroll;
+            padding: 10px;
+            display: none;
+        }
+        #input-area {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: #f0f0f0;
+            padding: 10px;
+            display: none;
+        }
+        input, button {
+            padding: 5px;
+            margin: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div id="room-selection">
+        <input id="room-input" placeholder="Enter room name">
+        <button id="join">Join</button>
+    </div>
+    <div id="header">Room: <span id="room-name"></span></div>
+    <div id="chat"></div>
+    <div id="input-area">
+        <input id="nickname" placeholder="Nickname">
+        <input id="message" placeholder="Message">
+        <button id="send">Send</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        // Replace with your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // DOM elements
+        const roomSelection = document.getElementById('room-selection');
+        const chat = document.getElementById('chat');
+        const header = document.getElementById('header');
+        const roomNameSpan = document.getElementById('room-name');
+        const nicknameInput = document.getElementById('nickname');
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('send');
+        const roomInput = document.getElementById('room-input');
+        const joinButton = document.getElementById('join');
+        const inputArea = document.getElementById('input-area');
+
+        // Get room from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const room = urlParams.get('room');
+
+        if (room) {
+            // Show chat interface
+            roomSelection.style.display = 'none';
+            header.style.display = 'block';
+            chat.style.display = 'block';
+            inputArea.style.display = 'block';
+            roomNameSpan.textContent = room;
+
+            // Set default nickname
+            const randomID = 'user' + Math.random().toString(36).substr(2, 5);
+            nicknameInput.value = randomID;
+
+            // Chat logic
+            (async () => {
+                const key = await deriveKey(room);
+
+                // Listen for new messages
+                db.ref(`/rooms/${room}/messages`).on('child_added', async (snapshot) => {
+                    const message = snapshot.val();
+                    try {
+                        const decrypted = await decryptMessage(key, message.encryptedMessage);
+                        displayMessage(message.senderID, message.timestamp, decrypted);
+                    } catch (error) {
+                        console.error('Decryption failed:', error);
+                    }
+                });
+
+                // Send message on button click
+                sendButton.addEventListener('click', async () => {
+                    const nickname = nicknameInput.value.trim() || randomID;
+                    const messageText = messageInput.value.trim();
+                    if (messageText) {
+                        const encrypted = await encryptMessage(key, messageText);
+                        const messageRef = db.ref(`/rooms/${room}/messages`).push();
+                        await messageRef.set({
+                            senderID: nickname,
+                            timestamp: firebase.database.ServerValue.TIMESTAMP,
+                            encryptedMessage: encrypted
+                        });
+                        messageInput.value = '';
+                    }
+                });
+
+                // Send message on Enter key
+                messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        sendButton.click();
+                    }
+                });
+            })();
+        } else {
+            // Show room selection
+            roomSelection.style.display = 'block';
+            header.style.display = 'none';
+            chat.style.display = 'none';
+            inputArea.style.display = 'none';
+        }
+
+        // Join room
+        joinButton.addEventListener('click', () => {
+            const roomName = roomInput.value.trim();
+            if (roomName) {
+                window.location.search = `?room=${encodeURIComponent(roomName)}`;
+            }
+        });
+
+        // Encryption and decryption functions
+        async function deriveKey(roomName) {
+            const encoder = new TextEncoder();
+            const roomBytes = encoder.encode(roomName);
+            const hash = await crypto.subtle.digest('SHA-256', roomBytes);
+            return crypto.subtle.importKey(
+                'raw',
+                hash,
+                { name: 'AES-GCM' },
+                false,
+                ['encrypt', 'decrypt']
+            );
+        }
+
+        async function encryptMessage(key, message) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(message);
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const encrypted = await crypto.subtle.encrypt(
+                { name: 'AES-GCM', iv: iv },
+                key,
+                data
+            );
+            return {
+                iv: uint8ArrayToBase64(iv),
+                ciphertext: uint8ArrayToBase64(new Uint8Array(encrypted))
+            };
+        }
+
+        async function decryptMessage(key, encryptedMessage) {
+            const iv = base64ToUint8Array(encryptedMessage.iv);
+            const ciphertext = base64ToUint8Array(encryptedMessage.ciphertext);
+            const decrypted = await crypto.subtle.decrypt(
+                { name: 'AES-GCM', iv: iv },
+                key,
+                ciphertext
+            );
+            const decoder = new TextDecoder();
+            return decoder.decode(decrypted);
+        }
+
+        function uint8ArrayToBase64(arr) {
+            return btoa(String.fromCharCode(...arr));
+        }
+
+        function base64ToUint8Array(base64) {
+            const binaryString = atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes;
+        }
+
+        function displayMessage(senderID, timestamp, messageText) {
+            const messageDiv = document.createElement('div');
+            const time = new Date(timestamp).toLocaleTimeString();
+            messageDiv.textContent = `[${time}] ${senderID}: ${messageText}`;
+            chat.appendChild(messageDiv);
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
+</body>
+</html>
