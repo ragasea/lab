@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📝 Microblog</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><text x='0' y='20' font-size='20'>📝</text></svg>">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1.0.0/index.js" type="module"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background: #f4f4f4;
+            color: #333;
+            transition: background 0.3s, color 0.3s;
+        }
+        body.dark {
+            background: #222;
+            color: #ddd;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 { text-align: center; margin-bottom: 20px; }
+        .input-area, .search-area, .calendar-area, .export-area {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        body.dark .input-area, body.dark .search-area, body.dark .calendar-area, body.dark .export-area {
+            background: #333;
+        }
+        textarea, input, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        body.dark textarea, body.dark input {
+            background: #444;
+            color: #ddd;
+            border-color: #555;
+        }
+        button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover { background: #0056b3; }
+        .emoji-picker { margin-bottom: 10px; }
+        .post {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        body.dark .post { background: #333; }
+        .post-content { margin-bottom: 10px; }
+        .post-tags span {
+            background: #e0e0e0;
+            padding: 5px 10px;
+            border-radius: 12px;
+            margin-right: 5px;
+            font-size: 14px;
+        }
+        body.dark .post-tags span { background: #555; }
+        .post-meta { font-size: 14px; color: #666; }
+        body.dark .post-meta { color: #aaa; }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            text-align: center;
+        }
+        .calendar div {
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .calendar .day { background: #e0e0e0; }
+        .calendar .current-day { background: #007bff; color: #fff; }
+        body.dark .calendar .day { background: #555; }
+        .calendar .header { font-weight: bold; }
+        .toggle-dark {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 10px; }
+            textarea, input, button { font-size: 14px; }
+            .calendar div { padding: 5px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-dark">Toggle Dark Mode</button>
+    <div class="container">
+        <h1>📝 Microblog</h1>
+        <div class="input-area">
+            <textarea id="post-input" rows="5" placeholder="Write your post in Markdown..."></textarea>
+            <input type="text" id="tags-input" placeholder="Enter tags (comma-separated)">
+            <input type="text" id="emoji-input" placeholder="Selected emoji" readonly>
+            <emoji-picker id="emoji-picker"></emoji-picker>
+            <button onclick="addPost()">Post</button>
+        </div>
+        <div class="search-area">
+            <input type="text" id="search-input" placeholder="Search posts..." oninput="searchPosts()">
+        </div>
+        <div class="calendar-area">
+            <div id="calendar"></div>
+        </div>
+        <div class="export-area">
+            <button onclick="exportJSON()">Export as JSON</button>
+            <button onclick="exportText()">Export as Text</button>
+            <button onclick="exportMarkdown()">Export as Markdown</button>
+        </div>
+        <div id="posts"></div>
+    </div>
+    <script>
+        const posts = JSON.parse(localStorage.getItem('posts')) || [];
+        const postInput = document.getElementById('post-input');
+        const tagsInput = document.getElementById('tags-input');
+        const emojiInput = document.getElementById('emoji-input');
+        const emojiPicker = document.getElementById('emoji-picker');
+        const postsDiv = document.getElementById('posts');
+        const searchInput = document.getElementById('search-input');
+        const calendarDiv = document.getElementById('calendar');
+
+        // Dark mode toggle
+        document.querySelector('.toggle-dark').addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark'));
+        });
+        if (localStorage.getItem('darkMode') === 'true') document.body.classList.add('dark');
+
+        // Emoji picker
+        emojiPicker.addEventListener('emoji-click', e => {
+            emojiInput.value = e.detail.unicode;
+        });
+
+        // Indian date format
+        function formatDate(date) {
+            const options = {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            };
+            return new Intl.DateTimeFormat('en-IN', options).format(date).replace(',', '');
+        }
+
+        // Add post
+        function addPost() {
+            const text = postInput.value.trim();
+            const tags = tagsInput.value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            const emoji = emojiInput.value || '📝';
+            if (!text) return;
+            const post = {
+                text,
+                tags,
+                emoji,
+                timestamp: new Date().toISOString(),
+                id: Date.now()
+            };
+            posts.unshift(post);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            postInput.value = tagsInput.value = emojiInput.value = '';
+            renderPosts();
+            renderCalendar();
+        }
+
+        // Render posts
+        function renderPosts(filteredPosts = posts) {
+            postsDiv.innerHTML = filteredPosts.map(post => `
+                <div class="post">
+                    <div class="post-content">${marked.parse(post.text)}</div>
+                    <div class="post-tags">${post.tags.map(tag => `<span>${tag}</span>`).join('')}</div>
+                    <div class="post-meta">${post.emoji} Posted on ${formatDate(new Date(post.timestamp))}</div>
+                </div>
+            `).join('');
+        }
+
+        // Search posts
+        function searchPosts() {
+            const query = searchInput.value.toLowerCase();
+            const filteredPosts = posts.filter(post => post.text.toLowerCase().includes(query));
+            renderPosts(filteredPosts);
+        }
+
+        // Render calendar
+        function renderCalendar() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const calendar = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => `<div class="header">${day}</div>`);
+            for (let i = 0; i < firstDay; i++) calendar.push('<div></div>');
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+                calendar.push(`<div class="day ${isToday ? 'current-day' : ''}" onclick="filterByDate(${year}, ${month}, ${day})">${day}</div>`);
+            }
+            calendarDiv.innerHTML = calendar.join('');
+        }
+
+        // Filter posts by date
+        window.filterByDate = (year, month, day) => {
+            const filteredPosts = posts.filter(post => {
+                const date = new Date(post.timestamp);
+                return date.getFullYear() === year && date.getMonth() === month && date.getDate() === day;
+            });
+            renderPosts(filteredPosts);
+        };
+
+        // Export functions
+        function exportJSON() {
+            const data = JSON.stringify(posts, null, 2);
+            downloadFile(data, 'posts.json', 'application/json');
+        }
+
+        function exportText() {
+            const data = posts.map(post => `${formatDate(new Date(post.timestamp))}\n${post.text}\nTags: ${post.tags.join(', ')}\n\n`).join('');
+            downloadFile(data, 'posts.txt', 'text/plain');
+        }
+
+        function exportMarkdown() {
+            const data = posts.map(post => `## ${formatDate(new Date(post.timestamp))}\n${post.text}\n\n**Tags**: ${post.tags.join(', ')}\n\n`).join('---\n\n');
+            downloadFile(data, 'posts.md', 'text/markdown');
+        }
+
+        function downloadFile(content, fileName, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        renderPosts();
+        renderCalendar();
+    </script>
+</body>
+</html>
