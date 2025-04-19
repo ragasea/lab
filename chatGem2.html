@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Encrypted Chat</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --input-bg: #2a2a2a;
+            --border-color: #444;
+            --accent-color: #68d391; /* Green accent */
+            --error-color: #e57373; /* Red error */
+            --info-color: #64b5f6;  /* Blue info */
+            --message-color: #c0c0c0;
+            --nick-color: #bdbdbd;
+            --link-color: #81e6d9; /* Teal link */
+        }
+
+        body {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        #chat-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column-reverse; /* Newest messages at the bottom */
+        }
+
+        #messages {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .message {
+            word-wrap: break-word;
+            white-space: pre-wrap; /* Respect whitespace and wrap */
+        }
+
+        .message .nick {
+            color: var(--nick-color);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .message .text {
+             color: var(--message-color);
+        }
+
+        .info {
+            color: var(--info-color);
+            font-style: italic;
+        }
+
+        .error {
+            color: var(--error-color);
+            font-weight: bold;
+        }
+
+        #input-area {
+            display: flex;
+            padding: 10px;
+            background-color: var(--input-bg);
+        }
+
+        #message-input {
+            flex-grow: 1;
+            background-color: transparent;
+            border: none;
+            color: var(--text-color);
+            padding: 8px 10px;
+            outline: none;
+            font-family: inherit;
+            font-size: inherit;
+        }
+
+        #status {
+            padding: 5px 15px;
+            font-size: 12px;
+            color: var(--info-color);
+            text-align: right;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+        }
+
+        #share-link-area {
+            padding: 10px 15px;
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+        }
+         #share-link-area p {
+             margin: 5px 0;
+         }
+        #share-link-area input[type="text"] {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 5px;
+            margin-right: 5px;
+            font-family: inherit;
+            width: 250px;
+        }
+         #share-link-area button {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+         }
+         #share-link-area button:hover {
+            opacity: 0.9;
+         }
+         #generated-link {
+             margin-top: 10px;
+             word-break: break-all;
+         }
+         #generated-link a {
+             color: var(--link-color);
+             text-decoration: none;
+         }
+         #generated-link a:hover {
+             text-decoration: underline;
+         }
+         #copy-button {
+             margin-left: 10px;
+         }
+
+        /* Scrollbar styling */
+        #chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        #chat-container::-webkit-scrollbar-track {
+            background: var(--input-bg);
+        }
+        #chat-container::-webkit-scrollbar-thumb {
+            background-color: var(--border-color);
+            border-radius: 4px;
+        }
+         #chat-container::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+         }
+
+    </style>
+</head>
+<body>
+
+    <div id="share-link-area">
+        <p>Create or join a channel. Share the link to chat securely.</p>
+        <div>
+            <input type="text" id="channel-name-input" placeholder="Enter channel name or leave blank for random">
+            <button id="generate-link-btn">Generate/Go</button>
+        </div>
+        <div id="generated-link"></div>
+         <p style="color: var(--error-color); font-weight: bold; margin-top: 10px;">
+             ⚠️ Disclaimer: Uses a public WebSocket relay. Encryption depends entirely on the secrecy of the link fragment. Not for highly sensitive data.
+         </p>
+    </div>
+
+    <div id="chat-container">
+        <div id="messages">
+            <!-- Messages will appear here -->
+        </div>
+    </div>
+
+    <div id="input-area">
+        <input type="text" id="message-input" placeholder="Enter message..." autocomplete="off">
+    </div>
+    <div id="status">Disconnected</div>
+
+    <script>
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('message-input');
+        const statusDiv = document.getElementById('status');
+        const chatContainer = document.getElementById('chat-container');
+        const channelNameInput = document.getElementById('channel-name-input');
+        const generateLinkBtn = document.getElementById('generate-link-btn');
+        const generatedLinkDiv = document.getElementById('generated-link');
+
+        const RELAY_URL = 'wss://websocket-relay.savory.workers.dev/'; // Public Relay - NOT SECURE/RELIABLE
+
+        let ws = null;
+        let encryptionKey = null;
+        let currentChannel = '';
+        let nick = `User_${Math.random().toString(36).substring(2, 7)}`; // Simple random nick
+
+        // --- Crypto Functions ---
+        // Using AES-GCM
+
+        const IV_LENGTH = 12; // Bytes for AES-GCM
+
+        // Derive key from channel name (using SHA-256)
+        async function deriveKey(secret) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(secret);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            // Use the SHA-256 hash directly as the AES key (256 bits)
+            return crypto.subtle.importKey(
+                'raw',
+                hashBuffer,
+                { name: 'AES-GCM', length: 256 },
+                false, // non-exportable
+                ['encrypt', 'decrypt']
+            );
+        }
+
+        // Encrypt message
+        async function encryptMessage(key, plaintext) {
+            try {
+                const encoder = new TextEncoder();
+                const encodedPlaintext = encoder.encode(plaintext);
+                const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH));
+                const ciphertext = await crypto.subtle.encrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    encodedPlaintext
+                );
+                // Combine IV and ciphertext for transmission
+                const combined = new Uint8Array(iv.length + ciphertext.byteLength);
+                combined.set(iv, 0);
+                combined.set(new Uint8Array(ciphertext), iv.length);
+                return bufferToBase64(combined.buffer); // Return as Base64 string
+            } catch (e) {
+                console.error("Encryption failed:", e);
+                displayMessage('Error encrypting message.', 'error');
+                return null;
+            }
+        }
+
+        // Decrypt message
+        async function decryptMessage(key, base64Ciphertext) {
+           try {
+                const combined = base64ToBuffer(base64Ciphertext);
+                if (!combined || combined.byteLength < IV_LENGTH) {
+                    console.error("Decryption failed: Invalid ciphertext length");
+                    return null; // Invalid data
+                }
+                const iv = combined.slice(0, IV_LENGTH);
+                const ciphertext = combined.slice(IV_LENGTH);
+
+                const decrypted = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv: iv },
+                    key,
+                    ciphertext
+                );
+                const decoder = new TextDecoder();
+                return decoder.decode(decrypted);
+            } catch (e) {
+                console.error("Decryption failed:", e);
+                // Don't display an error for every failed decrypt, could be other channel's messages
+                return null; // Indicate decryption failure
+            }
+        }
+
+        // --- Base64 Helpers ---
+        function bufferToBase64(buffer) {
+            let binary = '';
+            const bytes = new Uint8Array(buffer);
+            const len = bytes.byteLength;
+            for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+
+        function base64ToBuffer(base64) {
+            try {
+                const binaryString = window.atob(base64);
+                const len = binaryString.length;
+                const bytes = new Uint8Array(len);
+                for (let i = 0; i < len; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                return bytes.buffer;
+            } catch (e) {
+                console.error("Base64 decoding failed:", e);
+                return null;
+            }
+        }
+
+        // --- WebSocket Functions ---
+        function connectWebSocket() {
+            if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+                console.log("WebSocket already open or connecting.");
+                return;
+            }
+
+            if (!currentChannel || !encryptionKey) {
+                displayMessage('Cannot connect without a channel/key.', 'error');
+                 updateStatus('Error: No channel specified', true);
+                return;
+            }
+
+            updateStatus(`Connecting to ${currentChannel}...`);
+            ws = new WebSocket(RELAY_URL);
+
+            ws.onopen = () => {
+                updateStatus(`Connected to channel: ${currentChannel}`, false);
+                displayMessage(`Joined channel: ${currentChannel}. Your nick: ${nick}`, 'info');
+                 // Maybe send a join message (unencrypted, just info)
+                 // ws.send(JSON.stringify({ type: 'join', channel: currentChannel, nick: nick }));
+                 // For this simple relay, we don't need explicit join/leave for routing
+            };
+
+            ws.onmessage = async (event) => {
+                try {
+                    const rawData = event.data;
+                    const messageData = JSON.parse(rawData);
+
+                    // IMPORTANT: Filter messages for THIS channel
+                    if (messageData.channel === currentChannel && messageData.type === 'msg' && messageData.payload) {
+                        const decryptedText = await decryptMessage(encryptionKey, messageData.payload);
+                        if (decryptedText !== null) {
+                            // Prevent displaying our own messages twice if relay echoes
+                            if (messageData.senderNick !== nick) {
+                                displayMessage(decryptedText, 'text', messageData.senderNick);
+                            }
+                        } else {
+                             // Decryption failed - likely a message for another channel or corrupted
+                             // console.log("Could not decrypt message, likely for another channel.");
+                        }
+                    }
+                    // Handle other message types if needed (like join/leave notifications if implemented)
+                    // else if (messageData.type === 'join' && messageData.channel === currentChannel) {
+                    //     displayMessage(`${messageData.nick} joined.`, 'info');
+                    // }
+                } catch (e) {
+                    console.error('Error processing received message:', e);
+                    // displayMessage('Received malformed message.', 'error');
+                }
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket Error:', error);
+                displayMessage('Connection error. Check console.', 'error');
+                updateStatus('Connection Error', true);
+            };
+
+            ws.onclose = (event) => {
+                console.log('WebSocket Closed:', event.reason, event.code);
+                updateStatus(`Disconnected. ${event.reason || ''}`, true);
+                displayMessage('Disconnected from chat relay.', 'info');
+                ws = null;
+                 // Optional: try to reconnect after a delay
+                 // setTimeout(connectWebSocket, 5000);
+            };
+        }
+
+        function sendMessage() {
+            const messageText = messageInput.value.trim();
+            if (!messageText) return;
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                displayMessage('Not connected. Cannot send message.', 'error');
+                return;
+            }
+            if (!encryptionKey) {
+                 displayMessage('Encryption key not ready. Cannot send.', 'error');
+                 return;
+            }
+
+            encryptMessage(encryptionKey, messageText).then(encryptedPayload => {
+                 if (encryptedPayload) {
+                    const messageToSend = {
+                        type: 'msg',
+                        channel: currentChannel, // Target channel
+                        senderNick: nick,
+                        payload: encryptedPayload // Base64 encoded IV + Ciphertext
+                    };
+                    try {
+                        ws.send(JSON.stringify(messageToSend));
+                        displayMessage(messageText, 'text', nick); // Display own message immediately
+                        messageInput.value = '';
+                    } catch (e) {
+                        console.error("Send failed:", e);
+                        displayMessage('Failed to send message.', 'error');
+                    }
+                }
+            });
+        }
+
+        // --- UI Functions ---
+        function displayMessage(text, type = 'text', sender = null) {
+            const msgElement = document.createElement('div');
+            msgElement.classList.add('message');
+
+            if (type === 'info') {
+                msgElement.classList.add('info');
+                msgElement.textContent = `* ${text}`;
+            } else if (type === 'error') {
+                msgElement.classList.add('error');
+                msgElement.textContent = `*** ${text}`;
+             } else {
+                 // Normal text message
+                 msgElement.classList.add('text');
+                 if (sender) {
+                     const nickSpan = document.createElement('span');
+                     nickSpan.classList.add('nick');
+                     nickSpan.textContent = `<${sender}>`;
+                     msgElement.appendChild(nickSpan);
+                 }
+                 const textNode = document.createTextNode(text); // Use createTextNode to prevent HTML injection
+                 msgElement.appendChild(textNode);
+            }
+
+            messagesDiv.appendChild(msgElement); // Add to bottom
+
+             // Keep scroll at the bottom (or close to it)
+            const isScrolledToBottom = chatContainer.scrollHeight - chatContainer.clientHeight <= chatContainer.scrollTop + 50; // Add tolerance
+             if (isScrolledToBottom) {
+                  chatContainer.scrollTop = chatContainer.scrollHeight;
+             }
+        }
+
+        function updateStatus(message, isError = false) {
+            statusDiv.textContent = message;
+            statusDiv.style.color = isError ? 'var(--error-color)' : 'var(--info-color)';
+        }
+
+        function generateRandomString(length = 10) {
+            const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        function setupChannel(channelName) {
+            if (!channelName || typeof channelName !== 'string' || channelName.length < 3) {
+                 displayMessage('Invalid channel name. Must be at least 3 characters.', 'error');
+                 updateStatus('Error: Invalid channel', true);
+                 // Clear hash if invalid to prevent looping
+                 if (window.location.hash) {
+                     history.pushState("", document.title, window.location.pathname + window.location.search);
+                 }
+                 return;
+            }
+
+            currentChannel = '#' + channelName; // Store with hash for consistency
+            document.title = `${channelName} - Minimal Chat`;
+            updateStatus('Deriving encryption key...');
+
+            deriveKey(channelName).then(key => {
+                encryptionKey = key;
+                updateStatus('Key derived. Ready to connect.');
+                displayMessage(`Attempting to join channel: ${currentChannel}. Nick: ${nick}`, 'info');
+
+                 // Disconnect from previous channel if connected
+                 if (ws && ws.readyState === WebSocket.OPEN) {
+                     ws.close();
+                 }
+                 // Clear previous messages
+                 messagesDiv.innerHTML = '';
+                 connectWebSocket(); // Connect to the new channel
+            }).catch(err => {
+                console.error("Key derivation failed:", err);
+                displayMessage('Could not create encryption key from channel name.', 'error');
+                updateStatus('Key Derivation Error', true);
+                encryptionKey = null;
+            });
+        }
+
+        function handleHashChange() {
+            const hash = window.location.hash;
+             const channelName = hash.startsWith('#') ? hash.substring(1) : '';
+
+            if (channelName) {
+                // If hash exists and is different from current, setup the channel
+                if (currentChannel !== hash) {
+                     channelNameInput.value = channelName; // Update input field for clarity
+                     generatedLinkDiv.innerHTML = ''; // Clear generated link area
+                    setupChannel(channelName);
+                }
+            } else {
+                // No hash, prompt user
+                if (ws && ws.readyState === WebSocket.OPEN) ws.close();
+                 messagesDiv.innerHTML = ''; // Clear messages
+                encryptionKey = null;
+                currentChannel = '';
+                 displayMessage('No channel specified in URL. Use the generator above.', 'info');
+                 updateStatus('Waiting for channel selection');
+                 document.title = 'Minimal Encrypted Chat';
+            }
+        }
+
+        // --- Event Listeners ---
+        messageInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); // Prevent newline in input
+                sendMessage();
+            }
+        });
+
+        generateLinkBtn.addEventListener('click', () => {
+            let name = channelNameInput.value.trim().replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, ''); // Sanitize
+            if (!name) {
+                name = generateRandomString();
+                channelNameInput.value = name; // Show the random name generated
+            }
+             // Update URL hash, which will trigger handleHashChange
+             window.location.hash = name;
+
+             // Also display the full link for easy sharing
+            const fullUrl = window.location.href;
+             generatedLinkDiv.innerHTML = `Share this link: <a href="${fullUrl}" target="_blank">${fullUrl}</a>`;
+             const copyButton = document.createElement('button');
+             copyButton.textContent = 'Copy';
+             copyButton.id = 'copy-button';
+             copyButton.onclick = () => {
+                 navigator.clipboard.writeText(fullUrl).then(() => {
+                     copyButton.textContent = 'Copied!';
+                     setTimeout(() => { copyButton.textContent = 'Copy'; }, 1500);
+                 }).catch(err => {
+                     console.error('Failed to copy: ', err);
+                     copyButton.textContent = 'Error';
+                 });
+             };
+             generatedLinkDiv.appendChild(copyButton);
+
+        });
+
+        // Handle back/forward navigation and direct hash changes
+        window.addEventListener('hashchange', handleHashChange);
+
+        // --- Initialization ---
+        handleHashChange(); // Initial setup based on URL hash on load
+
+    </script>
+
+</body>
+</html>
