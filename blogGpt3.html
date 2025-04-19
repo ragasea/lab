@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#ffffff"/>
+  <title>My Microblog</title>
+  <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABg3Am1AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAxUlEQVRoge3YwQ3CMBBF0SgIYwMk0InoNAUToGglEkXggCRcgxN3WUN+7twOs1/M/XDpjJ3Z1YXBgYGBgY6GS0dvhPwMQ9+A4yN42zqUCYhZ6kqSbIpRdd1VwFSUvZzDJ6oiMr0vL1oYGBgYGDjIaAgYmBwGBr4CBiYXAUG9h9MHBsbGxgYGNgYGAw6GK12CE9aV5Cqk0kdQLrPtCDqPl1XVWfBAdqUlA9dt4R8AAAAASUVORK5CYII=" />
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: auto; padding: 20px; background: #f4f4f4; transition: background 0.3s, color 0.3s; }
+    textarea, input[type="text"], select { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; }
+    button, label { padding: 10px 15px; margin: 5px 5px 5px 0; cursor: pointer; border-radius: 5px; }
+    .post { background: #fff; border-left: 5px solid #2196f3; padding: 15px; margin: 10px 0; border-radius: 5px; }
+    .time { color: #666; font-size: 0.9em; }
+    .tags { margin-top: 5px; font-size: 0.85em; color: #444; }
+    iframe { width: 100%; height: 315px; margin-top: 10px; }
+    .dark { background: #121212; color: #eee; }
+    .dark .post { background: #1e1e1e; border-left-color: #90caf9; }
+    .dark textarea, .dark input[type="text"], .dark select { background: #222; color: #fff; border: 1px solid #444; }
+    .emoji-picker { font-size: 1.5em; margin-bottom: 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>My Markdown Microblog</h2>
+  <label><input type="checkbox" id="themeToggle"/> Dark Mode</label><br>
+  <input type="text" id="search" placeholder="Search posts or #tags..."/>
+  <input type="date" id="dateFilter"/>
+  <div class="emoji-picker">
+    <span onclick="addEmoji('😊')">😊</span>
+    <span onclick="addEmoji('🔥')">🔥</span>
+    <span onclick="addEmoji('❤️')">❤️</span>
+    <span onclick="addEmoji('✨')">✨</span>
+    <span onclick="addEmoji('✅')">✅</span>
+    <span onclick="addEmoji('💡')">💡</span>
+    <span onclick="addEmoji('☯️')">☯️</span>
+  </div>
+  <textarea id="entry" placeholder="Write something in markdown or paste YouTube link..."></textarea>
+  <button onclick="postEntry()">Post</button>
+  <button onclick="exportPosts()">Export JSON</button>
+  <input type="file" id="importFile" onchange="importPosts()"/>
+  <div id="posts"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    let posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+    function extractTags(text) {
+      return (text.match(/#\w+/g) || []).map(tag => tag.toLowerCase());
+    }
+
+    function displayPosts(filter = "", date = "") {
+      const container = document.getElementById('posts');
+      container.innerHTML = posts.filter(p => {
+        const matchText = p.text.toLowerCase().includes(filter.toLowerCase());
+        const matchTags = (p.tags || []).some(tag => tag.includes(filter.toLowerCase()));
+        const matchDate = !date || new Date(p.date).toISOString().split('T')[0] === date;
+        return (matchText || matchTags) && matchDate;
+      }).map(p => {
+        const content = formatContent(p.text);
+        const tags = p.tags && p.tags.length ? `<div class="tags">Tags: ${p.tags.join(', ')}</div>` : '';
+        return `
+          <div class="post">
+            ${content}
+            ${tags}
+            <div class="time">${new Date(p.date).toLocaleString('en-IN')}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function postEntry() {
+      const text = document.getElementById('entry').value.trim();
+      if (!text) return;
+      const tags = extractTags(text);
+      posts.unshift({ text, date: new Date(), tags });
+      localStorage.setItem('posts', JSON.stringify(posts));
+      document.getElementById('entry').value = '';
+      displayPosts(document.getElementById('search').value, document.getElementById('dateFilter').value);
+    }
+
+    function formatContent(text) {
+      const ytRegex = /https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([\w-]+)/g;
+      text = text.replace(ytRegex, (_, id) =>
+        `\n\n<iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allowfullscreen></iframe>\n\n`
+      );
+      return marked.parse(text);
+    }
+
+    function exportPosts() {
+      const blob = new Blob([JSON.stringify(posts, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "my-posts.json";
+      a.click();
+    }
+
+    function importPosts() {
+      const file = document.getElementById('importFile').files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (Array.isArray(imported)) {
+            posts = imported.map(p => ({ ...p, tags: extractTags(p.text) }));
+            localStorage.setItem('posts', JSON.stringify(posts));
+            displayPosts(document.getElementById('search').value, document.getElementById('dateFilter').value);
+          } else alert("Invalid JSON.");
+        } catch (err) {
+          alert("Could not read file.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    document.getElementById('search').addEventListener('input', () => {
+      displayPosts(document.getElementById('search').value, document.getElementById('dateFilter').value);
+    });
+
+    document.getElementById('dateFilter').addEventListener('change', () => {
+      displayPosts(document.getElementById('search').value, document.getElementById('dateFilter').value);
+    });
+
+    const toggle = document.getElementById('themeToggle');
+    toggle.addEventListener('change', () => {
+      document.body.classList.toggle('dark', toggle.checked);
+      localStorage.setItem('darkMode', toggle.checked);
+    });
+
+    if (localStorage.getItem('darkMode') === 'true') {
+      toggle.checked = true;
+      document.body.classList.add('dark');
+    }
+
+    function addEmoji(emoji) {
+      document.getElementById('entry').value += emoji;
+      document.getElementById('entry').focus();
+    }
+
+    if ('serviceWorker' in navigator) {
+      const sw = `
+        self.addEventListener('install', e => {
+          e.waitUntil(caches.open('microblog-cache').then(c => c.addAll(['./'])));
+        });
+        self.addEventListener('fetch', e => {
+          e.respondWith(caches.match(e.request).then(resp => resp || fetch(e.request)));
+        });
+      `;
+      const blob = new Blob([sw], { type: "application/javascript" });
+      const swUrl = URL.createObjectURL(blob);
+      navigator.serviceWorker.register(swUrl);
+    }
+
+    displayPosts();
+  </script>
+</body>
+</html>
