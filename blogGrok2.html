@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Microblog</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f8f8f8;
+            --accent-color: #007bff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2a2a2a;
+            --accent-color: #4dabf7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .post-form {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background: var(--accent-color);
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .post {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .post-content {
+            max-height: 200px;
+            overflow: hidden;
+            position: relative;
+            transition: max-height 0.3s;
+        }
+
+        .post-content.expanded {
+            max-height: none;
+        }
+
+        .read-more {
+            color: var(--accent-color);
+            cursor: pointer;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .link-preview {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-left: 3px solid var(--accent-color);
+            background: rgba(0,0,0,0.05);
+        }
+
+        .youtube-embed {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .youtube-embed iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .post-form, .post {
+                padding: 0.75rem;
+            }
+
+            button {
+                padding: 0.4rem 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="post-form">
+            <textarea id="postContent" placeholder="What's on your mind?"></textarea>
+            <div class="button-group">
+                <button onclick="createPost()">Post</button>
+                <button onclick="toggleTheme()">Toggle Dark Mode</button>
+                <button onclick="exportPosts('json')">Export JSON</button>
+                <button onclick="exportPosts('text')">Export Text</button>
+                <input type="file" id="importFile" accept=".json" onchange="importPosts()" style="display: none;">
+                <button onclick="document.getElementById('importFile').click()">Import JSON</button>
+            </div>
+        </div>
+        <div id="posts"></div>
+    </div>
+
+    <script>
+        let posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+        function toggleTheme() {
+            document.documentElement.setAttribute('data-theme', 
+                document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        }
+
+        function createPost() {
+            const content = document.getElementById('postContent').value.trim();
+            if (!content) return;
+
+            const timestamp = new Date().toLocaleString();
+            const post = { content, timestamp, id: Date.now() };
+            posts.unshift(post);
+            localStorage.setItem('posts', JSON.stringify(posts));
+            document.getElementById('postContent').value = '';
+            renderPosts();
+        }
+
+        function renderPosts() {
+            const postsDiv = document.getElementById('posts');
+            postsDiv.innerHTML = '';
+
+            posts.forEach(post => {
+                const postDiv = document.createElement('div');
+                postDiv.className = 'post';
+
+                const timestamp = document.createElement('div');
+                timestamp.className = 'timestamp';
+                timestamp.textContent = post.timestamp;
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'post-content';
+                
+                // Process content
+                let processedContent = post.content.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                
+                // Handle YouTube links
+                const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/;
+                const youtubeMatch = post.content.match(youtubeRegex);
+                let youtubeEmbed = '';
+                if (youtubeMatch) {
+                    youtubeEmbed = `<div class="youtube-embed"><iframe src="https://www.youtube.com/embed/${youtubeMatch[1]}" frameborder="0" allowfullscreen></iframe></div>`;
+                }
+
+                // Handle other links
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                const links = post.content.match(urlRegex) || [];
+                let linkPreviews = '';
+                links.forEach(link => {
+                    if (!youtubeMatch || !link.includes(youtubeMatch[0])) {
+                        linkPreviews += `<div class="link-preview"><a href="${link}" target="_blank">${link}</a></div>`;
+                    }
+                });
+
+                // Check if content needs folding
+                const needsFolding = processedContent.length > 200;
+                if (needsFolding) {
+                    contentDiv.innerHTML = processedContent;
+                    contentDiv.insertAdjacentHTML('afterend', '<span class="read-more">Read more</span>');
+                } else {
+                    contentDiv.innerHTML = processedContent;
+                }
+
+                postDiv.appendChild(timestamp);
+                postDiv.appendChild(contentDiv);
+                if (youtubeEmbed) postDiv.insertAdjacentHTML('beforeend', youtubeEmbed);
+                if (linkPreviews) postDiv.insertAdjacentHTML('beforeend', linkPreviews);
+                
+                postsDiv.appendChild(postDiv);
+
+                // Add read more functionality
+                if (needsFolding) {
+                    const readMore = postDiv.querySelector('.read-more');
+                    readMore.addEventListener('click', () => {
+                        contentDiv.classList.toggle('expanded');
+                        readMore.textContent = contentDiv.classList.contains('expanded') ? 'Read less' : 'Read more';
+                    });
+                }
+            });
+        }
+
+        function exportPosts(format) {
+            if (format === 'json') {
+                const dataStr = JSON.stringify(posts);
+                downloadFile(dataStr, 'posts.json', 'application/json');
+            } else {
+                const text = posts.map(p => `${p.timestamp}\n${p.content}\n\n`).join('');
+                downloadFile(text, 'posts.txt', 'text/plain');
+            }
+        }
+
+        function downloadFile(content, fileName, contentType) {
+            const a = document.createElement('a');
+            const file = new Blob([content], { type: contentType });
+            a.href = URL.createObjectURL(file);
+            a.download = fileName;
+            a.click();
+        }
+
+        function importPosts() {
+            const file = document.getElementById('importFile').files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedPosts = JSON.parse(e.target.result);
+                    posts = importedPosts;
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    renderPosts();
+                } catch (error) {
+                    alert('Invalid JSON file');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Initial render
+        renderPosts();
+    </script>
+</body>
+</html>
