@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#ffffff"/>
+  <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTXlNaW5pQmxvZyIsInNob3J0X25hbWUiOiJNaW5pQmxvZyIsImljb25zIjpbeyJzcmMiOiJpY29uLnBuZyIsInNpemVzIjoiNTEyeDUxMiIsInR5cGUiOiJpbWFnZS9wbmcifV0sImJhY2tncm91bmRfY29sb3IiOiIjZmZmZmZmIiwidGhlbWVfY29sb3IiOiIjZmZmZmZmIiwidGljY2VycyI6W3siYWN0aW9uIjoiaW5kZXguaHRtbCJ9XX0=">
+  <title>Mini Microblog PWA</title>
+  <style>
+    body { font-family: sans-serif; max-width: 700px; margin: auto; padding: 20px; background: #f4f4f4; }
+    textarea { width: 100%; height: 100px; margin-bottom: 10px; padding: 10px; }
+    button { padding: 10px 20px; margin: 5px 0; }
+    .post { background: #fff; border-left: 5px solid #2196f3; padding: 10px; margin: 10px 0; border-radius: 5px; }
+    .time { color: #666; font-size: 0.9em; }
+    iframe { width: 100%; height: 315px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>My Mini Microblog</h2>
+  <textarea id="entry" placeholder="Write text or paste YouTube link..."></textarea>
+  <button onclick="postEntry()">Post</button>
+  <button onclick="exportPosts()">Export JSON</button>
+  <input type="file" id="importFile" onchange="importPosts()" />
+  <div id="posts"></div>
+
+  <script>
+    let posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+    function displayPosts() {
+      const container = document.getElementById('posts');
+      container.innerHTML = posts.map(p => `
+        <div class="post">
+          ${formatContent(p.text)}
+          <div class="time">${new Date(p.date).toLocaleString('en-IN')}</div>
+        </div>
+      `).join('');
+    }
+
+    function postEntry() {
+      const text = document.getElementById('entry').value.trim();
+      if (!text) return;
+      posts.unshift({ text, date: new Date() });
+      localStorage.setItem('posts', JSON.stringify(posts));
+      document.getElementById('entry').value = '';
+      displayPosts();
+    }
+
+    function formatContent(text) {
+      const ytRegex = /https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([\w-]+)/g;
+      return text.replace(ytRegex, (_, id) => `
+        <iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allowfullscreen></iframe>
+      `).replace(/\n/g, "<br>");
+    }
+
+    function exportPosts() {
+      const blob = new Blob([JSON.stringify(posts, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "my-posts.json";
+      a.click();
+    }
+
+    function importPosts() {
+      const fileInput = document.getElementById('importFile');
+      const file = fileInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (Array.isArray(imported)) {
+            posts = imported;
+            localStorage.setItem('posts', JSON.stringify(posts));
+            displayPosts();
+          } else {
+            alert("Invalid JSON format.");
+          }
+        } catch (err) {
+          alert("Error reading JSON file.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      const sw = `
+        self.addEventListener('install', e => {
+          e.waitUntil(
+            caches.open('microblog-cache').then(cache => {
+              return cache.addAll(['./']);
+            })
+          );
+        });
+        self.addEventListener('fetch', e => {
+          e.respondWith(
+            caches.match(e.request).then(resp => {
+              return resp || fetch(e.request);
+            })
+          );
+        });
+      `;
+      const blob = new Blob([sw], { type: "application/javascript" });
+      const swUrl = URL.createObjectURL(blob);
+      navigator.serviceWorker.register(swUrl).then(() => console.log("Service Worker registered"));
+    }
+
+    displayPosts();
+  </script>
+</body>
+</html>
