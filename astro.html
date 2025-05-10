@@ -1,0 +1,388 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulated Kundli Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 700px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .input-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .input-form input[type="date"],
+        .input-form input[type="time"],
+        .input-form input[type="text"],
+        .input-form input[type="number"] {
+            width: calc(100% - 12px);
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .input-form button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .input-form button:hover {
+            background-color: #4cae4c;
+        }
+
+        .kundli-result {
+            margin-top: 30px;
+            padding: 15px;
+            border: 1px solid #eee;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .kundli-result h2 {
+            text-align: center;
+            margin-top: 0;
+            color: #555;
+        }
+        
+        .disclaimer {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px dashed red;
+            background-color: #ffebeb;
+        }
+
+        /* North Indian Chart Style (Simplified) */
+        .chart-container {
+            width: 320px; /* Adjust for responsiveness if needed */
+            height: 320px;
+            margin: 20px auto;
+            border: 2px solid black;
+            position: relative; /* For positioning diagonal lines */
+            background-color: white;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+        }
+
+        .chart-container::before, .chart-container::after {
+            content: "";
+            position: absolute;
+            background-color: black;
+            z-index: 1;
+        }
+        .chart-container::before { /* Top-left to Bottom-right diagonal */
+            width: 2px;
+            height: 100%; /* Approximation, adjust if border makes it look off */
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg) scaleY(1.414); /* Scale to cover diagonal */
+        }
+        .chart-container::after { /* Top-right to Bottom-left diagonal */
+            width: 2px;
+            height: 100%;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) rotate(-45deg) scaleY(1.414);
+        }
+
+        .house {
+            border: 1px solid #ccc;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2px;
+            font-size: 10px;
+            position: relative;
+            z-index: 2; /* Above diagonal lines */
+            background-color: white; /* To cover diagonals within the cell */
+            overflow: hidden; /* Clip planet names if too long */
+        }
+        .house .house-number {
+            font-weight: bold;
+            font-size: 12px;
+            color: #666;
+        }
+        .house .sign {
+            font-style: italic;
+            color: #007bff;
+        }
+        .house .planets {
+            margin-top: 2px;
+            line-height: 1.1;
+            word-break: break-word;
+        }
+        .house .planets span {
+            display: inline-block; /* Or block if you want them on new lines */
+            margin: 0 1px;
+        }
+
+        /* Grid cell mapping for North Indian chart houses */
+        /* House 1 (Lagna) */ .house-1  { grid-area: 2 / 3 / 3 / 4; }
+        /* House 2 */ .house-2  { grid-area: 1 / 4 / 2 / 5; }
+        /* House 3 */ .house-3  { grid-area: 2 / 4 / 3 / 5; }
+        /* House 4 */ .house-4  { grid-area: 3 / 4 / 4 / 5; }
+        /* House 5 */ .house-5  { grid-area: 4 / 4 / 5 / 5; }
+        /* House 6 */ .house-6  { grid-area: 4 / 3 / 5 / 4; }
+        /* House 7 */ .house-7  { grid-area: 4 / 2 / 5 / 3; }
+        /* House 8 */ .house-8  { grid-area: 4 / 1 / 5 / 2; }
+        /* House 9 */ .house-9  { grid-area: 3 / 1 / 4 / 2; }
+        /* House 10 */.house-10 { grid-area: 2 / 1 / 3 / 2; }
+        /* House 11 */.house-11 { grid-area: 1 / 1 / 2 / 2; }
+        /* House 12 */.house-12 { grid-area: 1 / 2 / 2 / 3; }
+        
+        /* Empty cells (can be styled or left default) */
+        .empty-cell-1 { grid-area: 1 / 3 / 2 / 4; } /* Top-center */
+        .empty-cell-2 { grid-area: 2 / 2 / 3 / 3; } /* Mid-left */
+        .empty-cell-3 { grid-area: 3 / 2 / 4 / 3; } /* Mid-left */
+        .empty-cell-4 { grid-area: 3 / 3 / 4 / 4; } /* Mid-right */
+
+
+        .info-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .info-table th, .info-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .info-table th {
+            background-color: #f0f0f0;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simulated Kundli / Birth Chart Generator</h1>
+
+        <div class="input-form">
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" required>
+
+            <label for="tob">Time of Birth (approximate):</label>
+            <input type="time" id="tob" name="tob" required>
+            
+            <label for="pobName">Place of Birth (Name):</label>
+            <input type="text" id="pobName" name="pobName" placeholder="e.g., New Delhi">
+
+            <label for="lat">Latitude (approximate, e.g., 28.61):</label>
+            <input type="number" id="lat" name="lat" step="0.01" placeholder="e.g., 28.6139">
+
+            <label for="lon">Longitude (approximate, e.g., 77.20):</label>
+            <input type="number" id="lon" name="lon" step="0.01" placeholder="e.g., 77.2090">
+
+            <button type="button" onclick="generateAndDisplayKundli()">Generate Kundli</button>
+        </div>
+
+        <div class="kundli-result" id="kundliResultArea" style="display:none;">
+            <h2>Simulated Birth Chart</h2>
+            <p id="birthDetails"></p>
+            <div class="disclaimer">
+                <strong>IMPORTANT DISCLAIMER:</strong> This is a SIMULATED Kundli for demonstration and entertainment purposes only. Planetary positions and interpretations are NOT astrologically accurate. Do NOT use this for making any life decisions. Consult a professional astrologer for a real reading.
+            </div>
+            
+            <div class="chart-container" id="northIndianChart">
+                <!-- Houses will be dynamically inserted here -->
+            </div>
+
+            <h3>Planetary Positions (Simulated)</h3>
+            <table class="info-table" id="planetaryPositionsTable">
+                <thead>
+                    <tr>
+                        <th>Planet</th>
+                        <th>Sign</th>
+                        <th>House</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const PLANETS = ["Sun", "Moon", "Mars", "Merc", "Jup", "Ven", "Sat", "Rahu", "Ketu"];
+        const SIGNS_FULL = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+        const SIGNS_SHORT = ["Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi"];
+        const HOUSE_ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+
+        // Simple pseudo-random number generator based on a seed
+        function seededRandom(seed) {
+            let state = seed % 2147483647;
+            if (state <= 0) state += 2147483646;
+            return function() {
+                state = (state * 16807) % 2147483647;
+                return (state - 1) / 2147483646;
+            };
+        }
+        
+        function generateAndDisplayKundli() {
+            const dobInput = document.getElementById('dob').value;
+            const tobInput = document.getElementById('tob').value;
+            const pobName = document.getElementById('pobName').value || "Unknown Place";
+            const lat = document.getElementById('lat').value || "N/A";
+            const lon = document.getElementById('lon').value || "N/A";
+
+            if (!dobInput || !tobInput) {
+                alert("Please enter both Date and Time of Birth.");
+                return;
+            }
+
+            const birthDateTime = new Date(`${dobInput}T${tobInput}`);
+            // Create a simple seed from date and time components
+            const seed = birthDateTime.getFullYear() + birthDateTime.getMonth() + birthDateTime.getDate() +
+                         birthDateTime.getHours() + birthDateTime.getMinutes();
+            
+            const random = seededRandom(seed); // Use our seeded random
+
+            // 1. Determine Lagna (Ascendant) Sign (Simulated)
+            const lagnaSignIndex = Math.floor(random() * 12);
+            const lagnaSignShort = SIGNS_SHORT[lagnaSignIndex];
+            const lagnaSignFull = SIGNS_FULL[lagnaSignIndex];
+
+            // 2. Assign signs to houses (House 1 = Lagna sign, House 2 = next sign, etc.)
+            const houses = [];
+            for (let i = 0; i < 12; i++) {
+                const signIndex = (lagnaSignIndex + i) % 12;
+                houses.push({
+                    houseNumber: i + 1,
+                    houseRoman: HOUSE_ROMAN[i],
+                    signShort: SIGNS_SHORT[signIndex],
+                    signFull: SIGNS_FULL[signIndex],
+                    planets: []
+                });
+            }
+
+            // 3. Distribute planets into houses (Simulated)
+            const planetaryPositions = [];
+            PLANETS.forEach(planet => {
+                const houseIndex = Math.floor(random() * 12); // Random house (0-11)
+                houses[houseIndex].planets.push(planet);
+                planetaryPositions.push({
+                    planet: planet,
+                    sign: houses[houseIndex].signFull,
+                    house: houses[houseIndex].houseRoman
+                });
+            });
+
+            // Display logic
+            document.getElementById('kundliResultArea').style.display = 'block';
+            document.getElementById('birthDetails').textContent = 
+                `DOB: ${dobInput}, TOB: ${tobInput}, Place: ${pobName} (Lat: ${lat}, Lon: ${lon})`;
+            
+            renderNorthIndianChart(houses);
+            renderPlanetaryTable(planetaryPositions);
+        }
+
+        function renderNorthIndianChart(housesData) {
+            const chartContainer = document.getElementById('northIndianChart');
+            chartContainer.innerHTML = ''; // Clear previous chart
+
+            const houseGridClasses = [
+                'house-11', 'house-12', 'empty-cell-1', 'house-2',
+                'house-10', 'empty-cell-2', 'house-1',  'house-3',
+                'house-9',  'empty-cell-3', 'empty-cell-4', 'house-4',
+                'house-8',  'house-7',  'house-6',  'house-5'
+            ];
+            
+            // Map for easy lookup: gridClassName -> houseData object
+            const houseMap = {};
+            housesData.forEach(h => {
+                houseMap[`house-${h.houseNumber}`] = h;
+            });
+
+            houseGridClasses.forEach(gridClass => {
+                const cellDiv = document.createElement('div');
+                cellDiv.className = 'house'; // Base class
+                
+                if (houseMap[gridClass]) {
+                    const house = houseMap[gridClass];
+                    cellDiv.classList.add(gridClass); // Specific house grid class
+
+                    const houseNumDiv = document.createElement('div');
+                    houseNumDiv.className = 'house-number';
+                    houseNumDiv.textContent = house.houseRoman + (house.houseNumber === 1 ? ' (Lg)' : '');
+                    
+                    const signDiv = document.createElement('div');
+                    signDiv.className = 'sign';
+                    signDiv.textContent = house.signShort;
+                    
+                    const planetsDiv = document.createElement('div');
+                    planetsDiv.className = 'planets';
+                    house.planets.forEach(p => {
+                        const planetSpan = document.createElement('span');
+                        planetSpan.textContent = p;
+                        planetsDiv.appendChild(planetSpan);
+                    });
+
+                    cellDiv.appendChild(houseNumDiv);
+                    cellDiv.appendChild(signDiv);
+                    cellDiv.appendChild(planetsDiv);
+                } else {
+                    // This is an empty cell, add its grid class
+                    cellDiv.classList.add(gridClass); 
+                    // cellDiv.innerHTML = ' '; // Optional: mark empty cells
+                }
+                chartContainer.appendChild(cellDiv);
+            });
+        }
+
+        function renderPlanetaryTable(planetaryPositions) {
+            const tableBody = document.getElementById('planetaryPositionsTable').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = ''; // Clear previous table
+
+            planetaryPositions.forEach(pos => {
+                const row = tableBody.insertRow();
+                row.insertCell().textContent = pos.planet;
+                row.insertCell().textContent = pos.sign;
+                row.insertCell().textContent = pos.house;
+            });
+        }
+
+    </script>
+</body>
+</html>
