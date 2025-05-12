@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Yoga Poses</title>
+    <style>
+        body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; background-color: #f0f0f0; }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            border-radius: 5px;
+            z-index: 100;
+        }
+        #poseSelector { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <label for="poseSelector">Select Pose:</label>
+        <select id="poseSelector">
+            <option value="custom">Custom Pose (Use Controls)</option>
+            <!-- Poses will be added here by JavaScript -->
+        </select>
+        <div id="gui-container" style="margin-top:10px;"></div>
+    </div>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+        import TWEEN from 'https://unpkg.com/@tweenjs/tween.js@18.6.4/dist/tween.esm.js';
+
+        let scene, camera, renderer, controls;
+        let human, bodyParts = {};
+        const animationDuration = 1000; // ms for pose transition
+
+        const originalMaterials = new Map();
+        const highlightMaterial = new THREE.MeshStandardMaterial({ color: 0xffaa00, emissive: 0x553300 });
+
+        // --- YOGA POSES DEFINITIONS ---
+        // Rotations are in Euler angles (radians)
+        // 'highlights' lists body part keys to be highlighted for that pose
+        const yogaPoses = {
+            Tadasana: { // Mountain Pose
+                torso: { x: 0, y: 0, z: 0 },
+                head: { x: 0, y: 0, z: 0 },
+                leftUpperArm: { x: 0, y: 0, z: -0.1 },
+                leftLowerArm: { x: 0, y: 0, z: 0 },
+                rightUpperArm: { x: 0, y: 0, z: 0.1 },
+                rightLowerArm: { x: 0, y: 0, z: 0 },
+                leftUpperLeg: { x: 0, y: 0, z: 0 },
+                leftLowerLeg: { x: 0, y: 0, z: 0 },
+                rightUpperLeg: { x: 0, y: 0, z: 0 },
+                rightLowerLeg: { x: 0, y: 0, z: 0 },
+                highlights: ['torso', 'leftUpperLeg', 'rightUpperLeg']
+            },
+            Vrikshasana: { // Tree Pose
+                torso: { x: 0, y: 0, z: 0 },
+                head: { x: 0, y: 0, z: 0 },
+                leftUpperArm: { x: -Math.PI / 2, y: 0, z: 0 },
+                leftLowerArm: { x: -Math.PI / 3, y: 0, z: 0 },
+                rightUpperArm: { x: -Math.PI / 2, y: 0, z: 0 },
+                rightLowerArm: { x: -Math.PI / 3, y: 0, z: 0 },
+                leftUpperLeg: { x: 0, y: Math.PI / 2, z: Math.PI / 3 },
+                leftLowerLeg: { x: Math.PI / 1.5, y: 0, z: 0 },
+                rightUpperLeg: { x: 0, y: 0, z: 0 },
+                rightLowerLeg: { x: 0, y: 0, z: 0 },
+                highlights: ['rightUpperLeg', 'leftUpperLeg', 'torso']
+            },
+            Padmasana: { // Lotus Pose (Simplified)
+                torso: { x: 0.1, y: 0, z: 0 },
+                head: { x: 0, y: 0, z: 0 },
+                leftUpperArm: { x: 0, y: 0, z: -0.5 },
+                leftLowerArm: { x: -0.5, y: 0, z: -0.5 },
+                rightUpperArm: { x: 0, y: 0, z: 0.5 },
+                rightLowerArm: { x: -0.5, y: 0, z: 0.5 },
+                leftUpperLeg: { x: 0.8, y: 0.8, z: -0.8 },
+                leftLowerLeg: { x: Math.PI / 1.5, y: 0, z: 0 },
+                rightUpperLeg: { x: 0.8, y: -0.8, z: 0.8 },
+                rightLowerLeg: { x: Math.PI / 1.5, y: 0, z: 0 },
+                highlights: ['leftUpperLeg', 'rightUpperLeg', 'pelvis']
+            },
+            Bhujangasana: { // Cobra Pose
+                torso: { x: -0.8, y: 0, z: 0 }, // Leaning back
+                head: { x: -0.3, y: 0, z: 0 }, // Head up
+                leftUpperArm: { x: 0.2, y: 0, z: -Math.PI / 2.5 },
+                leftLowerArm: { x: -Math.PI / 1.8, y: 0, z: 0 },
+                rightUpperArm: { x: 0.2, y: 0, z: Math.PI / 2.5 },
+                rightLowerArm: { x: -Math.PI / 1.8, y: 0, z: 0 },
+                leftUpperLeg: { x: 0, y: 0, z: 0 },
+                leftLowerLeg: { x: 0, y: 0, z: 0 },
+                rightUpperLeg: { x: 0, y: 0, z: 0 },
+                rightLowerLeg: { x: 0, y: 0, z: 0 },
+                highlights: ['torso', 'neck'] // Neck is part of head group for simplicity
+            }
+            // Add more poses here
+        };
+
+        init();
+        animate();
+
+        function init() {
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x87ceeb); // Sky blue
+            scene.fog = new THREE.Fog(0x87ceeb, 10, 50);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(0, 2, 5);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.body.appendChild(renderer.domElement);
+
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            directionalLight.position.set(5, 10, 7.5);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 1024;
+            directionalLight.shadow.mapSize.height = 1024;
+            directionalLight.shadow.camera.near = 0.5;
+            directionalLight.shadow.camera.far = 50;
+            directionalLight.shadow.camera.left = -10;
+            directionalLight.shadow.camera.right = 10;
+            directionalLight.shadow.camera.top = 10;
+            directionalLight.shadow.camera.bottom = -10;
+            scene.add(directionalLight);
+            // const shadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+            // scene.add(shadowHelper);
+
+
+            // Ground
+            const groundGeometry = new THREE.PlaneGeometry(100, 100);
+            const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x997950, side: THREE.DoubleSide }); // Brownish
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            // Controls
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 2;
+            controls.maxDistance = 20;
+            controls.target.set(0, 1, 0); // Target the character's center
+
+            // Create Human Figure
+            createHumanFigure();
+
+            // Populate Pose Selector
+            const poseSelector = document.getElementById('poseSelector');
+            Object.keys(yogaPoses).forEach(poseName => {
+                const option = document.createElement('option');
+                option.value = poseName;
+                option.textContent = poseName;
+                poseSelector.appendChild(option);
+            });
+            poseSelector.addEventListener('change', (event) => {
+                const poseName = event.target.value;
+                if (poseName === "custom") {
+                    resetHighlights(); // Or manage highlights differently for custom
+                    // GUI controls are already active for custom poses
+                } else if (yogaPoses[poseName]) {
+                    applyPose(poseName);
+                }
+            });
+
+            // GUI for manual control
+            setupGUI();
+
+            // Initial Pose
+            applyPose('Tadasana', 0); // Apply Tadasana instantly
+
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function createHumanFigure() {
+            human = new THREE.Group();
+            scene.add(human);
+            human.position.y = 0; // Base of the model at ground level (pelvis height)
+
+            const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0xead0b8, roughness: 0.7, metalness: 0.1 });
+
+            // Helper to create limb segments
+            function createLimbSegment(name, dimensions, color = 0xead0b8) {
+                const mat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.7, metalness: 0.1 });
+                originalMaterials.set(name, mat); // Store original material
+
+                const geometry = new THREE.BoxGeometry(dimensions.w, dimensions.h, dimensions.d);
+                const mesh = new THREE.Mesh(geometry, mat);
+                mesh.castShadow = true;
+                mesh.receiveShadow = true;
+                mesh.name = name; // Useful for identification
+                return mesh;
+            }
+            
+            // All positions are relative to their parent's pivot point.
+            // Pivots are generally at the "joint".
+
+            // Pelvis (root for legs) - not directly controlled by pose data but acts as a base
+            const pelvis = new THREE.Group(); // Use Group as a pivot
+            const pelvisMesh = createLimbSegment('pelvis', { w: 0.6, h: 0.3, d: 0.4 });
+            pelvisMesh.position.y = 0.9; // Center of pelvis mesh
+            pelvis.add(pelvisMesh);
+            human.add(pelvis);
+            bodyParts.pelvis = pelvisMesh; // For highlighting
+
+
+            // Torso (attached to pelvis, but we'll make it a sibling for easier global rotation for now)
+            // Torso pivot is at its base (connection to pelvis)
+            bodyParts.torso = new THREE.Group();
+            const torsoMesh = createLimbSegment('torsoMesh', { w: 0.6, h: 0.8, d: 0.4 });
+            torsoMesh.position.y = 0.4; // torsoMesh's center relative to bodyParts.torso pivot
+            bodyParts.torso.add(torsoMesh);
+            bodyParts.torso.position.y = 1.05; // Position torso pivot relative to human group origin
+            human.add(bodyParts.torso);
+            originalMaterials.set('torso', torsoMesh.material);
+
+
+            // Head (attached to torso)
+            // Head pivot is at its base (neck joint)
+            bodyParts.head = new THREE.Group();
+            const headMesh = createLimbSegment('headMesh', { w: 0.4, h: 0.5, d: 0.4 });
+            headMesh.position.y = 0.25; // headMesh's center relative to bodyParts.head pivot
+            bodyParts.head.add(headMesh);
+            bodyParts.head.position.y = 0.8; // Position head pivot relative to torso pivot (top of torsoMesh)
+            bodyParts.torso.add(bodyParts.head); // Head is child of Torso group
+            originalMaterials.set('head', headMesh.material);
+            originalMaterials.set('neck', headMesh.material); // For Bhujangasana highlight
+
+            // --- LIMBS ---
+            // Each limb part (upper, lower) is a Group to allow rotation around its proximal joint.
+            // The mesh itself is offset within this Group.
+
+            // Left Arm
+            bodyParts.leftUpperArm = new THREE.Group();
+            const leftUpperArmMesh = createLimbSegment('leftUpperArmMesh', { w: 0.15, h: 0.5, d: 0.15 });
+            leftUpperArmMesh.position.y = -0.25; // Mesh center relative to shoulder joint
+            bodyParts.leftUpperArm.add(leftUpperArmMesh);
+            bodyParts.leftUpperArm.position.set(0.375, 0.7, 0); // Shoulder joint relative to torso pivot
+            bodyParts.torso.add(bodyParts.leftUpperArm);
+            originalMaterials.set('leftUpperArm', leftUpperArmMesh.material);
+
+            bodyParts.leftLowerArm = new THREE.Group();
+            const leftLowerArmMesh = createLimbSegment('leftLowerArmMesh', { w: 0.12, h: 0.45, d: 0.12 });
+            leftLowerArmMesh.position.y = -0.225; // Mesh center relative to elbow joint
+            bodyParts.leftLowerArm.add(leftLowerArmMesh);
+            bodyParts.leftLowerArm.position.y = -0.5; // Elbow joint relative to shoulder joint (end of upper arm)
+            bodyParts.leftUpperArm.add(bodyParts.leftLowerArm);
+            originalMaterials.set('leftLowerArm', leftLowerArmMesh.material);
+
+            // Right Arm
+            bodyParts.rightUpperArm = new THREE.Group();
+            const rightUpperArmMesh = createLimbSegment('rightUpperArmMesh', { w: 0.15, h: 0.5, d: 0.15 });
+            rightUpperArmMesh.position.y = -0.25;
+            bodyParts.rightUpperArm.add(rightUpperArmMesh);
+            bodyParts.rightUpperArm.position.set(-0.375, 0.7, 0);
+            bodyParts.torso.add(bodyParts.rightUpperArm);
+            originalMaterials.set('rightUpperArm', rightUpperArmMesh.material);
+
+            bodyParts.rightLowerArm = new THREE.Group();
+            const rightLowerArmMesh = createLimbSegment('rightLowerArmMesh', { w: 0.12, h: 0.45, d: 0.12 });
+            rightLowerArmMesh.position.y = -0.225;
+            bodyParts.rightLowerArm.add(rightLowerArmMesh);
+            bodyParts.rightLowerArm.position.y = -0.5;
+            bodyParts.rightUpperArm.add(bodyParts.rightLowerArm);
+            originalMaterials.set('rightLowerArm', rightLowerArmMesh.material);
+            
+            // Left Leg (Pelvis is parent)
+            bodyParts.leftUpperLeg = new THREE.Group();
+            const leftUpperLegMesh = createLimbSegment('leftUpperLegMesh', { w: 0.2, h: 0.6, d: 0.2 });
+            leftUpperLegMesh.position.y = -0.3; // Mesh center relative to hip joint
+            bodyParts.leftUpperLeg.add(leftUpperLegMesh);
+            bodyParts.leftUpperLeg.position.set(0.2, 0.75, 0); // Hip joint relative to human group origin (pelvis height)
+            human.add(bodyParts.leftUpperLeg); // Attach to human root for now, could be pelvis
+            originalMaterials.set('leftUpperLeg', leftUpperLegMesh.material);
+
+
+            bodyParts.leftLowerLeg = new THREE.Group();
+            const leftLowerLegMesh = createLimbSegment('leftLowerLegMesh', { w: 0.18, h: 0.55, d: 0.18 });
+            leftLowerLegMesh.position.y = -0.275;
+            bodyParts.leftLowerLeg.add(leftLowerLegMesh);
+            bodyParts.leftLowerLeg.position.y = -0.6; // Knee joint relative to hip joint
+            bodyParts.leftUpperLeg.add(bodyParts.leftLowerLeg);
+            originalMaterials.set('leftLowerLeg', leftLowerLegMesh.material);
+
+            // Right Leg
+            bodyParts.rightUpperLeg = new THREE.Group();
+            const rightUpperLegMesh = createLimbSegment('rightUpperLegMesh', { w: 0.2, h: 0.6, d: 0.2 });
+            rightUpperLegMesh.position.y = -0.3;
+            bodyParts.rightUpperLeg.add(rightUpperLegMesh);
+            bodyParts.rightUpperLeg.position.set(-0.2, 0.75, 0);
+            human.add(bodyParts.rightUpperLeg);
+            originalMaterials.set('rightUpperLeg', rightUpperLegMesh.material);
+
+
+            bodyParts.rightLowerLeg = new THREE.Group();
+            const rightLowerLegMesh = createLimbSegment('rightLowerLegMesh', { w: 0.18, h: 0.55, d: 0.18 });
+            rightLowerLegMesh.position.y = -0.275;
+            bodyParts.rightLowerLeg.add(rightLowerLegMesh);
+            bodyParts.rightLowerLeg.position.y = -0.6;
+            bodyParts.rightUpperLeg.add(bodyParts.rightLowerLeg);
+            originalMaterials.set('rightLowerLeg', rightLowerLegMesh.material);
+        }
+        
+        function resetHighlights() {
+            // Iterate over actual mesh objects stored in bodyParts if they are direct meshes,
+            // or find the child mesh if bodyParts stores Groups.
+            for (const partKey in bodyParts) {
+                const part = bodyParts[partKey];
+                const originalMat = originalMaterials.get(partKey) || originalMaterials.get(part.name); // Try partKey then part.name
+                
+                if (part && originalMat) {
+                    if (part.isMesh) { // If bodyParts[partKey] is the mesh itself
+                        part.material = originalMat;
+                    } else if (part.isGroup && part.children.length > 0 && part.children[0].isMesh) {
+                        // If bodyParts[partKey] is a Group and its first child is the mesh
+                        part.children[0].material = originalMat;
+                    }
+                }
+            }
+             // Special case for 'neck' which is part of 'head' mesh
+            const headMesh = bodyParts.head.children[0];
+            if (headMesh && originalMaterials.has('head')) {
+                headMesh.material = originalMaterials.get('head');
+            }
+        }
+
+        function highlightParts(partNames = []) {
+            partNames.forEach(partKey => {
+                let targetMesh;
+                if (partKey === 'neck') { // Special case: 'neck' refers to the head mesh
+                    targetMesh = bodyParts.head.children[0];
+                } else if (bodyParts[partKey]) {
+                     if (bodyParts[partKey].isMesh) {
+                        targetMesh = bodyParts[partKey];
+                    } else if (bodyParts[partKey].isGroup && bodyParts[partKey].children.length > 0 && bodyParts[partKey].children[0].isMesh) {
+                        targetMesh = bodyParts[partKey].children[0];
+                    }
+                }
+
+                if (targetMesh) {
+                    targetMesh.material = highlightMaterial;
+                } else {
+                    console.warn("Part to highlight not found:", partKey);
+                }
+            });
+        }
+
+
+        function applyPose(poseName, duration = animationDuration) {
+            const poseData = yogaPoses[poseName];
+            if (!poseData) return;
+
+            resetHighlights(); // Clear previous highlights
+
+            Object.keys(poseData).forEach(partKey => {
+                if (bodyParts[partKey] && poseData[partKey].x !== undefined) { // Check if it's a rotation object
+                    const targetRotation = poseData[partKey];
+                    const part = bodyParts[partKey];
+
+                    // Ensure Euler order is consistent if you plan to read back values
+                    part.rotation.order = 'XYZ'; 
+
+                    new TWEEN.Tween(part.rotation)
+                        .to({ x: targetRotation.x, y: targetRotation.y, z: targetRotation.z }, duration)
+                        .easing(TWEEN.Easing.Quadratic.InOut)
+                        .start();
+                }
+            });
+            
+            // Apply highlights after a short delay to allow tweening to start/finish
+            // Or, ideally, when tween completes for each part, but that's more complex.
+            // For simplicity, apply after a fixed time or immediately.
+             if (poseData.highlights) {
+                if (duration > 0) {
+                    setTimeout(() => highlightParts(poseData.highlights), duration / 2); // Apply mid-animation or at end
+                } else {
+                    highlightParts(poseData.highlights); // Apply immediately if no duration
+                }
+            }
+
+            // Update GUI sliders to reflect the new pose (if GUI is open)
+            // This is important if user switches to predefined pose then wants to tweak it
+            if (gui && poseName !== "custom") {
+                 Object.keys(gui.__folders).forEach(folderName => {
+                    const folder = gui.__folders[folderName];
+                    if (bodyParts[folderName] && poseData[folderName]) {
+                        folder.__controllers.forEach(controller => {
+                            const prop = controller.property; // 'x', 'y', or 'z'
+                            if (poseData[folderName][prop] !== undefined) {
+                                controller.setValue(poseData[folderName][prop] * 180 / Math.PI); // Update GUI in degrees
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
+        let gui;
+        function setupGUI() {
+            gui = new GUI({ autoPlace: false });
+            document.getElementById('gui-container').appendChild(gui.domElement);
+            
+            const controllableParts = [
+                'torso', 'head', 
+                'leftUpperArm', 'leftLowerArm', 'rightUpperArm', 'rightLowerArm',
+                'leftUpperLeg', 'leftLowerLeg', 'rightUpperLeg', 'rightLowerLeg'
+            ];
+
+            controllableParts.forEach(partKey => {
+                const part = bodyParts[partKey];
+                if (part) {
+                    const folder = gui.addFolder(partKey);
+                    folder.add(part.rotation, 'x', -Math.PI, Math.PI, 0.01).name('Rotate X').onChange(() => markCustomPose());
+                    folder.add(part.rotation, 'y', -Math.PI, Math.PI, 0.01).name('Rotate Y').onChange(() => markCustomPose());
+                    folder.add(part.rotation, 'z', -Math.PI, Math.PI, 0.01).name('Rotate Z').onChange(() => markCustomPose());
+                }
+            });
+        }
+        
+        function markCustomPose() {
+            const poseSelector = document.getElementById('poseSelector');
+            if (poseSelector.value !== "custom") {
+                poseSelector.value = "custom";
+            }
+            resetHighlights(); // Custom poses don't have auto-highlighting by default
+        }
+
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            TWEEN.update();
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+    </script>
+</body>
+</html>
