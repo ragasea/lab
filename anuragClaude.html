@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anurag Sharma - Yoga, Meditation & Chess Classes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.9), rgba(118, 75, 162, 0.9));
+            color: white;
+            text-align: center;
+            padding: 150px 0 100px;
+            margin-top: 80px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .services {
+            background: white;
+            padding: 100px 0;
+        }
+
+        .services h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .service-types {
+            list-style: none;
+            margin: 1rem 0;
+        }
+
+        .service-types li {
+            margin: 0.5rem 0;
+            color: #666;
+        }
+
+        .about {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .about h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .contact {
+            background: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            transition: transform 0.3s;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .contact-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .contact-card a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .social-media {
+            margin-top: 3rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .social-link:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .mobile-nav {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-nav {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        .session-types {
+            background: #f8f9fa;
+            padding: 50px 0;
+        }
+
+        .session-types h3 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .session-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .session-type {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .session-type:hover {
+            transform: translateY(-3px);
+        }
+
+        .whatsapp-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #25D366;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+
+        .whatsapp-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">Anurag Sharma</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="mobile-nav">☰</button>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>Transform Your Mind & Body</h1>
+            <p>Government Certified Yoga Instructor | Meditation Teacher | Chess Coach<br>
+            Serving Kharar, Mohali & Online Globally Since 2011</p>
+            <a href="#contact" class="cta-button">Start Your Journey Today</a>
+        </div>
+    </section>
+
+    <section id="services" class="services">
+        <div class="container">
+            <h2>Our Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🧘‍♂️</div>
+                    <h3>Yoga & Meditation</h3>
+                    <p>योग: चित्त वृत्ति निरोध:॥<br>
+                    Yoga helps in settling your mind apart from physical benefits. Use yoga to get rid of backaches, improve focus & peace of mind, or as a ladder to the divine.</p>
+                    <ul class="service-types">
+                        <li>• Online Sessions (Worldwide)</li>
+                        <li>• Group Sessions in Kharar</li>
+                        <li>• Personal Home Sessions</li>
+                        <li>• Corporate Wellness Programs</li>
+                        <li>• School & College Sessions</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">♟️</div>
+                    <h3>Chess Classes</h3>
+                    <p>Whether you're a complete beginner or a seasoned strategist, we have the perfect move for you. Train your brain with expert chess coaching!</p>
+                    <ul class="service-types">
+                        <li>• Online Chess Sessions</li>
+                        <li>• Offline Sessions in Kharar</li>
+                        <li>• Personal Home Coaching</li>
+                        <li>• 45-minute sessions</li>
+                        <li>• 5 days a week program</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="session-types">
+        <div class="container">
+            <h3>Session Options Available</h3>
+            <div class="session-grid">
+                <div class="session-type">
+                    <h4>🌐 Online Sessions</h4>
+                    <p>Learn from anywhere in the world. Flexible, convenient, and interactive sessions available on your phone or computer.</p>
+                </div>
+                <div class="session-type">
+                    <h4>👥 Group Sessions</h4>
+                    <p>Join existing groups in Kharar and nearby areas, or form your own group in your society or neighborhood.</p>
+                </div>
+                <div class="session-type">
+                    <h4>🏠 Home Sessions</h4>
+                    <p>Personalized sessions at your residence with individual attention and specific requirements.</p>
+                </div>
+                <div class="session-type">
+                    <h4>🏢 Corporate Sessions</h4>
+                    <p>Employee wellness programs for companies. Experienced in conducting sessions with various MNCs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2>About Anurag Sharma</h2>
+            <div class="about-content">
+                <p>Government certified yoga instructor with over 20 years of personal practice (since 2001) and 13+ years of teaching experience (since 2011). Trained at prestigious institutions including Art of Living, Vipassana Center, Patanjali, Chandigarh College of Yoga, and Chandigarh Administration.</p>
+                
+                <p>Experience includes teaching at government schools, private colleges in Kharar and Mohali, conducting weekly sessions at Chandigarh hospitals including PGI drug & alcohol de-addiction center, and corporate wellness programs for various MNCs.</p>
+                
+                <p>Serves as Master Yoga Trainer for Chandigarh Administration, preparing participants for International Yoga Day events. Currently conducting regular sessions in residential societies of Kharar and surrounding areas.</p>
+                
+                <p>Also passionate about chess coaching, helping students develop strategic thinking and mental acuity through this ancient game of kings.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <div class="contact-info">
+                <div class="contact-card">
+                    <h3>📞 Phone & WhatsApp</h3>
+                    <p><a href="tel:+916283266268">+91 62832 66268</a></p>
+                    <p><a href="https://wa.me/916283266268">WhatsApp Direct</a></p>
+                </div>
+                <div class="contact-card">
+                    <h3>📍 Location</h3>
+                    <p>Kharar, Punjab, India</p>
+                    <p>Serving Mohali & Surrounding Areas</p>
+                </div>
+                <div class="contact-card">
+                    <h3>🌐 Online Sessions</h3>
+                    <p>Available Worldwide</p>
+                    <p>Flexible Timings</p>
+                </div>
+            </div>
+
+            <div class="social-media">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="https://www.youtube.com/channel/UCz4uJgpZYLp9ISvOgAuFWwA" class="social-link" target="_blank">📺 YouTube</a>
+                    <a href="https://www.instagram.com/yogaanurag" class="social-link" target="_blank">📷 Instagram</a>
+                    <a href="https://facebook.com/yogaanurag" class="social-link" target="_blank">📘 Facebook</a>
+                    <a href="https://twitter.com/yogaanurag" class="social-link" target="_blank">🐦 Twitter</a>
+                    <a href="https://www.linkedin.com/in/yogaanurag/" class="social-link" target="_blank">💼 LinkedIn</a>
+                    <a href="https://yogaanurag.blogspot.com" class="social-link" target="_blank">📝 Yoga Blog</a>
+                    <a href="https://chessanurag.blogspot.com" class="social-link" target="_blank">♟️ Chess Blog</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Anurag Sharma. All rights reserved. | Yoga • Meditation • Chess</p>
+            <p>Government Certified Yoga Instructor | Serving since 2011</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/916283266268" class="whatsapp-btn" target="_blank">💬</a>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+
+        // Mobile navigation (basic toggle)
+        const mobileNav = document.querySelector('.mobile-nav');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileNav.addEventListener('click', function() {
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '100%';
+                navLinks.style.left = '0';
+                navLinks.style.right = '0';
+                navLinks.style.background = 'white';
+                navLinks.style.padding = '1rem';
+                navLinks.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            }
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!mobileNav.contains(e.target) && !navLinks.contains(e.target)) {
+                if (window.innerWidth <= 768) {
+                    navLinks.style.display = 'none';
+                }
+            }
+        });
+
+        // Service cards animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.service-card, .session-type, .contact-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
