@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anurag Sharma - Yoga, Meditation & Chess Classes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        header p {
+            font-size: 1.2em;
+        }
+        section {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h2 {
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .contact-info {
+            font-size: 1.1em;
+        }
+        .social-links a {
+            display: inline-block;
+            margin: 10px;
+            text-decoration: none;
+            color: white;
+            background-color: #333;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .social-links a:hover {
+            background-color: #4CAF50;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Anurag Sharma</h1>
+        <p>Government Certified Yoga Instructor & Chess Mentor</p>
+    </header>
+
+    <section id="about">
+        <h2>About Me</h2>
+        <p>I am Anurag Sharma, a government-certified yoga instructor with over two decades of practice in yoga and meditation since 2001, and teaching experience since 2011. I have trained with renowned organizations including Art of Living, Vipassana Center, Patanjali, Chandigarh College of Yoga, and Chandigarh Administration.</p>
+        <p>My experience includes teaching at government schools, private colleges in Kharar and Mohali, weekly sessions at hospitals like PGI's drug and alcohol de-addiction center, corporate sessions for MNCs, and serving as Master Yoga Trainer for International Yoga Day events in Chandigarh.</p>
+        <p>In addition to yoga and meditation, I offer chess coaching to train minds and unlock potential, with India's best chess mentors guiding the sessions.</p>
+    </section>
+
+    <section id="yoga-meditation">
+        <h2>Yoga & Meditation Classes</h2>
+        <p>Experience the benefits of yoga and meditation for physical health and mental calmness. Sessions include meditation, Pranayama, Jal Neti, and other Shat Karmas, helping with stress relief, focus, and overall well-being.</p>
+        <ul>
+            <li><strong>Online Sessions:</strong> Flexible and accessible from anywhere, ideal for busy schedules or lockdowns.</li>
+            <li><strong>Group Sessions:</strong> Held at various venues in Kharar and nearby areas like Jammuna Apartments, TDI Wellington Heights, Sunny Enclave, Shivalik City, SBP Homes, Acme Heights. Form your own group in your society.</li>
+            <li><strong>Personal Home Sessions:</strong> Individual attention at your residence, tailored to your needs.</li>
+            <li><strong>Corporate Sessions:</strong> Employee well-being programs with proven experience in MNCs.</li>
+        </ul>
+        <p>Sessions are 40-45 minutes, 5 days a week (morning/evening). Fees are reasonable based on distance, time, and group size. Additional sessions available for schools, colleges, and de-addiction centers.</p>
+    </section>
+
+    <section id="chess">
+        <h2>Chess Classes</h2>
+        <p>Train your brain with strategic chess coaching for beginners and improvers. Learn strategies, exercises, and guided practice to unlock your potential.</p>
+        <ul>
+            <li><strong>Online Sessions:</strong> Convenient and interactive learning from home.</li>
+            <li><strong>Offline Sessions:</strong> In-person coaching in Kharar for hands-on experience.</li>
+            <li><strong>Home Sessions:</strong> Personalized one-on-one at your doorstep.</li>
+        </ul>
+        <p>Sessions are approximately 45 minutes, held 5 days a week for consistent improvement.</p>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Me</h2>
+        <p class="contact-info">For inquiries about yoga, meditation, or chess classes, reach out via:</p>
+        <ul class="contact-info">
+            <li>Phone: +91 62832 66268</li>
+            <li>WhatsApp: <a href="https://wa.me/916283266268">+91 62832 66268</a></li>
+        </ul>
+        <p>Feel free to call or message for details on sessions, schedules, or fees.</p>
+    </section>
+
+    <section id="social">
+        <h2>Social Media</h2>
+        <div class="social-links">
+            <a href="https://www.youtube.com/channel/UCz4uJgpZYLp9ISvOgAuFWwA" target="_blank">YouTube</a>
+            <a href="https://x.com/yogaanurag" target="_blank">X (Twitter)</a>
+            <a href="https://www.instagram.com/yogaanurag/" target="_blank">Instagram</a>
+            <a href="https://www.facebook.com/yogaanurag" target="_blank">Facebook</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Anurag Sharma. All rights reserved.</p>
+    </footer>
+</body>
+</html>
