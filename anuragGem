@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anurag's Yoga, Meditation & Chess Classes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .section {
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .contact-info {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+        .contact-info li {
+            margin-bottom: 10px;
+        }
+        .contact-info a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+        .social-media {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .social-media img {
+            width: 30px;
+            height: 30px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #333;
+            color: #fff;
+            margin-top: 20px;
+            border-radius: 0 0 8px 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Anurag's Classes ✨</h1>
+        <p>Your one-stop destination for a healthy mind, body, and an unbeatable chess game!</p>
+    </header>
+
+    <div class="container">
+
+        <div class="section">
+            <h2>Yoga & Meditation 🧘</h2>
+            <p>
+                Find your inner peace and physical strength with our yoga and meditation sessions. Whether you're a beginner or an experienced practitioner, we have a class just for you!
+            </p>
+            <h3>Our Offerings:</h3>
+            <ul>
+                <li><strong>Online Sessions:</strong> Learn from the comfort of your home, no matter where you are in the world.</li>
+                <li><strong>Group Classes:</strong> Join our lively sessions at various venues in Kharar and nearby areas. We're happy to form a new group in your society too!</li>
+                <li><strong>Personal Home Sessions:</strong> Get personalized attention and a routine tailored to your specific needs at your residence.</li>
+                <li><strong>Corporate Sessions:</strong> Help your employees de-stress and improve their well-being. We've got experience conducting sessions for schools and colleges too.</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>Chess Classes ♟️</h2>
+            <p>
+                Ready to outsmart your opponents? Our chess classes will help you master the game, from learning the basics to advanced strategies. We believe in making chess fun and accessible for all ages!
+            </p>
+            <p>
+                Our chess sessions are structured to help you improve your focus, memory, and strategic thinking. It's not just a game; it's a workout for your brain!
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>Contact Us 📞</h2>
+            <p>
+                Got questions? We've got answers! Feel free to reach out to us. We promise we don't bite, unless we're a pawn on a chess board. 😉
+            </p>
+            <ul class="contact-info">
+                <li><i class="fas fa-phone"></i> Phone/WhatsApp: <strong>+91 62832 66268</strong></li>
+                <li>Email: yogakharar@gmail.com</li>
+            </ul>
+
+            <div class="social-media">
+                <a href="https://www.youtube.com/@yogaanurag" target="_blank" title="YouTube">
+                    <img src="https://www.iconpacks.net/tutorials/youtube-logo-icon-10.svg" alt="YouTube" width="30" height="30">
+                </a>
+                <a href="https://twitter.com/yogaanurag" target="_blank" title="Twitter">
+                    <img src="https://abs.twimg.com/responsive-web/web/icon-x.841516aa.svg" alt="Twitter" width="30" height="30">
+                </a>
+                <a href="https://www.instagram.com/yogaanurag" target="_blank" title="Instagram">
+                    <img src="https://static-00.iconduck.com/assets.00/instagram-icon-2048x2048-uc6fe8u9.png" alt="Instagram" width="30" height="30">
+                </a>
+                <a href="https://www.facebook.com/yogaanurag" target="_blank" title="Facebook">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/2023_Facebook_icon.svg" alt="Facebook" width="30" height="30">
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Anurag's Classes. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
+
