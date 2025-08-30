@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Anurag Academy - Master the Game of Kings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        /* Chess pattern background */
+        .chess-pattern {
+            background: 
+                linear-gradient(45deg, #ecf0f1 25%, transparent 25%),
+                linear-gradient(-45deg, #ecf0f1 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #ecf0f1 75%),
+                linear-gradient(-45deg, transparent 75%, #ecf0f1 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            opacity: 0.1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ecf0f1;
+        }
+
+        .chess-icon {
+            font-size: 2.5rem;
+            color: #f39c12;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            color: #f39c12;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .hero {
+            background: linear-gradient(rgba(44, 62, 80, 0.8), rgba(52, 73, 94, 0.8)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><rect fill="%23f4f4f4" width="800" height="600"/><g fill="%23e8e8e8"><rect x="0" y="0" width="100" height="100"/><rect x="200" y="0" width="100" height="100"/><rect x="400" y="0" width="100" height="100"/><rect x="600" y="0" width="100" height="100"/><rect x="100" y="100" width="100" height="100"/><rect x="300" y="100" width="100" height="100"/><rect x="500" y="100" width="100" height="100"/><rect x="700" y="100" width="100" height="100"/></g></svg>');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .chess-image {
+            margin: 3rem auto;
+            text-align: center;
+        }
+
+        .chess-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-height: 400px;
+        }
+
+        .services {
+            padding: 4rem 0;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .services h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #2c3e50;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 5px solid #f39c12;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .service-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .service-card p {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        .service-icon {
+            font-size: 2rem;
+            color: #f39c12;
+            margin-bottom: 1rem;
+        }
+
+        .class-details {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .class-details h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .detail-item {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .detail-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #f39c12;
+        }
+
+        .contact {
+            padding: 4rem 0;
+            background: rgba(255,255,255,0.95);
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #2c3e50;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .contact-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            min-width: 250px;
+            transition: transform 0.3s;
+        }
+
+        .contact-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .contact-item i {
+            font-size: 2rem;
+            color: #f39c12;
+            margin-bottom: 1rem;
+        }
+
+        .contact-item h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-item p {
+            color: #7f8c8d;
+        }
+
+        .contact-item a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="chess-pattern"></div>
+    
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="chess-icon">♛</span>
+                    <h1>Chess Anurag Academy</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#services">Services</a></li>
+                        <li><a href="#classes">Classes</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <h2>Master the Game of Kings ♟️</h2>
+            <p>Whether you're a complete beginner or a seasoned strategist, we have the perfect move for you. Unlock your full potential on the chessboard with personalized coaching.</p>
+            <a href="#contact" class="cta-button">Start Your Chess Journey</a>
+        </div>
+    </section>
+
+    <div class="chess-image">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23f4f4f4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23e8e8e8;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='url(%23bg)'/%3E%3Cg transform='translate(100,100)'%3E%3Crect width='600' height='400' fill='%23654321' stroke='%238B4513' stroke-width='8' rx='20'/%3E%3C!-- Chess board --%3E%3Cg transform='translate(50,50)'%3E%3Crect width='500' height='300' fill='%23FAEBD7'/%3E%3C!-- Dark squares --%3E%3Cg fill='%238B4513'%3E%3Crect x='0' y='0' width='62.5' height='37.5'/%3E%3Crect x='125' y='0' width='62.5' height='37.5'/%3E%3Crect x='250' y='0' width='62.5' height='37.5'/%3E%3Crect x='375' y='0' width='62.5' height='37.5'/%3E%3Crect x='62.5' y='37.5' width='62.5' height='37.5'/%3E%3Crect x='187.5' y='37.5' width='62.5' height='37.5'/%3E%3Crect x='312.5' y='37.5' width='62.5' height='37.5'/%3E%3Crect x='437.5' y='37.5' width='62.5' height='37.5'/%3E%3Crect x='0' y='75' width='62.5' height='37.5'/%3E%3Crect x='125' y='75' width='62.5' height='37.5'/%3E%3Crect x='250' y='75' width='62.5' height='37.5'/%3E%3Crect x='375' y='75' width='62.5' height='37.5'/%3E%3Crect x='62.5' y='112.5' width='62.5' height='37.5'/%3E%3Crect x='187.5' y='112.5' width='62.5' height='37.5'/%3E%3Crect x='312.5' y='112.5' width='62.5' height='37.5'/%3E%3Crect x='437.5' y='112.5' width='62.5' height='37.5'/%3E%3Crect x='0' y='150' width='62.5' height='37.5'/%3E%3Crect x='125' y='150' width='62.5' height='37.5'/%3E%3Crect x='250' y='150' width='62.5' height='37.5'/%3E%3Crect x='375' y='150' width='62.5' height='37.5'/%3E%3Crect x='62.5' y='187.5' width='62.5' height='37.5'/%3E%3Crect x='187.5' y='187.5' width='62.5' height='37.5'/%3E%3Crect x='312.5' y='187.5' width='62.5' height='37.5'/%3E%3Crect x='437.5' y='187.5' width='62.5' height='37.5'/%3E%3Crect x='0' y='225' width='62.5' height='37.5'/%3E%3Crect x='125' y='225' width='62.5' height='37.5'/%3E%3Crect x='250' y='225' width='62.5' height='37.5'/%3E%3Crect x='375' y='225' width='62.5' height='37.5'/%3E%3Crect x='62.5' y='262.5' width='62.5' height='37.5'/%3E%3Crect x='187.5' y='262.5' width='62.5' height='37.5'/%3E%3Crect x='312.5' y='262.5' width='62.5' height='37.5'/%3E%3Crect x='437.5' y='262.5' width='62.5' height='37.5'/%3E%3C/g%3E%3C!-- Chess pieces (simplified) --%3E%3Cg fill='%23000' font-family='serif' font-size='28' text-anchor='middle'%3E%3Ctext x='31.25' y='30' fill='%23fff'%3E♜%3C/text%3E%3Ctext x='93.75' y='30' fill='%23fff'%3E♞%3C/text%3E%3Ctext x='156.25' y='30' fill='%23fff'%3E♝%3C/text%3E%3Ctext x='218.75' y='30' fill='%23fff'%3E♛%3C/text%3E%3Ctext x='281.25' y='30' fill='%23fff'%3E♚%3C/text%3E%3Ctext x='31.25' y='285' fill='%23000'%3E♖%3C/text%3E%3Ctext x='93.75' y='285' fill='%23000'%3E♘%3C/text%3E%3Ctext x='156.25' y='285' fill='%23000'%3E♗%3C/text%3E%3Ctext x='218.75' y='285' fill='%23000'%3E♕%3C/text%3E%3Ctext x='281.25' y='285' fill='%23000'%3E♔%3C/text%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E" alt="Chess Board" />
+    </div>
+
+    <section id="services" class="services">
+        <div class="container">
+            <h2>Choose Your Learning Mode</h2>
+            <div class="service-grid">
+                <div class="service-card">
+                    <div class="service-icon">💻</div>
+                    <h3>Online Sessions</h3>
+                    <p>Learn from the comfort of your home. Flexible, convenient, and interactive sessions available wherever you are. Perfect for busy schedules and remote learning.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🏢</div>
+                    <h3>Offline Sessions</h3>
+                    <p>Prefer face-to-face interaction? Join us for in-person coaching in Kharar. Perfect for hands-on learning and direct mentorship.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🏠</div>
+                    <h3>Home Sessions</h3>
+                    <p>Looking for personalized coaching at your doorstep? Our home sessions offer one-on-one guidance at your convenience with customized learning plans.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="classes" class="class-details">
+        <div class="container">
+            <h2>Class Details</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">Train your brain with India's best chess mentors!</p>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <h3>⏰ Duration</h3>
+                    <p>45 minutes per session packed with strategies, exercises, and guided practice</p>
+                </div>
+                <div class="detail-item">
+                    <h3>📅 Frequency</h3>
+                    <p>5 days a week ensuring consistent learning and improvement</p>
+                </div>
+                <div class="detail-item">
+                    <h3>🎯 Focus</h3>
+                    <p>Strategies, tactical exercises, and personalized guidance for all skill levels</p>
+                </div>
+                <div class="detail-item">
+                    <h3>👥 Audience</h3>
+                    <p>Complete beginners to seasoned strategists - we cater to all levels</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Start Your Chess Journey Today!</h2>
+            <p style="font-size: 1.2rem; color: #7f8c8d; margin-bottom: 2rem;">Ready to unlock your potential? Get in touch with us!</p>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <h3>Call or WhatsApp</h3>
+                    <p><a href="tel:+916283266268">+91 62832 66268</a></p>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Location</h3>
+                    <p>Kharar, Punjab</p>
+                    <a href="https://maps.app.goo.gl/Ec3XVWzTCNSrMjcEA" target="_blank">View on Maps</a>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-globe"></i>
+                    <h3>Online Presence</h3>
+                    <p><a href="https://chessanurag.blogspot.com" target="_blank">Visit our Blog</a></p>
+                    <p>Follow us on social media</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 Chess Anurag Academy. All rights reserved.</p>
+                <span style="font-size: 1.5rem;">♕</span>
+                <p>Nurturing minds, one move at a time.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'linear-gradient(135deg, rgba(44, 62, 80, 0.95) 0%, rgba(52, 73, 94, 0.95) 100%)';
+                header.style.backdropFilter = 'blur(10px)';
+            } else {
+                header.style.background = 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)';
+                header.style.backdropFilter = 'none';
+            }
+        });
+
+        // Add animation to service cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.service-card, .detail-item, .contact-item').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
