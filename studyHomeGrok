@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Notes Homepage - Chess Anurag Academy</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #4a90e2;
+            color: white;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            width: 80%;
+            max-width: 800px;
+        }
+        .controls input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+            font-size: 1em;
+        }
+        .controls button {
+            padding: 10px 20px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .controls button:hover {
+            background-color: #357abd;
+        }
+        .controls select {
+            margin-left: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        .notes-list {
+            width: 80%;
+            max-width: 800px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .note-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 15px;
+            transition: transform 0.3s;
+        }
+        .note-card:hover {
+            transform: translateY(-5px);
+        }
+        .note-card h3 {
+            margin: 0 0 10px;
+            color: #4a90e2;
+        }
+        .note-card p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .note-card a {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #7ed321;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .note-card a:hover {
+            background-color: #5aa50a;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            background-color: #4a90e2;
+            color: white;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Study Notes Repository</h1>
+        <p>Explore notes for various classes and subjects</p>
+    </header>
+
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search by title, class, or subject...">
+        <button onclick="searchNotes()">Search</button>
+        <select id="sortSelect" onchange="sortNotes()">
+            <option value="">Sort by...</option>
+            <option value="class">Class (Ascending)</option>
+            <option value="subject">Subject (Alphabetical)</option>
+            <option value="title">Title (Alphabetical)</option>
+        </select>
+    </div>
+
+    <div class="notes-list" id="notesList"></div>
+
+    <footer>
+        Created by Chess Anurag Academy
+    </footer>
+
+    <script>
+        // Sample notes data - in a real scenario, this could be loaded from a JSON file or database
+        // Each note has class, subject, title, and link to the actual note page
+        let notes = [
+            { class: '10', subject: 'Mathematics', title: 'Algebra Basics', link: 'notes/math10_algebra.html' },
+            { class: '10', subject: 'Science', title: 'Physics Introduction', link: 'notes/science10_physics.html' },
+            { class: '12', subject: 'Biology', title: 'Human Anatomy', link: 'notes/bio12_anatomy.html' },
+            { class: '11', subject: 'Chemistry', title: 'Organic Compounds', link: 'notes/chem11_organic.html' },
+            { class: '9', subject: 'History', title: 'Ancient Civilizations', link: 'notes/history9_ancient.html' },
+            // Add more notes here as pages are added to the website
+        ];
+
+        // Function to render notes
+        function renderNotes(filteredNotes) {
+            const list = document.getElementById('notesList');
+            list.innerHTML = '';
+            filteredNotes.forEach(note => {
+                const card = document.createElement('div');
+                card.className = 'note-card';
+                card.innerHTML = `
+                    <h3>${note.title}</h3>
+                    <p>Class: ${note.class}</p>
+                    <p>Subject: ${note.subject}</p>
+                    <a href="${note.link}" target="_blank">View Notes</a>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // Initial render
+        renderNotes(notes);
+
+        // Search function
+        function searchNotes() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = notes.filter(note => 
+                note.title.toLowerCase().includes(query) ||
+                note.class.toLowerCase().includes(query) ||
+                note.subject.toLowerCase().includes(query)
+            );
+            renderNotes(filtered);
+        }
+
+        // Sort function
+        function sortNotes() {
+            const sortBy = document.getElementById('sortSelect').value;
+            let sorted = [...notes];
+            if (sortBy === 'class') {
+                sorted.sort((a, b) => a.class.localeCompare(b.class, undefined, {numeric: true}));
+            } else if (sortBy === 'subject') {
+                sorted.sort((a, b) => a.subject.localeCompare(b.subject));
+            } else if (sortBy === 'title') {
+                sorted.sort((a, b) => a.title.localeCompare(b.title));
+            }
+            renderNotes(sorted);
+        }
+    </script>
+</body>
+</html>
