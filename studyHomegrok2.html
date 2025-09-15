@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Notes Homepage - Chess Anurag Academy</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        header {
+            background-color: #4a90e2;
+            color: white;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            width: 80%;
+            max-width: 800px;
+        }
+        .controls input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+            font-size: 1em;
+        }
+        .controls button {
+            padding: 10px 20px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .controls button:hover {
+            background-color: #357abd;
+        }
+        .controls select {
+            margin-left: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        .notes-list {
+            width: 80%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .notes-list ul {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+        .notes-list details {
+            margin-bottom: 10px;
+        }
+        .notes-list summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #4a90e2;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .notes-list summary:hover {
+            background-color: #e6f0fa;
+        }
+        .notes-list a {
+            color: #7ed321;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .notes-list a:hover {
+            color: #5aa50a;
+        }
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            background-color: #4a90e2;
+            color: white;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Study Notes Repository</h1>
+        <p>Explore notes for various classes and subjects with automatically generated site navigation</p>
+    </header>
+
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search by title, class, or subject...">
+        <button onclick="searchNotes()">Search</button>
+        <select id="sortSelect" onchange="sortNotes()">
+            <option value="">Sort by...</option>
+            <option value="class">Class (Ascending)</option>
+            <option value="subject">Subject (Alphabetical within Classes)</option>
+            <option value="title">Title (Alphabetical within Subjects)</option>
+        </select>
+    </div>
+
+    <div class="notes-list" id="notesList"></div>
+
+    <footer>
+        Created by Chess Anurag Academy
+    </footer>
+
+    <script>
+        // Sample notes data - in a real scenario, this could be loaded from a JSON file or database
+        // To add new pages, simply add to this array; the navigation tree is automatically generated
+        let notes = [
+            { class: '10', subject: 'Mathematics', title: 'Algebra Basics', link: 'notes/math10_algebra.html' },
+            { class: '10', subject: 'Science', title: 'Physics Introduction', link: 'notes/science10_physics.html' },
+            { class: '12', subject: 'Biology', title: 'Human Anatomy', link: 'notes/bio12_anatomy.html' },
+            { class: '11', subject: 'Chemistry', title: 'Organic Compounds', link: 'notes/chem11_organic.html' },
+            { class: '9', subject: 'History', title: 'Ancient Civilizations', link: 'notes/history9_ancient.html' },
+            // Add more notes here as pages are added to the website
+        ];
+
+        let currentNotes = notes; // For searching
+
+        // Function to render notes as a tree
+        function renderNotes(filteredNotes, sortBy) {
+            // Group by class then subject
+            let classMap = new Map();
+            filteredNotes.forEach(note => {
+                if (!classMap.has(note.class)) {
+                    classMap.set(note.class, new Map());
+                }
+                let subMap = classMap.get(note.class);
+                if (!subMap.has(note.subject)) {
+                    subMap.set(note.subject, []);
+                }
+                subMap.get(note.subject).push(note);
+            });
+
+            // Apply sorting
+            if (sortBy === 'class') {
+                classMap = new Map([...classMap.entries()].sort((a, b) => a[0].localeCompare(b[0], undefined, {numeric: true})));
+            } else if (sortBy === 'subject') {
+                for (let [cls, subs] of classMap) {
+                    classMap.set(cls, new Map([...subs.entries()].sort((a, b) => a[0].localeCompare(b[0]))));
+                }
+            } else if (sortBy === 'title') {
+                for (let [cls, subs] of classMap) {
+                    for (let [sub, nts] of subs) {
+                        subs.set(sub, nts.sort((a, b) => a.title.localeCompare(b.title)));
+                    }
+                }
+            }
+
+            // Render the tree
+            const list = document.getElementById('notesList');
+            list.innerHTML = '';
+            const rootUl = document.createElement('ul');
+            for (let [cls, subs] of classMap) {
+                const classLi = document.createElement('li');
+                const classDetails = document.createElement('details');
+                const classSummary = document.createElement('summary');
+                classSummary.textContent = `Class ${cls}`;
+                classDetails.appendChild(classSummary);
+                const subUl = document.createElement('ul');
+                for (let [sub, nts] of subs) {
+                    const subLi = document.createElement('li');
+                    const subDetails = document.createElement('details');
+                    const subSummary = document.createElement('summary');
+                    subSummary.textContent = `Subject: ${sub}`;
+                    subDetails.appendChild(subSummary);
+                    const noteUl = document.createElement('ul');
+                    nts.forEach(note => {
+                        const noteLi = document.createElement('li');
+                        noteLi.innerHTML = `<a href="${note.link}" target="_blank">${note.title}</a>`;
+                        noteUl.appendChild(noteLi);
+                    });
+                    subDetails.appendChild(noteUl);
+                    subLi.appendChild(subDetails);
+                    subUl.appendChild(subLi);
+                }
+                classDetails.appendChild(subUl);
+                classLi.appendChild(classDetails);
+                rootUl.appendChild(classLi);
+            }
+            list.appendChild(rootUl);
+        }
+
+        // Initial render
+        renderNotes(notes, '');
+
+        // Search function
+        function searchNotes() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            currentNotes = notes.filter(note => 
+                note.title.toLowerCase().includes(query) ||
+                note.class.toLowerCase().includes(query) ||
+                note.subject.toLowerCase().includes(query)
+            );
+            const sortBy = document.getElementById('sortSelect').value;
+            renderNotes(currentNotes, sortBy);
+        }
+
+        // Sort function
+        function sortNotes() {
+            const sortBy = document.getElementById('sortSelect').value;
+            renderNotes(currentNotes, sortBy);
+        }
+    </script>
+</body>
+</html>
