@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Notes Hub - Chess Anurag Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .creator-badge {
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .controls {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            min-width: 250px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-btn {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .filters {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .filter-select {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .note-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 5px solid #667eea;
+        }
+
+        .note-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .note-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+
+        .note-meta {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .class-tag {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .subject-tag {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .note-preview {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .add-note-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .add-note-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .stats {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            padding: 15px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .notes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📚 Study Notes Hub</h1>
+            <p class="subtitle">Your Ultimate Academic Resource Center</p>
+            <div class="creator-badge">
+                ♔ Created by Chess Anurag Academy ♔
+            </div>
+        </header>
+
+        <section class="controls">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search notes by title, subject, or topic...">
+                <button class="search-btn" onclick="searchNotes()">🔍 Search</button>
+            </div>
+            
+            <div class="filters">
+                <span class="filter-label">Filter by:</span>
+                <select id="classFilter" class="filter-select" onchange="filterNotes()">
+                    <option value="">All Classes</option>
+                    <option value="Class 9">Class 9</option>
+                    <option value="Class 10">Class 10</option>
+                    <option value="Class 11">Class 11</option>
+                    <option value="Class 12">Class 12</option>
+                </select>
+                
+                <select id="subjectFilter" class="filter-select" onchange="filterNotes()">
+                    <option value="">All Subjects</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Biology">Biology</option>
+                    <option value="English">English</option>
+                    <option value="History">History</option>
+                    <option value="Geography">Geography</option>
+                </select>
+
+                <select id="sortBy" class="filter-select" onchange="sortNotes()">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="alphabetical">A-Z</option>
+                    <option value="class">By Class</option>
+                    <option value="subject">By Subject</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalNotes">0</div>
+                    <div class="stat-label">Total Notes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalClasses">0</div>
+                    <div class="stat-label">Classes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="totalSubjects">0</div>
+                    <div class="stat-label">Subjects</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="notesContainer" class="notes-grid">
+            <!-- Notes will be dynamically loaded here -->
+        </section>
+
+        <div class="no-results" id="noResults" style="display: none;">
+            <h3>📝 No notes found</h3>
+            <p>Try adjusting your search terms or filters</p>
+        </div>
+    </div>
+
+    <button class="add-note-btn" onclick="addNewNote()" title="Add New Note">
+        ➕
+    </button>
+
+    <script>
+        // Sample data structure for study notes
+        let studyNotes = [
+            {
+                id: 1,
+                title: "Quadratic Equations - Complete Guide",
+                class: "Class 10",
+                subject: "Mathematics",
+                preview: "Learn about quadratic equations, their properties, and solving methods including factoring, completing the square, and quadratic formula.",
+                dateAdded: "2024-09-10",
+                tags: ["algebra", "equations", "formulas"]
+            },
+            {
+                id: 2,
+                title: "Newton's Laws of Motion",
+                class: "Class 11",
+                subject: "Physics",
+                preview: "Comprehensive notes on Newton's three laws of motion with examples, applications, and problem-solving techniques.",
+                dateAdded: "2024-09-08",
+                tags: ["mechanics", "laws", "motion"]
+            },
+            {
+                id: 3,
+                title: "Periodic Table Trends",
+                class: "Class 11",
+                subject: "Chemistry",
+                preview: "Understanding periodic trends including atomic radius, ionization energy, electronegativity, and their variations across periods and groups.",
+                dateAdded: "2024-09-12",
+                tags: ["periodic table", "trends", "elements"]
+            },
+            {
+                id: 4,
+                title: "Cell Structure and Function",
+                class: "Class 9",
+                subject: "Biology",
+                preview: "Detailed study of prokaryotic and eukaryotic cells, organelles, and their functions in living organisms.",
+                dateAdded: "2024-09-05",
+                tags: ["cells", "organelles", "biology"]
+            },
+            {
+                id: 5,
+                title: "Shakespeare's Romeo and Juliet",
+                class: "Class 10",
+                subject: "English",
+                preview: "Character analysis, themes, literary devices, and important quotes from Shakespeare's tragic love story.",
+                dateAdded: "2024-09-14",
+                tags: ["literature", "shakespeare", "drama"]
+            },
+            {
+                id: 6,
+                title: "French Revolution",
+                class: "Class 9",
+                subject: "History",
+                preview: "Causes, major events, key figures, and consequences of the French Revolution of 1789.",
+                dateAdded: "2024-09-11",
+                tags: ["revolution", "france", "18th century"]
+            }
+        ];
+
+        let filteredNotes = [...studyNotes];
+
+        function renderNotes(notes) {
+            const container = document.getElementById('notesContainer');
+            const noResults = document.getElementById('noResults');
+            
+            if (notes.length === 0) {
+                container.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            container.style.display = 'grid';
+            noResults.style.display = 'none';
+            
+            container.innerHTML = notes.map(note => `
+                <div class="note-card">
+                    <h3>${note.title}</h3>
+                    <div class="note-meta">
+                        <span class="tag class-tag">${note.class}</span>
+                        <span class="tag subject-tag">${note.subject}</span>
+                    </div>
+                    <div class="note-preview">${note.preview}</div>
+                    <div class="note-actions">
+                        <a href="#" class="btn btn-primary" onclick="openNote(${note.id})">📖 Read</a>
+                        <a href="#" class="btn btn-secondary" onclick="downloadNote(${note.id})">💾 Download</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            const classes = new Set(studyNotes.map(note => note.class));
+            const subjects = new Set(studyNotes.map(note => note.subject));
+            
+            document.getElementById('totalNotes').textContent = studyNotes.length;
+            document.getElementById('totalClasses').textContent = classes.size;
+            document.getElementById('totalSubjects').textContent = subjects.size;
+        }
+
+        function searchNotes() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const classFilter = document.getElementById('classFilter').value;
+            const subjectFilter = document.getElementById('subjectFilter').value;
+            
+            filteredNotes = studyNotes.filter(note => {
+                const matchesSearch = searchTerm === '' || 
+                    note.title.toLowerCase().includes(searchTerm) ||
+                    note.subject.toLowerCase().includes(searchTerm) ||
+                    note.preview.toLowerCase().includes(searchTerm) ||
+                    note.tags.some(tag => tag.toLowerCase().includes(searchTerm));
+                
+                const matchesClass = classFilter === '' || note.class === classFilter;
+                const matchesSubject = subjectFilter === '' || note.subject === subjectFilter;
+                
+                return matchesSearch && matchesClass && matchesSubject;
+            });
+            
+            renderNotes(filteredNotes);
+        }
+
+        function filterNotes() {
+            searchNotes();
+        }
+
+        function sortNotes() {
+            const sortBy = document.getElementById('sortBy').value;
+            
+            switch(sortBy) {
+                case 'newest':
+                    filteredNotes.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+                    break;
+                case 'oldest':
+                    filteredNotes.sort((a, b) => new Date(a.dateAdded) - new Date(b.dateAdded));
+                    break;
+                case 'alphabetical':
+                    filteredNotes.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'class':
+                    filteredNotes.sort((a, b) => a.class.localeCompare(b.class));
+                    break;
+                case 'subject':
+                    filteredNotes.sort((a, b) => a.subject.localeCompare(b.subject));
+                    break;
+            }
+            
+            renderNotes(filteredNotes);
+        }
+
+        function openNote(noteId) {
+            const note = studyNotes.find(n => n.id === noteId);
+            alert(`Opening: ${note.title}\n\nThis would normally navigate to the full note page.`);
+        }
+
+        function downloadNote(noteId) {
+            const note = studyNotes.find(n => n.id === noteId);
+            alert(`Downloading: ${note.title}\n\nThis would normally trigger a PDF download.`);
+        }
+
+        function addNewNote() {
+            const title = prompt("Enter note title:");
+            const className = prompt("Enter class (e.g., Class 10):");
+            const subject = prompt("Enter subject:");
+            const preview = prompt("Enter a brief description:");
+            
+            if (title && className && subject && preview) {
+                const newNote = {
+                    id: studyNotes.length + 1,
+                    title: title,
+                    class: className,
+                    subject: subject,
+                    preview: preview,
+                    dateAdded: new Date().toISOString().split('T')[0],
+                    tags: []
+                };
+                
+                studyNotes.push(newNote);
+                filteredNotes = [...studyNotes];
+                renderNotes(filteredNotes);
+                updateStats();
+                alert("Note added successfully!");
+            }
+        }
+
+        // Add search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchNotes();
+            }
+        });
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderNotes(filteredNotes);
+            updateStats();
+        });
+    </script>
+</body>
+</html>
