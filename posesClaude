@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga Pose Library</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            outline: none;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .poses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .pose-card {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .pose-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .pose-illustration {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pose-illustration::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 0%, rgba(102, 126, 234, 0.1) 50%, transparent 100%);
+        }
+
+        .pose-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .pose-sanskrit {
+            font-style: italic;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .pose-level {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .beginner { background: #e8f5e8; color: #2e7d32; }
+        .intermediate { background: #fff3e0; color: #f57c00; }
+        .advanced { background: #ffebee; color: #c62828; }
+
+        .pose-benefits {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .modal-illustration {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .instructions {
+            margin-top: 20px;
+        }
+
+        .instructions h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+            line-height: 1.8;
+            color: #666;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .poses-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filters {
+                justify-content: center;
+            }
+            
+            .filter-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🧘‍♀️ YogaFlow</div>
+            <div class="tagline">Discover inner peace through mindful movement</div>
+        </header>
+
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Search poses by name or benefit..." id="searchInput">
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-level="all">All Levels</button>
+            <button class="filter-btn" data-level="beginner">Beginner</button>
+            <button class="filter-btn" data-level="intermediate">Intermediate</button>
+            <button class="filter-btn" data-level="advanced">Advanced</button>
+        </div>
+
+        <div class="poses-grid" id="posesGrid">
+            <!-- Poses will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="poseModal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div class="modal-illustration" id="modalIllustration"></div>
+            <h2 id="modalName"></h2>
+            <p id="modalSanskrit"></p>
+            <span id="modalLevel"></span>
+            <p id="modalBenefits"></p>
+            <div class="instructions">
+                <h3>How to Practice</h3>
+                <ol id="modalInstructions"></ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const poses = [
+            {
+                name: "Mountain Pose",
+                sanskrit: "Tadasana",
+                level: "beginner",
+                emoji: "🏔️",
+                benefits: "Improves posture, strengthens legs and core, promotes mindfulness and body awareness.",
+                instructions: [
+                    "Stand with feet hip-width apart, arms at your sides",
+                    "Engage your leg muscles and lift your kneecaps",
+                    "Lengthen your spine and lift the crown of your head",
+                    "Relax your shoulders away from your ears",
+                    "Breathe deeply and hold for 30 seconds to 1 minute"
+                ]
+            },
+            {
+                name: "Downward Facing Dog",
+                sanskrit: "Adho Mukha Svanasana",
+                level: "beginner",
+                emoji: "🐕",
+                benefits: "Stretches hamstrings and calves, strengthens arms and shoulders, energizes the body.",
+                instructions: [
+                    "Start on hands and knees in tabletop position",
+                    "Tuck your toes and lift your hips up and back",
+                    "Straighten your legs as much as comfortable",
+                    "Press hands firmly into the mat",
+                    "Hold for 1-3 minutes, breathing deeply"
+                ]
+            },
+            {
+                name: "Warrior I",
+                sanskrit: "Virabhadrasana I",
+                level: "intermediate",
+                emoji: "⚔️",
+                benefits: "Strengthens legs and core, opens hips and chest, improves balance and concentration.",
+                instructions: [
+                    "Step left foot back about 3-4 feet",
+                    "Turn left foot out 45 degrees",
+                    "Bend right knee over ankle",
+                    "Raise arms overhead, palms facing each other",
+                    "Hold for 30 seconds, then switch sides"
+                ]
+            },
+            {
+                name: "Tree Pose",
+                sanskrit: "Vrksasana",
+                level: "beginner",
+                emoji: "🌳",
+                benefits: "Improves balance and focus, strengthens legs and core, calms the mind.",
+                instructions: [
+                    "Stand in Mountain Pose",
+                    "Shift weight to left foot",
+                    "Place right foot on inner left thigh or calf (never on knee)",
+                    "Bring palms together at heart center",
+                    "Hold for 30 seconds to 1 minute, then switch sides"
+                ]
+            },
+            {
+                name: "Cobra Pose",
+                sanskrit: "Bhujangasana",
+                level: "beginner",
+                emoji: "🐍",
+                benefits: "Strengthens back muscles, opens chest and shoulders, improves spine flexibility.",
+                instructions: [
+                    "Lie face down with palms under shoulders",
+                    "Press pubic bone into the mat",
+                    "Slowly lift chest, using back muscles primarily",
+                    "Keep shoulders away from ears",
+                    "Hold for 15-30 seconds"
+                ]
+            },
+            {
+                name: "Warrior III",
+                sanskrit: "Virabhadrasana III",
+                level: "advanced",
+                emoji: "🏹",
+                benefits: "Strengthens entire body, improves balance and coordination, builds mental focus.",
+                instructions: [
+                    "Start in Warrior I with right foot forward",
+                    "Shift weight to right foot",
+                    "Lift left leg behind you as you hinge forward",
+                    "Extend arms forward or out to sides",
+                    "Hold for 30 seconds, then switch sides"
+                ]
+            },
+            {
+                name: "Child's Pose",
+                sanskrit: "Balasana",
+                level: "beginner",
+                emoji: "👶",
+                benefits: "Relieves stress and fatigue, stretches hips and thighs, calms the nervous system.",
+                instructions: [
+                    "Kneel on the mat with big toes touching",
+                    "Sit back on your heels",
+                    "Fold forward, extending arms in front",
+                    "Rest forehead on the mat",
+                    "Hold for 1-5 minutes, breathing deeply"
+                ]
+            },
+            {
+                name: "Crow Pose",
+                sanskrit: "Bakasana",
+                level: "advanced",
+                emoji: "🐦",
+                benefits: "Strengthens arms and wrists, improves balance and concentration, builds confidence.",
+                instructions: [
+                    "Squat with feet close together",
+                    "Place hands on mat shoulder-width apart",
+                    "Bend elbows and rest knees on upper arms",
+                    "Shift weight forward and lift toes off ground",
+                    "Hold for 10-30 seconds"
+                ]
+            },
+            {
+                name: "Camel Pose",
+                sanskrit: "Ustrasana",
+                level: "intermediate",
+                emoji: "🐫",
+                benefits: "Opens chest and hip flexors, strengthens back, stimulates nervous system.",
+                instructions: [
+                    "Kneel with shins parallel",
+                    "Place hands on lower back",
+                    "Engage core and slowly arch back",
+                    "Reach for heels if comfortable",
+                    "Hold for 30 seconds to 1 minute"
+                ]
+            }
+        ];
+
+        let filteredPoses = [...poses];
+
+        function renderPoses(posesToRender) {
+            const grid = document.getElementById('posesGrid');
+            grid.innerHTML = '';
+
+            posesToRender.forEach(pose => {
+                const poseCard = document.createElement('div');
+                poseCard.className = 'pose-card';
+                poseCard.innerHTML = `
+                    <div class="pose-illustration">${pose.emoji}</div>
+                    <h3 class="pose-name">${pose.name}</h3>
+                    <p class="pose-sanskrit">${pose.sanskrit}</p>
+                    <span class="pose-level ${pose.level}">${pose.level.charAt(0).toUpperCase() + pose.level.slice(1)}</span>
+                    <p class="pose-benefits">${pose.benefits}</p>
+                `;
+                
+                poseCard.addEventListener('click', () => openModal(pose));
+                grid.appendChild(poseCard);
+            });
+        }
+
+        function openModal(pose) {
+            const modal = document.getElementById('poseModal');
+            document.getElementById('modalIllustration').textContent = pose.emoji;
+            document.getElementById('modalName').textContent = pose.name;
+            document.getElementById('modalSanskrit').textContent = pose.sanskrit;
+            document.getElementById('modalLevel').textContent = pose.level.charAt(0).toUpperCase() + pose.level.slice(1);
+            document.getElementById('modalLevel').className = `pose-level ${pose.level}`;
+            document.getElementById('modalBenefits').textContent = pose.benefits;
+            
+            const instructionsList = document.getElementById('modalInstructions');
+            instructionsList.innerHTML = '';
+            pose.instructions.forEach(instruction => {
+                const li = document.createElement('li');
+                li.textContent = instruction;
+                instructionsList.appendChild(li);
+            });
+
+            modal.style.display = 'block';
+        }
+
+        // Event listeners
+        document.querySelector('.close-btn').addEventListener('click', () => {
+            document.getElementById('poseModal').style.display = 'none';
+        });
+
+        document.getElementById('poseModal').addEventListener('click', (e) => {
+            if (e.target.id === 'poseModal') {
+                document.getElementById('poseModal').style.display = 'none';
+            }
+        });
+
+        // Filter functionality
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const level = btn.dataset.level;
+                filteredPoses = level === 'all' ? [...poses] : poses.filter(pose => pose.level === level);
+                renderPoses(filteredPoses);
+            });
+        });
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const searchResults = filteredPoses.filter(pose => 
+                pose.name.toLowerCase().includes(searchTerm) ||
+                pose.sanskrit.toLowerCase().includes(searchTerm) ||
+                pose.benefits.toLowerCase().includes(searchTerm)
+            );
+            renderPoses(searchResults);
+        });
+
+        // Initial render
+        renderPoses(poses);
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('poseModal').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
