@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga Anurag Classes - Find Your Inner Peace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styling */
+        :root {
+            --primary-color: #4CAF50; /* A calming green */
+            --secondary-color: #f4f4f4; /* Light grey background */
+            --dark-color: #333;
+            --light-color: #fff;
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            overflow: hidden;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 4rem 0;
+        }
+
+        section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .navbar ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 1.5rem;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Hero Section */
+        #home {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2120&auto=format&fit=crop') no-repeat center center/cover;
+            height: 100vh;
+            color: var(--light-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 1rem;
+        }
+
+        #home h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        #home p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: var(--light-color);
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        /* About Section */
+        #about .about-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        #about img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+        }
+
+        /* Classes Section */
+        #classes {
+            background-color: var(--secondary-color);
+        }
+        
+        .class-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--light-color);
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+        }
+        
+        .card .emoji {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Schedule Section */
+        .schedule-info {
+            background: var(--light-color);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+            max-width: 800px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .schedule-info ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+
+        .schedule-info ul li {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Contact Section */
+        #contact {
+            background-color: var(--secondary-color);
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .contact-grid div {
+            background: var(--light-color);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .contact-grid h3 {
+            margin-top: 0;
+        }
+
+        .contact-grid a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .social-media {
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .social-media a {
+            margin: 0 1rem;
+            text-decoration: none;
+            font-size: 2rem;
+            color: var(--primary-color);
+            transition: opacity 0.3s ease;
+        }
+
+        .social-media a:hover {
+            opacity: 0.7;
+        }
+
+        /* Blog Section */
+        .blog-content {
+            text-align: center;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark-color);
+            color: var(--light-color);
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .navbar ul {
+                margin-top: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .navbar ul li {
+                margin: 0.5rem;
+            }
+
+            #home {
+                height: auto;
+                padding: 8rem 1rem 4rem;
+            }
+            
+            #home h1 {
+                font-size: 2.5rem;
+            }
+            
+            #about .about-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            #about img {
+                max-width: 300px;
+                margin: 0 auto 2rem auto;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="#home" class="logo">Yoga Anurag</a>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#classes">Classes</a></li>
+                <li><a href="#schedule">Schedule</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#blog">Blog</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home">
+            <h1>Welcome to Yoga Anurag Classes</h1>
+            <p>Find Your Inner Peace and Strength. Join us to de-stress, get fit, and connect with your inner self.</p>
+            <a href="#contact" class="btn">Book a FREE Demo Class Today!</a>
+        </section>
+
+        <section id="about">
+            <div class="container">
+                <h2>🧘‍♂️ Meet Your Instructor</h2>
+                <div class="about-content">
+                    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj7b3q3lP5T10z5hQG_N0r-W0s1tJ3W9_g77z1u2Wq_xJ1iV_g1W2n_R3M2B3R2n_Z3J1j_A3R_Y2m_I3G_A3F_Q2l_G3I_K2h_E3P_L2F_U3T_V2Y_S2w/s320/anurag-sharma-yoga-trainer.jpg" alt="Anurag Sharma">
+                    <div>
+                        <h3>Anurag Sharma</h3>
+                        <p>Anurag Sharma is a government-certified yoga instructor with a passion for sharing the ancient wisdom of yoga. He has been practicing yoga and meditation since 2001 and has been teaching since 2011.</p>
+                        <p>Anurag has learned from esteemed organizations such as the Art of Living, Vipassana Meditation Center, and Patanjali. His teaching style is a blend of traditional techniques and modern understanding, making yoga accessible for everyone.</p>
+                        <h4>Our Philosophy</h4>
+                        <p>We believe that yoga is more than just physical exercise; it's a way of life. Our classes focus on the holistic benefits of yoga. As the ancient text says, <em>'Yogah Chitta Vritti Nirodhah'</em> – Yoga is the calming of the fluctuations of the mind.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="classes">
+            <div class="container">
+                <h2>🤸‍♀️ Find the Perfect Yoga Class for You</h2>
+                <div class="class-cards">
+                    <div class="card">
+                        <div class="emoji">🏡</div>
+                        <h3>Online Yoga Sessions</h3>
+                        <p>Join our live online classes from anywhere. Perfect for those with a busy schedule or who prefer to practice at home.</p>
+                    </div>
+                    <div class="card">
+                        <div class="emoji">👨‍👩‍👧‍👦</div>
+                        <h3>Group Yoga in Kharar</h3>
+                        <p>Experience the energy of a group setting. A great way to stay motivated and meet like-minded people in the community.</p>
+                    </div>
+                    <div class="card">
+                        <div class="emoji">🎯</div>
+                        <h3>Personal Home Sessions</h3>
+                        <p>Get personalized attention and a customized yoga plan designed to meet your specific health and fitness goals.</p>
+                    </div>
+                    <div class="card">
+                        <div class="emoji">🏢</div>
+                        <h3>Corporate Yoga</h3>
+                        <p>Enhance the well-being and productivity of your employees with our tailored corporate wellness programs.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="schedule">
+            <div class="container">
+                <h2>📅 Schedule & Pricing</h2>
+                <div class="schedule-info">
+                    <ul>
+                        <li><strong>Days:</strong> Monday to Friday (5 days a week)</li>
+                        <li><strong>Duration:</strong> Each session is 40-45 minutes</li>
+                        <li><strong>Locations:</strong> Jammuna Apartments, TDI Wellington Heights, Sunny Enclave, Shivalik City, SBP Homes, and Acme Heights.</li>
+                    </ul>
+                    <p>For the latest schedule, venue details, and affordable monthly fees, please get in touch with us directly!</p>
+                    <a href="#contact" class="btn">Enquire About Pricing</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <div class="container">
+                <h2>📞 Get in Touch!</h2>
+                <div class="contact-grid">
+                    <div>
+                        <h3>Phone / WhatsApp</h3>
+                        <p>📱 <a href="tel:+916283266268">+91 6283266268</a></p>
+                    </div>
+                    <div>
+                        <h3>Email</h3>
+                        <p>📧 <a href="mailto:Yogakharar@gmail.com">Yogakharar@gmail.com</a></p>
+                    </div>
+                    <div>
+                        <h3>Address</h3>
+                        <p>📍 Shivalik City, Kharar, Punjab (Above Subway)</p>
+                    </div>
+                </div>
+                <div class="social-media">
+                    <h3>Connect With Us</h3>
+                    <a href="https://instagram.com/yogaanurag" target="_blank" title="Instagram">📸</a>
+                    <a href="https://facebook.com/yogaanurag" target="_blank" title="Facebook">👍</a>
+                    <a href="https://youtube.com/@yogaanurag" target="_blank" title="YouTube">▶️</a>
+                    <a href="https://twitter.com/yogaanurag" target="_blank" title="Twitter">🐦</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="blog">
+            <div class="container blog-content">
+                <h2>✍️ Our Yoga & Wellness Blog</h2>
+                <p>For articles on yoga, meditation, wellness tips, and more, please visit our blog.</p>
+                <a href="https://yogaanurag.blogspot.com/" class="btn" target="_blank">Visit Our Blog</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Yoga Anurag Classes. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
