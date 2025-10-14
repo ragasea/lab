@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Anurag Academy - Master the Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c2c2c;
+            overflow-x: hidden;
+            background: #f5f5f0;
+        }
+
+        .chess-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            z-index: 0;
+            pointer-events: none;
+            background-image: 
+                linear-gradient(45deg, #000 25%, transparent 25%),
+                linear-gradient(-45deg, #000 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #000 75%),
+                linear-gradient(-45deg, transparent 75%, #000 75%);
+            background-size: 40px 40px;
+            background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
+        }
+
+        .header {
+            background: linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #f5f5dc;
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            border-bottom: 3px solid #d4af37;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero {
+            background: 
+                linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(45,45,45,0.9) 100%),
+                repeating-linear-gradient(
+                    0deg,
+                    #fff 0px, #fff 50px,
+                    #000 50px, #000 100px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    #fff 0px, #fff 50px,
+                    #000 50px, #000 100px
+                );
+            background-blend-mode: normal, difference, normal;
+            color: #f5f5dc;
+            padding: 140px 2rem 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '♔';
+            position: absolute;
+            font-size: 20rem;
+            opacity: 0.08;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #d4af37;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease;
+            color: #d4af37;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease 0.2s both;
+            color: #f5f5dc;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section {
+            padding: 80px 2rem;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1a1a1a;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '♟ ♟ ♟';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: #d4af37;
+            letter-spacing: 1rem;
+        }
+
+        .modes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .mode-card {
+            background: 
+                linear-gradient(45deg, #ffffff 25%, transparent 25%),
+                linear-gradient(-45deg, #ffffff 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #ffffff 75%),
+                linear-gradient(-45deg, transparent 75%, #ffffff 75%);
+            background-size: 30px 30px;
+            background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
+            background-color: #f0f0f0;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            border: 3px solid #2c2c2c;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #d4af37, #f4d03f);
+        }
+
+        .mode-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 50px rgba(212, 175, 55, 0.3);
+            border-color: #d4af37;
+        }
+
+        .mode-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #2c2c2c, #4a4a4a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .mode-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        .mode-card p {
+            color: #444;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .details-section {
+            background: 
+                linear-gradient(rgba(42, 42, 42, 0.95), rgba(42, 42, 42, 0.95)),
+                repeating-linear-gradient(
+                    0deg,
+                    #fff 0px, #fff 60px,
+                    #1a1a1a 60px, #1a1a1a 120px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    #fff 0px, #fff 60px,
+                    #1a1a1a 60px, #1a1a1a 120px
+                );
+            background-blend-mode: normal, difference, normal;
+            color: #f5f5dc;
+        }
+
+        .details-section .section-title {
+            color: #d4af37;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .detail-item {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            border: 2px solid #d4af37;
+            position: relative;
+        }
+
+        .detail-item::before {
+            content: '♜';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2rem;
+            opacity: 0.1;
+            color: #2c2c2c;
+        }
+
+        .detail-item:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 35px rgba(212, 175, 55, 0.5);
+        }
+
+        .detail-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .detail-item p {
+            color: #444;
+            font-size: 1.1rem;
+        }
+
+        .cta-section {
+            background: 
+                linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(45, 45, 45, 0.95) 100%),
+                repeating-linear-gradient(
+                    45deg,
+                    #fff 0px, #fff 40px,
+                    #000 40px, #000 80px
+                ),
+                repeating-linear-gradient(
+                    -45deg,
+                    #fff 0px, #fff 40px,
+                    #000 40px, #000 80px
+                );
+            background-blend-mode: normal, overlay, overlay;
+            color: #f5f5dc;
+            text-align: center;
+            padding: 80px 2rem;
+            border-top: 5px solid #d4af37;
+            border-bottom: 5px solid #d4af37;
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+        }
+
+        .contact-methods {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #d4af37 0%, #f4d03f 100%);
+            color: #1a1a1a;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+            border: 2px solid #1a1a1a;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.6);
+            background: linear-gradient(135deg, #f4d03f 0%, #d4af37 100%);
+        }
+
+        .phone-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 2rem 0;
+            letter-spacing: 2px;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #d4af37;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .social-link:hover {
+            background: #d4af37;
+            color: #1a1a1a;
+            transform: scale(1.05);
+        }
+
+        .footer {
+            background: #1a1a1a;
+            color: #f5f5dc;
+            text-align: center;
+            padding: 2rem;
+            border-top: 3px solid #d4af37;
+        }
+
+        .features {
+            background: #f5f5f0;
+            padding: 80px 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #2c2c2c;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .feature-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #d4af37, #f4d03f);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .feature-item span {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .feature-item h4 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .feature-item p {
+            color: #555;
+        }
+
+        .chess-pieces-decoration {
+            text-align: center;
+            font-size: 3rem;
+            margin: 2rem 0;
+            opacity: 0.6;
+            letter-spacing: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .modes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .phone-number {
+                font-size: 1.5rem;
+            }
+
+            .contact-methods {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chess-pattern"></div>
+    
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <span>♔</span> Chess Anurag Academy
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Chess Anurag Academy <span style="font-size: 2rem;">♟️</span></h1>
+            <p>Whether you're a complete beginner or a seasoned strategist, we have the perfect move for you. Options for online, offline, and home sessions are available.</p>
+            <div class="chess-pieces-decoration">♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜</div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Choose Your Learning Mode</h2>
+            <div class="modes-grid">
+                <div class="mode-card">
+                    <div class="mode-icon">💻</div>
+                    <h3>Online Sessions</h3>
+                    <p>Learn from the comfort of your home. Flexible, convenient, and interactive sessions available wherever you are.</p>
+                </div>
+                <div class="mode-card">
+                    <div class="mode-icon">🏫</div>
+                    <h3>Offline Sessions</h3>
+                    <p>Prefer face-to-face interaction? Join us for in-person coaching in Kharar. Perfect for hands-on learning.</p>
+                </div>
+                <div class="mode-card">
+                    <div class="mode-icon">🏠</div>
+                    <h3>Home Sessions</h3>
+                    <p>Looking for personalized coaching at your doorstep? Our home sessions offer one-on-one guidance at your convenience.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section details-section">
+        <div class="container">
+            <h2 class="section-title">Class Details</h2>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <div class="detail-icon">⏱️</div>
+                    <h4>Session Duration</h4>
+                    <p>45 minutes per session</p>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon">📅</div>
+                    <h4>Weekly Schedule</h4>
+                    <p>5 days a week</p>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon">🎯</div>
+                    <h4>What You'll Learn</h4>
+                    <p>Strategies, exercises & guided practice</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose Us?</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <span>🧠</span>
+                    <h4>Train Your Brain</h4>
+                    <p>Develop critical thinking and strategic planning</p>
+                </div>
+                <div class="feature-item">
+                    <span>🏆</span>
+                    <h4>Expert Mentors</h4>
+                    <p>Learn from India's best chess mentors</p>
+                </div>
+                <div class="feature-item">
+                    <span>📈</span>
+                    <h4>Consistent Growth</h4>
+                    <p>Regular sessions ensure steady improvement</p>
+                </div>
+                <div class="feature-item">
+                    <span>🎓</span>
+                    <h4>Tailored Coaching</h4>
+                    <p>Personalized approach for every skill level</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <div class="container">
+            <h2>Start Your Chess Journey Today!</h2>
+            <p>Train your brain with India's best chess mentors</p>
+            <div class="phone-number">📞 +91 62832 66268</div>
+            <div class="contact-methods">
+                <a href="tel:+916283266268" class="contact-btn">
+                    📞 Call Now
+                </a>
+                <a href="https://wa.me/916283266268" class="contact-btn" target="_blank">
+                    💬 WhatsApp
+                </a>
+            </div>
+            <div class="social-links">
+                <a href="#" class="social-link" target="_blank">
+                    📺 YouTube
+                </a>
+                <a href="#" class="social-link" target="_blank">
+                    🐦 Twitter
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="chess-pieces-decoration" style="font-size: 2rem; opacity: 0.3;">♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟</div>
+        <p>&copy; 2025 Chess Anurag Academy. All rights reserved.</p>
+        <p>Location: Kharar | Unlock your full potential on the chessboard ♟️</p>
+    </footer>
+</body>
+</html>
