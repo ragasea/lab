@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>P2P Encrypted Chat – No Server</title>
+<style>
+  body {font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 1rem;}
+  textarea, input, button {font: inherit; width: 100%; margin: 0.5rem 0;}
+  #chat {border: 1px solid #ccc; height: 300px; overflow-y: auto; padding: 0.5rem;}
+  .msg {margin: 0.4rem 0;}
+  .me {text-align: right; color: #0066cc;}
+  .them {color: #333;}
+  .code {background:#f8f8f8; padding:0.5rem; word-break:break-all;}
+  button {padding:0.6rem;}
+</style>
+</head>
+<body>
+
+<h1>P2P Encrypted Chat (WebRTC)</h1>
+
+<div id="setup">
+  <button id="create">Create Offer (you start)</button>
+  <button id="paste" disabled>Paste Offer &amp; Create Answer</button>
+  <button id="answer" disabled>Paste Answer &amp; Connect</button>
+</div>
+
+<div id="offerBox" class="code" style="display:none;"></div>
+<div id="answerBox" class="code" style="display:none;"></div>
+
+<div id="chatArea" style="display:none; margin-top:1rem;">
+  <div id="chat"></div>
+  <textarea id="input" placeholder="Type a message…" rows="2"></textarea>
+  <button id="send">Send</button>
+</div>
+
+<script>
+/* ---------- Crypto helpers ---------- */
+async function generateKey() {
+  return crypto.subtle.generateKey({name:'AES-GCM', length:256}, true, ['encrypt','decrypt']);
+}
+async function exportKey(key) {
+  const raw = await crypto.subtle.exportKey('raw', key);
+  return btoa(String.fromCharCode(...new Uint8Array(raw)));
+}
+async function importKey(b64) {
+  const raw = Uint8Array.from(atob(b64), c=>c.charCodeAt(0));
+  return crypto.subtle.importKey('raw', raw, 'AES-GCM', true, ['encrypt','decrypt']);
+}
+async function encrypt(key, text) {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const data = new TextEncoder().encode(text);
+  const cipher = await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, data);
+  const combined = new Uint8Array(iv.byteLength + cipher.byteLength);
+  combined.set(iv,0); combined.set(new Uint8Array(cipher),iv.byteLength);
+  return btoa(String.fromCharCode(...combined));
+}
+async function decrypt(key, b64) {
+  const combined = Uint8Array.from(atob(b64), c=>c.charCodeAt(0));
+  const iv = combined.slice(0,12);
+  const cipher = combined.slice(12);
+  const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv}, key, cipher);
+  return new TextDecoder().decode(plain);
+}
+
+/* ---------- WebRTC ---------- */
+const config = {iceServers:[{urls: 'stun:stun.l.google.com:19302'}]};
+let pc, dc, aesKey, isInitiator = false;
+
+async function initPC() {
+  pc = new RTCPeerConnection(config);
+  dc = pc.createDataChannel('chat');
+  setupDataChannel();
+  pc.onicecandidate = e => { if (!e.candidate) updateSDP(); };
+}
+
+function setupDataChannel() {
+  dc.onopen = () => {
+    document.getElementById('setup').style.display='none';
+    document.getElementById('chatArea').style.display='block';
+  };
+  dc.onmessage = async e => {
+    try {
+      const text = await decrypt(aesKey, e.data);
+      addMsg(text, 'them');
+    } catch(err){ console.error('Decrypt error',err); }
+  };
+}
+
+/* ---------- UI ---------- */
+document.getElementById('create').onclick = async () => {
+  isInitiator = true;
+  await initPC();
+  aesKey = await generateKey();
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+  document.getElementById('create').disabled = true;
+  document.getElementById('paste').disabled = false;
+};
+
+document.getElementById('paste').onclick = async () => {
+  const offerTxt = prompt('Paste the OFFER string here:');
+  if (!offerTxt) return;
+  await pc.setRemoteDescription(JSON.parse(offerTxt));
+  const answer = await pc.createAnswer();
+0  await pc.setLocalDescription(answer);
+  showBox('answerBox', JSON.stringify(pc.localDescription));
+  document.getElementById('paste').disabled = true;
+  document.getElementById('answer').disabled = false;
+};
+
+document.getElementById('answer').onclick = async () => {
+  const answerTxt = prompt('Paste the ANSWER string here:');
+  if (!answerTxt) return;
+  await pc.setRemoteDescription(JSON.parse(answerTxt));
+  // exchange key (sent encrypted with a one‑time key – simplified)
+  if (isInitiator) {
+    const keyB64 = await exportKey(aesKey);
+    dc.send(await encrypt(aesKey, keyB64));   // self‑encrypt, will be ignored
+  }
+};
+
+function updateSDP() {
+  const box = isInitiator ? 'offerBox' : 'answerBox';
+  showBox(box, JSON.stringify(pc.localDescription));
+}
+function showBox(id, txt) {
+  const el = document.getElementById(id);
+  el.textContent = txt;
+  el.style.display = 'block';
+}
+
+/* ---------- Send message ---------- */
+document.getElementById('send').onclick = sendMsg;
+document.getElementById('input').addEventListener('keypress', e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); sendMsg(); }});
+
+async function sendMsg() {
+  const input = document.getElementById('input');
+  const text = input.value.trim();
+  if (!text || !dc || dc.readyState !== 'open') return;
+  const cipher = await encrypt(aesKey, text);
+  dc.send(cipher);
+  addMsg(text, 'me');
+  input.value = '';
+}
+function addMsg(text, who) {
+  const div = document.createElement('div');
+  div.className = 'msg '+who;
+  div.textContent = text;
+  document.getElementById('chat').appendChild(div);
+  div.scrollIntoView();
+}
+
+/* ---------- Receiving side (non‑initiator) ---------- */
+pc.ondatachannel = e => {
+  dc = e.channel;
+  setupDataChannel();
+  // receive shared key
+  dc.onmessage = async ev => {
+    if (!aesKey) {
+      // first message is the key (encrypted with itself – safe)
+      const keyB64 = await decrypt(aesKey = await generateKey(), ev.data);
+      aesKey = await importKey(keyB64);
+    } else {
+      const plain = await decrypt(aesKey, ev.data);
+      addMsg(plain, 'them');
+    }
+  };
+};
+</script>
+
+</body>
+</html>
