@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cypher-Market Opportunity Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-bg': '#0a0a0a',
+                        'neon-green': '#10b981', // Emerald green
+                        'neon-yellow': '#facc15', // Amber yellow
+                        'neon-red': '#ef4444', // Red
+                        'neon-blue': '#3b82f6', // Blue
+                        'cyber-gray': '#1f2937', // Dark gray
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Consolas', 'Monaco', 'monospace'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        /* Neon Glow Effect for central indicator */
+        .neon-glow {
+            text-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+            box-shadow: 0 0 10px 0px rgba(16, 185, 129, 0.5), 0 0 20px 0px rgba(16, 185, 129, 0.3);
+            transition: all 0.5s ease-in-out;
+        }
+
+        /* Custom animation for the pulsing graphic */
+        @keyframes pulse-halo {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        .pulsing-halo {
+            animation: pulse-halo 2s infinite ease-in-out;
+            border-width: 4px;
+        }
+    </style>
+</head>
+
+<body class="bg-dark-bg min-h-screen text-gray-200 font-sans p-4 md:p-8">
+    <div id="app" class="max-w-7xl mx-auto">
+
+        <!-- Header and Title -->
+        <header class="mb-8 border-b border-neon-green pb-4">
+            <h1 class="text-3xl md:text-5xl font-mono font-bold text-neon-green uppercase tracking-widest text-center">
+                Cypher-Market 2025 📈
+            </h1>
+            <p class="text-center text-sm text-gray-400 mt-2">Real-Time Opportunity Signal Analysis</p>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Left Panel: Input & Controls -->
+            <div class="lg:col-span-1 p-6 bg-cyber-gray/50 rounded-xl shadow-lg border border-neon-green/30 h-fit">
+                <h2 class="text-xl font-bold text-neon-green mb-4 border-b border-neon-green/50 pb-2">
+                    System Query 🔎
+                </h2>
+                
+                <label for="assetInput" class="block text-sm font-medium mb-2 text-gray-300">
+                    Enter Asset (e.g., 'Apple Stock', 'WTI Crude Oil', 'Global Tech ETF', 'Upcoming IPO')
+                </label>
+                <input type="text" id="assetInput" placeholder="Asset Name or Market Query..."
+                       class="w-full p-3 mb-4 rounded-lg bg-dark-bg border border-neon-green/50 text-neon-yellow focus:ring-neon-green focus:border-neon-green font-mono"
+                       value="Tesla Stock">
+                
+                <button onclick="analyzeMarket()"
+                        class="w-full p-3 rounded-xl bg-neon-green text-dark-bg font-bold uppercase tracking-wider hover:bg-neon-green/80 transition duration-150 shadow-md hover:shadow-neon-green/50">
+                    Run Analysis ⚡
+                </button>
+
+                <!-- Loading/Status Message -->
+                <div id="statusMessage" class="mt-4 p-3 text-sm rounded-lg text-center hidden"></div>
+            </div>
+
+            <!-- Center/Right Panel: Indicator & Analysis Output -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- 1. The Game-Like Indicator -->
+                <div class="p-6 bg-cyber-gray/50 rounded-xl shadow-lg border border-neon-green/30 text-center">
+                    <h2 class="text-2xl font-bold text-neon-green mb-4">
+                        Opportunity Signal 🎯
+                    </h2>
+                    
+                    <!-- Indicator Graphic -->
+                    <div id="indicator" class="w-48 h-48 mx-auto flex items-center justify-center rounded-full border-4 pulsing-halo"
+                         style="border-color: #3b82f6; color: #3b82f6;">
+                        <span id="indicatorText" class="text-3xl font-mono font-extrabold neon-glow">
+                            STANDBY
+                        </span>
+                    </div>
+
+                    <p id="indicatorSubText" class="mt-4 text-lg font-mono text-gray-400">
+                        Awaiting input for analysis...
+                    </p>
+                </div>
+
+                <!-- 2. Detailed Rationale & Data Output -->
+                <div class="p-6 bg-cyber-gray/50 rounded-xl shadow-lg border border-neon-green/30">
+                    <h2 class="text-xl font-bold text-neon-green mb-4 border-b border-neon-green/50 pb-2">
+                        Market Intelligence Report 🧠
+                    </h2>
+                    
+                    <div id="analysisOutput" class="space-y-4 text-gray-300">
+                        <p class="text-center italic text-gray-500">Analysis results will appear here after execution.</p>
+                    </div>
+                    
+                    <!-- Attribution Area -->
+                    <div id="attribution" class="mt-6 pt-4 border-t border-gray-700 hidden">
+                        <h3 class="text-sm font-semibold text-neon-green mb-2">Grounded Sources 🔗</h3>
+                        <ul id="sourceList" class="text-xs space-y-1 text-gray-500">
+                            <!-- Sources will be injected here -->
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript and Gemini API Logic -->
+    <script type="module">
+        // Global variables for Firebase setup (required even if not fully utilized)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const apiKey = ""; // API key is handled by the Canvas environment
+
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        // Utility function for exponential backoff retry logic
+        async function fetchWithRetry(url, options, maxRetries = 5) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.status === 429 && i < maxRetries - 1) {
+                        const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+                        console.warn(`Rate limit hit, retrying in ${Math.round(delay / 1000)}s...`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue;
+                    }
+                    if (!response.ok) {
+                        throw new Error(`API call failed with status: ${response.status}`);
+                    }
+                    return response;
+                } catch (error) {
+                    console.error(`Fetch attempt ${i + 1} failed:`, error);
+                    if (i === maxRetries - 1) throw error;
+                }
+            }
+        }
+
+        // Main function to run the market analysis
+        window.analyzeMarket = async function() {
+            const assetName = document.getElementById('assetInput').value.trim();
+            const statusDiv = document.getElementById('statusMessage');
+            const indicatorDiv = document.getElementById('indicator');
+            const indicatorText = document.getElementById('indicatorText');
+            const indicatorSubText = document.getElementById('indicatorSubText');
+            const analysisOutput = document.getElementById('analysisOutput');
+            const attributionDiv = document.getElementById('attribution');
+            const sourceList = document.getElementById('sourceList');
+
+            if (!assetName) {
+                statusDiv.className = 'mt-4 p-3 text-sm rounded-lg text-center bg-neon-red/20 text-neon-red block';
+                statusDiv.textContent = '🛑 ERROR: Please enter an asset to analyze.';
+                return;
+            }
+
+            // --- UI: Set Loading State ---
+            statusDiv.className = 'mt-4 p-3 text-sm rounded-lg text-center bg-neon-green/20 text-neon-green block';
+            statusDiv.textContent = '⚡ Running real-time market scan... (Analyzing latest news, fundamentals, and technical sentiment)';
+            
+            indicatorDiv.style.borderColor = '#facc15';
+            indicatorDiv.style.color = '#facc15';
+            indicatorText.textContent = 'SCANNING';
+            indicatorSubText.textContent = 'Processing request for ' + assetName;
+            analysisOutput.innerHTML = '<p class="text-center italic text-neon-yellow">Awaiting Market Intelligence Report...</p>';
+            attributionDiv.classList.add('hidden');
+            sourceList.innerHTML = '';
+            
+            const systemPrompt = `You are 'The Oracle,' an advanced AI market analyst specializing in real-time opportunities across stocks, commodities, and ETFs. Your analysis must be based on the latest grounded financial news, fundamental data sentiment (e.g., growth outlook, valuation), and technical indicators (e.g., momentum, support/resistance). 
+
+            Provide a single, highly concise, and actionable summary.
+            
+            1. **Overall Rating:** Classify the opportunity using one of these four ratings: 'STRONG BUY 🟢', 'BUY 🟡', 'NEUTRAL 🔵', or 'SELL 🔴'. 
+            2. **Rationale:** Write a concise, three-sentence paragraph providing the rationale. The first sentence must cover the latest **News/Events**, the second must cover the **Fundamental/Valuation** sentiment, and the third must cover the **Technical** sentiment.
+            
+            Format your entire output exactly as follows:
+            [Overall Rating]
+            [Rationale paragraph]
+            
+            Do not include any extra text, headings, or markdown formatting outside of this two-part structure.`;
+
+            const userQuery = `Analyze the current opportunity for ${assetName}.`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            try {
+                const response = await fetchWithRetry(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (!candidate || !candidate.content?.parts?.[0]?.text) {
+                    throw new Error("Invalid response structure from API.");
+                }
+
+                // --- 2. Process Response ---
+                const rawText = candidate.content.parts[0].text.trim();
+                const lines = rawText.split('\n').filter(line => line.trim() !== '');
+
+                let rating = 'NEUTRAL 🔵';
+                let rationale = 'Analysis returned an ambiguous or incomplete result.';
+
+                if (lines.length >= 2) {
+                    rating = lines[0].trim();
+                    rationale = lines.slice(1).join(' ').trim();
+                } else {
+                    rationale = rawText; // Use raw text as rationale if structure is unexpected
+                }
+
+                // --- 3. Extract Grounding Sources ---
+                let sources = [];
+                const groundingMetadata = candidate.groundingMetadata;
+                if (groundingMetadata && groundingMetadata.groundingAttributions) {
+                    sources = groundingMetadata.groundingAttributions
+                        .map(attribution => ({
+                            uri: attribution.web?.uri,
+                            title: attribution.web?.title,
+                        }))
+                        .filter(source => source.uri && source.title);
+                }
+
+                // --- 4. UI: Update Indicator ---
+                let colorCode, colorClass, subText;
+                
+                if (rating.includes('STRONG BUY')) {
+                    colorCode = '#10b981'; // Neon Green
+                    colorClass = 'bg-neon-green/20 text-neon-green';
+                    subText = 'MAXIMUM OPPORTUNITY';
+                } else if (rating.includes('BUY')) {
+                    colorCode = '#facc15'; // Neon Yellow
+                    colorClass = 'bg-neon-yellow/20 text-neon-yellow';
+                    subText = 'HIGH OPPORTUNITY WINDOW';
+                } else if (rating.includes('SELL')) {
+                    colorCode = '#ef4444'; // Neon Red
+                    colorClass = 'bg-neon-red/20 text-neon-red';
+                    subText = 'EXIT SIGNAL ACTIVE';
+                } else { // NEUTRAL or other
+                    colorCode = '#3b82f6'; // Neon Blue
+                    colorClass = 'bg-neon-blue/20 text-neon-blue';
+                    subText = 'MARKET STABILIZATION';
+                }
+
+                indicatorDiv.style.borderColor = colorCode;
+                indicatorDiv.style.color = colorCode;
+                indicatorText.textContent = rating.split(' ')[0]; // Just the word (BUY/SELL/NEUTRAL)
+                indicatorSubText.textContent = subText;
+                indicatorText.classList.add('neon-glow'); // Re-apply glow for safety
+                indicatorDiv.classList.add('pulsing-halo'); // Ensure animation is running
+
+                // --- 5. UI: Update Rationale Output ---
+                analysisOutput.innerHTML = `
+                    <div class="p-4 rounded-lg border border-neon-green/30 ${colorClass}">
+                        <h4 class="font-bold text-xl mb-2 flex items-center">
+                            Opportunity Rating: <span class="ml-2">${rating}</span>
+                        </h4>
+                        <p class="text-sm">
+                            ${rationale}
+                        </p>
+                    </div>
+                    <div class="mt-4 p-4 bg-dark-bg/50 rounded-lg border border-gray-700">
+                        <h4 class="font-semibold text-gray-300 mb-2">Query Details:</h4>
+                        <p class="text-xs text-gray-500 font-mono">Asset: ${assetName}</p>
+                        <p class="text-xs text-gray-500 font-mono">Date: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</p>
+                    </div>
+                `;
+                
+                // --- 6. UI: Update Sources ---
+                if (sources.length > 0) {
+                    sourceList.innerHTML = sources.map(s => 
+                        `<li>
+                            <a href="${s.uri}" target="_blank" class="hover:text-neon-green underline transition duration-150">
+                                ${s.title || 'Source Link'}
+                            </a>
+                        </li>`
+                    ).join('');
+                    attributionDiv.classList.remove('hidden');
+                } else {
+                    attributionDiv.classList.add('hidden');
+                }
+
+
+                // --- 7. UI: Final Status ---
+                statusDiv.className = 'mt-4 p-3 text-sm rounded-lg text-center bg-neon-green/20 text-neon-green block';
+                statusDiv.textContent = `✅ Analysis complete for ${assetName}! Report generated.`;
+
+            } catch (e) {
+                console.error("Analysis failed:", e);
+                statusDiv.className = 'mt-4 p-3 text-sm rounded-lg text-center bg-neon-red/20 text-neon-red block';
+                statusDiv.textContent = `🛑 CRITICAL ERROR: Could not complete analysis. Check console for details.`;
+                indicatorDiv.style.borderColor = '#ef4444';
+                indicatorDiv.style.color = '#ef4444';
+                indicatorText.textContent = 'ERROR';
+                indicatorSubText.textContent = 'System failure. Re-query recommended.';
+                analysisOutput.innerHTML = '<p class="text-center italic text-neon-red">System report unavailable.</p>';
+                attributionDiv.classList.add('hidden');
+            }
+        };
+
+        // Run an initial analysis on page load
+        window.onload = function() {
+            setTimeout(analyzeMarket, 500); // Run automatically 0.5s after load
+        };
+
+    </script>
+</body>
+</html>
+
