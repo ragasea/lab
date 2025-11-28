@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- 
+       Prompt: Camera is moving but web page is not moving. so not able to see full text 
+       Indian Date: 28-11-2025
+       Time: 09:55 AM IST
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Instant Aura Yoga (Scroll Fix)</title>
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- OrbitControls -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* 1. LOCK THE MAIN PAGE to prevent bouncing */
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            overflow: hidden; /* No body scroll */
+            font-family: 'Quicksand', sans-serif;
+            background: #f0f2f5;
+        }
+
+        /* 2. CANVAS LAYER (Background) */
+        #canvas-container { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            z-index: 0; 
+            touch-action: none; /* Crucial: Swipes here ROTATE camera */
+        }
+        
+        /* 3. UI LAYER (Foreground) */
+        .ui-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10;
+            pointer-events: none; /* Let clicks pass through empty space to canvas */
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 1rem;
+        }
+
+        /* 4. SCROLLABLE TEXT PANEL (The Fix!) */
+        .scrollable-card {
+            pointer-events: auto; /* Re-enable interaction here */
+            overflow-y: auto;     /* Allow internal scrolling */
+            max-height: 40vh;     /* Limit height so it scrolls */
+            overscroll-behavior: contain; /* Stop scroll from bubbling up */
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+            touch-action: pan-y;  /* Allow vertical scroll here */
+        }
+
+        /* Utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .cam-btn {
+            pointer-events: auto;
+            background: white; width: 44px; height: 44px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: none; color: #444;
+            transition: 0.2s;
+        }
+        .cam-btn:active { transform: scale(0.9); background: #fce7f3; color: #db2777; }
+
+        .chip {
+            pointer-events: auto;
+            background: white; padding: 8px 16px; border-radius: 20px;
+            font-size: 0.85rem; font-weight: 600; color: #555;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; white-space: nowrap;
+        }
+        .chip:active { background: #db2777; color: white; }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Background -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Foreground -->
+    <div class="ui-layer">
+        
+        <!-- Header & Search -->
+        <div class="flex flex-col gap-3" style="pointer-events: auto;">
+            <div class="glass p-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-500 to-orange-400 text-white flex items-center justify-center shadow-lg">
+                        <i class="fas fa-om"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-800">Aura Yoga</h1>
+                        <p class="text-xs text-gray-500">Instant 3D Guide</p>
+                    </div>
+                </div>
+                <!-- Camera Reset (Top Right) -->
+                <button onclick="resetView()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center"><i class="fas fa-sync-alt text-xs"></i></button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="glass p-2 flex gap-2">
+                <input type="text" id="pose-input" placeholder="Search (e.g., Tree)..." 
+                       class="flex-grow bg-transparent px-2 outline-none text-gray-700 placeholder-gray-400">
+                <button onclick="handleSearch()" class="bg-pink-500 text-white rounded-lg px-4 py-2 font-bold shadow-md">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Middle Zone (Right Side Controls) -->
+        <div class="flex justify-end items-center flex-grow pr-1 pointer-events-none">
+             <div class="flex flex-col gap-4 pointer-events-auto">
+                <button onclick="moveCamera(0, 1)" class="cam-btn"><i class="fas fa-arrow-up"></i></button>
+                <button onclick="moveCamera(0, -1)" class="cam-btn"><i class="fas fa-arrow-down"></i></button>
+             </div>
+        </div>
+
+        <!-- Bottom Zone: Chips & Info Panel -->
+        <div class="flex flex-col gap-3">
+            
+            <!-- Horizontal Scrollable Chips -->
+            <div class="flex gap-2 overflow-x-auto pb-1" style="pointer-events: auto; -webkit-overflow-scrolling: touch;">
+                <div class="chip" onclick="quickPose('tree')">🌲 Tree</div>
+                <div class="chip" onclick="quickPose('warrior2')">⚔️ Warrior II</div>
+                <div class="chip" onclick="quickPose('downdog')">🐕 Down Dog</div>
+                <div class="chip" onclick="quickPose('cobra')">🐍 Cobra</div>
+                <div class="chip" onclick="quickPose('child')">👶 Child</div>
+            </div>
+
+            <!-- SCROLLABLE INFO CARD -->
+            <div id="info-panel" class="glass p-5 scrollable-card hidden relative">
+                <button onclick="closeInfo()" class="absolute top-3 right-3 text-gray-400 bg-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm z-20"><i class="fas fa-times"></i></button>
+                
+                <h2 id="info-title" class="text-xl font-bold text-pink-600 sticky top-0 bg-white/0 backdrop-blur-sm pb-2 border-b border-gray-100">
+                    Pose Name
+                </h2>
+                
+                <div class="mt-3 space-y-3">
+                    <p id="info-desc" class="text-sm text-gray-700 leading-relaxed">
+                        <!-- Long text goes here -->
+                    </p>
+                    
+                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                        <h4 class="text-xs font-bold text-blue-600 uppercase mb-1">Benefits</h4>
+                        <ul id="info-benefits" class="list-disc ml-4 text-xs text-blue-800 space-y-1"></ul>
+                    </div>
+                    
+                    <div class="bg-yellow-50 p-3 rounded-lg border border-yellow-100">
+                        <h4 class="text-xs font-bold text-yellow-600 uppercase mb-1">Caution</h4>
+                        <p id="info-caution" class="text-xs text-yellow-800"></p>
+                    </div>
+
+                    <!-- Dummy spacer to ensure scrolling is visible -->
+                    <div class="h-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// --- 3D ENGINE ---
+let scene, camera, renderer, controls;
+let character, joints = {};
+let targetPose = {}; 
+
+function init() {
+    const container = document.getElementById('canvas-container');
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf0f2f5);
+    scene.fog = new THREE.Fog(0xf0f2f5, 10, 50);
+
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 4, 14);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; 
+    controls.dampingFactor = 0.05;
+    controls.screenSpacePanning = true; 
+    controls.maxPolarAngle = Math.PI / 2 - 0.1;
+    controls.target.set(0, 3, 0);
+
+    // Light
+    const amb = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(amb);
+    const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+    dir.position.set(5, 10, 5);
+    dir.castShadow = true;
+    scene.add(dir);
+
+    // Floor
+    const plane = new THREE.Mesh(new THREE.CircleGeometry(20, 32), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+    plane.rotation.x = -Math.PI / 2;
+    plane.receiveShadow = true;
+    scene.add(plane);
+    
+    const mat = new THREE.Mesh(new THREE.BoxGeometry(3.5, 0.05, 7), new THREE.MeshStandardMaterial({ color: 0xfbcfe8 }));
+    mat.position.y = 0.025;
+    mat.receiveShadow = true;
+    scene.add(mat);
+
+    buildCharacter();
+    animate();
+    window.addEventListener('resize', onWindowResize);
+}
+
+// --- CONTROLS ---
+window.moveCamera = function(x, y) {
+    controls.target.y += y * 1.5;
+    camera.position.y += y * 1.5;
+    if(controls.target.y < 0) controls.target.y = 0;
+    if(controls.target.y > 8) controls.target.y = 8;
+    controls.update();
+}
+window.resetView = function() {
+    controls.target.set(0, 3, 0);
+    camera.position.set(0, 4, 14);
+    controls.update();
+}
+
+// --- CHARACTER ---
+function buildCharacter() {
+    character = new THREE.Group();
+    const skin = new THREE.MeshStandardMaterial({ color: 0xE8C1B0, roughness: 0.5 });
+    const cloth = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.8 });
+
+    function addLimb(name, w, l, m, y, p) {
+        const g = new THREE.Group(); g.position.y = y;
+        const geo = new THREE.CylinderGeometry(w, w*0.8, l, 16); geo.translate(0, -l/2, 0);
+        g.add(new THREE.Mesh(geo, m));
+        g.add(new THREE.Mesh(new THREE.SphereGeometry(w, 16, 16), m));
+        if(p) p.add(g); else character.add(g);
+        joints[name] = g;
+        return g;
+    }
+
+    joints.hips = new THREE.Group(); joints.hips.position.y = 4.6;
+    joints.hips.add(new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 1, 16), cloth));
+    character.add(joints.hips);
+
+    const spine = new THREE.Group(); spine.position.y = 0.5;
+    const sMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.2, 1.6, 16), cloth); sMesh.position.y = 0.8;
+    spine.add(sMesh); joints.hips.add(spine); joints.spine = spine;
+
+    const chest = new THREE.Group(); chest.position.y = 1.6;
+    const cMesh = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.1, 1.6, 16), skin); cMesh.position.y = 0.8;
+    chest.add(cMesh); spine.add(chest); joints.chest = chest;
+
+    const head = new THREE.Group(); head.position.y = 1.6;
+    const hMesh = new THREE.Mesh(new THREE.SphereGeometry(0.85, 16, 16), skin); hMesh.position.y = 0.8;
+    head.add(hMesh); chest.add(head);
+
+    function addChain(side, name, pos, ls, ms) {
+        const sign = side==='L'?1:-1;
+        const r = new THREE.Group(); r.position.set(pos.x*sign, pos.y, 0);
+        const u = new THREE.Group(); 
+        const um = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.3, ls[0], 16), ms[0]); um.position.y=-ls[0]/2;
+        u.add(um); u.add(new THREE.Mesh(new THREE.SphereGeometry(0.4, 16, 16), ms[0]));
+        r.add(u);
+        const l = new THREE.Group(); l.position.y = -ls[0];
+        const lm = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.25, ls[1], 16), ms[1]); lm.position.y=-ls[1]/2;
+        l.add(lm); l.add(new THREE.Mesh(new THREE.SphereGeometry(0.32, 16, 16), ms[1]));
+        u.add(l);
+        joints[name+side] = r; joints['m'+name+side] = u; joints['l'+name+side] = l;
+        return r;
+    }
+
+    chest.add(addChain('L','Arm',{x:1.4,y:1.4},[2.2,2.2],[skin,skin]));
+    chest.add(addChain('R','Arm',{x:1.4,y:1.4},[2.2,2.2],[skin,skin]));
+    joints.hips.add(addChain('L','Leg',{x:0.8,y:-0.5},[3.0,3.0],[cloth,skin]));
+    joints.hips.add(addChain('R','Leg',{x:0.8,y:-0.5},[3.0,3.0],[cloth,skin]));
+
+    scene.add(character);
+    targetPose = JSON.parse(JSON.stringify(POSES.reset.pose));
+}
+
+// --- DATA ---
+const POSES = {
+    reset: { pose: { hips:{y:4.6, x:0}, mArmL:{z:1.2}, mArmR:{z:-1.2}, lArmL:{x:0}, lArmR:{x:0}, mLegL:{x:0}, mLegR:{x:0}, lLegL:{x:0}, lLegR:{x:0}, spine:{rx:0}, chest:{rx:0} }, info: {name:"Reset", desc:""} },
+    tree: { 
+        pose: { hips:{y:4.6}, mArmL:{z:2.5}, mArmR:{z:-2.5}, lArmL:{z:-1.0}, lArmR:{z:1.0}, mLegL:{x:0}, mLegR:{z:1.5, x:0.5}, lLegR:{x:2.0} },
+        info: { name: "Tree Pose", desc: "Root yourself like a tree. Keep your standing leg strong and find a focal point to balance.", benefits:["Improves balance", "Strengthens thighs", "Opens hips"], caution:"Avoid placing foot directly on the knee joint."}
+    },
+    warrior2: {
+        pose: { hips:{y:3.5}, mArmL:{z:1.5}, mArmR:{z:-1.5}, mLegL:{x:-1.0}, lLegL:{x:1.5}, mLegR:{x:0.5}, spine:{ry:-1.5}, chest:{ry:0} },
+        info: { name: "Warrior II", desc: "A fierce pose named after Virabhadra. Keep your arms parallel to the floor and gaze over your front hand.", benefits:["Strengthens legs", "Opens chest", "Increases stamina"], caution:"High blood pressure (keep gaze forward)."}
+    },
+    downdog: {
+        pose: { hips:{y:2.5, rx:1.5}, mArmL:{x:3.0}, mArmR:{x:3.0}, mLegL:{x:-0.5}, mLegR:{x:-0.5} },
+        info: { name: "Downward Dog", desc: "An inverted V-shape. Press your hands firmly into the mat and lift your hips high.", benefits:["Calms the brain", "Energizes body", "Stretches hamstrings"], caution:"Carpal tunnel syndrome."}
+    },
+    cobra: {
+        pose: { hips:{y:0.6, rx:1.57}, spine:{rx:-0.5}, chest:{rx:-0.8}, mArmL:{x:0.5, z:0.5}, mArmR:{x:0.5, z:-0.5}, lArmL:{x:1.5}, lArmR:{x:1.5}, mLegL:{x:0}, mLegR:{x:0} },
+        info: { name: "Cobra Pose", desc: "Lie on your belly and lift your chest. Keep your elbows close to your body and shoulders down.", benefits:["Strengthens spine", "Stretches chest", "Relieves fatigue"], caution:"Back injury or pregnancy."}
+    },
+    child: {
+        pose: { hips:{y:1.0, rx:3.0}, mLegL:{x:2.5}, mLegR:{x:2.5}, lLegL:{x:2.5}, lLegR:{x:2.5}, mArmL:{x:2.8}, mArmR:{x:2.8} },
+        info: { name: "Child's Pose", desc: "A resting pose. Sit back on your heels and fold forward, resting your forehead on the mat.", benefits:["Releases tension", "Stretches hips", "Calming"], caution:"Knee injury."}
+    }
+};
+
+function quickPose(key) {
+    if(POSES[key]) {
+        applyPose(POSES[key].pose);
+        showInfo(POSES[key].info);
+    }
+}
+
+function handleSearch() {
+    const txt = document.getElementById('pose-input').value.toLowerCase().replace(/\s/g,'');
+    const key = Object.keys(POSES).find(k => k.includes(txt) || txt.includes(k));
+    if(key) quickPose(key);
+    else showInfo({name: "Searching...", desc: "Sorry, I haven't learned that pose yet. Try 'Tree' or 'Cobra'!", benefits:[], caution:""});
+}
+
+function applyPose(p) {
+    const b = JSON.parse(JSON.stringify(POSES.reset.pose));
+    for(let k in p) { if(!b[k]) b[k]={}; Object.assign(b[k], p[k]); }
+    targetPose = b;
+}
+
+function showInfo(info) {
+    const p = document.getElementById('info-panel');
+    p.classList.remove('hidden');
+    document.getElementById('info-title').innerText = info.name;
+    document.getElementById('info-desc').innerText = info.desc;
+    
+    const benList = document.getElementById('info-benefits');
+    benList.innerHTML = '';
+    if(info.benefits) info.benefits.forEach(b => {
+        const li = document.createElement('li'); li.innerText = b; benList.appendChild(li);
+    });
+    
+    document.getElementById('info-caution').innerText = info.caution || "Listen to your body.";
+}
+
+function closeInfo() {
+    document.getElementById('info-panel').classList.add('hidden');
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    const speed = 0.1;
+    for(let n in targetPose) {
+        if(!joints[n]) continue;
+        const t = targetPose[n]; const j = joints[n];
+        if(t.x!==undefined) j.rotation.x+=(t.x-j.rotation.x)*speed;
+        if(t.y!==undefined) j.position.y+=(t.y-j.position.y)*speed;
+        if(t.z!==undefined) j.rotation.z+=(t.z-j.rotation.z)*speed;
+        if(t.rx!==undefined) j.rotation.x+=(t.rx-j.rotation.x)*speed;
+        if(t.ry!==undefined) j.rotation.y+=(t.ry-j.rotation.y)*speed;
+    }
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+function onWindowResize() {
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+init();
+</script>
+</body>
+</html>
+
+
