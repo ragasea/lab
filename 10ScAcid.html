@@ -1,0 +1,591 @@
+<!-- 
+  Prompt: Write single html file that contains comprehensive notes on “Acids, Bases and Salts” (Class 10 Science, CBSE NCERT).
+  Date: November 29, 2025
+  Time: 10:41 PM IST
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acids, Bases and Salts | Complete Class 10 Notes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        .chemical-formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f3f4f6;
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.2rem;
+            font-weight: 600;
+            color: #d97706;
+        }
+
+        .reaction-box {
+            border-left: 4px solid #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .important-note {
+            border-left: 4px solid #ef4444;
+            background-color: #fef2f2;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .sidebar-link.active {
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 0.5rem;
+        }
+        
+        sub {
+            font-size: 0.75em;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Mobile Header -->
+    <div class="lg:hidden bg-blue-600 text-white p-4 sticky top-0 z-50 flex justify-between items-center shadow-md">
+        <h1 class="text-xl font-bold">🧪 Science Class 10</h1>
+        <button id="menuBtn" class="focus:outline-none">
+            <i class="fas fa-bars text-2xl"></i>
+        </button>
+    </div>
+
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="hidden lg:block w-full lg:w-64 bg-white border-r border-gray-200 fixed lg:sticky top-0 h-screen overflow-y-auto z-40 shadow-lg lg:shadow-none transform transition-transform duration-300 -translate-x-full lg:translate-x-0">
+            <div class="p-6">
+                <h2 class="text-2xl font-bold text-blue-600 mb-2">Chapter 2</h2>
+                <p class="text-sm text-gray-500 mb-6">Acids, Bases & Salts</p>
+                <nav class="space-y-1">
+                    <a href="#intro" class="sidebar-link block px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-lg transition">Introduction</a>
+                    <a href="#indicators" class="sidebar-link block px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-lg transition">Indicators</a>
+                    <a href="#chem-props" class="sidebar-link block px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-lg transition">Chemical Properties</a>
+                    <a href="#common-props" class="sidebar-link block px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-lg transition">Acids/Bases in Water</a>
+                    <a href="#ph-scale" class="sidebar-link block px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-lg transition">pH Scale</a>
+                    <a href="#everyday-ph" class="sidebar-link block px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-lg transition">pH in Everyday Life</a>
+                    <a href="#salts" class="sidebar-link block px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-lg transition">Family of Salts</a>
+                    <a href="#chemicals" class="sidebar-link block px-4 py-2 text-sm font-medium hover:bg-gray-100 rounded-lg transition">Chemicals from Salt</a>
+                    <a href="#quiz" class="sidebar-link block px-4 py-2 text-sm font-medium text-purple-600 hover:bg-purple-50 rounded-lg transition"><i class="fas fa-question-circle mr-2"></i>Test Yourself</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 lg:p-8 max-w-5xl mx-auto">
+            
+            <!-- Hero Section -->
+            <section id="intro" class="mb-12 text-center py-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl text-white shadow-xl">
+                <h1 class="text-3xl md:text-5xl font-bold mb-4">Acids, Bases and Salts</h1>
+                <p class="text-lg opacity-90">Class 10 Science (Chemistry) | CBSE NCERT</p>
+                <p class="mt-4 text-sm bg-white/20 inline-block px-4 py-1 rounded-full backdrop-blur-sm">Complete Notes 📚</p>
+            </section>
+
+            <!-- 1. Introduction -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-blue-100 text-blue-600 p-2 rounded-lg mr-3 text-xl"><i class="fas fa-flask"></i></span>
+                    1. Basic Definitions
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                        <h3 class="text-xl font-bold text-red-500 mb-3">🍋 Acids</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>• Sour in taste.</li>
+                            <li>• Change <strong>Blue</strong> litmus to <strong>Red</strong>.</li>
+                            <li>• Dissolve in water to release <strong>H<sup>+</sup></strong> ions.</li>
+                            <li>• Examples: HCl (Strong), Citric Acid (Weak).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                        <h3 class="text-xl font-bold text-blue-500 mb-3">🧼 Bases</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>• Bitter in taste and soapy to touch.</li>
+                            <li>• Change <strong>Red</strong> litmus to <strong>Blue</strong>.</li>
+                            <li>• Dissolve in water to release <strong>OH<sup>-</sup></strong> ions.</li>
+                            <li>• Soluble bases are called <strong>Alkalis</strong>.</li>
+                            <li>• Examples: NaOH (Strong), NH<sub>4</sub>OH (Weak).</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Indicators -->
+            <section id="indicators" class="mb-12 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-yellow-100 text-yellow-600 p-2 rounded-lg mr-3 text-xl"><i class="fas fa-eye-dropper"></i></span>
+                    2. Indicators
+                </h2>
+                <p class="mb-4 text-gray-600">Substances that change their color or smell in acidic or basic media.</p>
+
+                <div class="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
+                    <table class="min-w-full text-sm text-left">
+                        <thead class="bg-gray-100 text-gray-700 uppercase font-bold">
+                            <tr>
+                                <th class="px-6 py-3">Indicator Type</th>
+                                <th class="px-6 py-3">Example</th>
+                                <th class="px-6 py-3 text-red-500">In Acid</th>
+                                <th class="px-6 py-3 text-blue-500">In Base</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 font-semibold">Natural</td>
+                                <td class="px-6 py-4">Litmus (Lichen)</td>
+                                <td class="px-6 py-4 font-bold text-red-600">Red</td>
+                                <td class="px-6 py-4 font-bold text-blue-600">Blue</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4"></td>
+                                <td class="px-6 py-4">Turmeric</td>
+                                <td class="px-6 py-4 text-yellow-600">No Change (Yellow)</td>
+                                <td class="px-6 py-4 text-red-700 font-bold">Reddish Brown</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-semibold">Synthetic</td>
+                                <td class="px-6 py-4">Phenolphthalein</td>
+                                <td class="px-6 py-4">Colorless</td>
+                                <td class="px-6 py-4 text-pink-500 font-bold">Pink</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4"></td>
+                                <td class="px-6 py-4">Methyl Orange</td>
+                                <td class="px-6 py-4 text-red-600 font-bold">Red</td>
+                                <td class="px-6 py-4 text-yellow-500 font-bold">Yellow</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-semibold">Olfactory (Smell)</td>
+                                <td class="px-6 py-4">Vanilla / Onion</td>
+                                <td class="px-6 py-4">Smell remains</td>
+                                <td class="px-6 py-4">Smell vanishes</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 3. Chemical Properties -->
+            <section id="chem-props" class="mb-12 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-green-100 text-green-600 p-2 rounded-lg mr-3 text-xl"><i class="fas fa-atom"></i></span>
+                    3. Chemical Properties
+                </h2>
+
+                <!-- Reaction 1 -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">A. Reaction with Metals</h3>
+                    <div class="reaction-box p-4 rounded-r-lg mb-2">
+                        <p class="font-semibold text-blue-800">Acid + Metal → Salt + Hydrogen Gas</p>
+                    </div>
+                    <p class="text-gray-600 mb-2"><strong>Example:</strong> Zinc granules in Sulphuric acid.</p>
+                    <code class="block bg-gray-800 text-green-400 p-3 rounded font-mono text-sm mb-2">Zn(s) + H₂SO₄(aq) → ZnSO₄(aq) + H₂(g)</code>
+                    <p class="text-sm text-gray-500 italic">🧪 Test for H₂ gas: It burns with a 'Pop' sound when a burning candle is brought near it.</p>
+                    
+                    <div class="mt-2 bg-yellow-50 p-3 rounded border border-yellow-200 text-sm text-yellow-800">
+                        <strong>Note:</strong> Bases also react with metals like Zn to form H₂, but not with all metals.<br>
+                        <span class="font-mono">2NaOH + Zn → Na₂ZnO₂ (Sodium Zincate) + H₂</span>
+                    </div>
+                </div>
+
+                <!-- Reaction 2 -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">B. Reaction with Metal Carbonates & Hydrogen Carbonates</h3>
+                    <div class="reaction-box p-4 rounded-r-lg mb-2">
+                        <p class="font-semibold text-blue-800">Acid + Metal Carbonate → Salt + CO₂ + Water</p>
+                    </div>
+                    <code class="block bg-gray-800 text-green-400 p-3 rounded font-mono text-sm mb-2">Na₂CO₃ + 2HCl → 2NaCl + H₂O + CO₂</code>
+                    <p class="text-sm text-gray-500 italic">🧪 Test for CO₂: Turns lime water milky.</p>
+                    <code class="block bg-gray-100 text-gray-700 p-2 mt-2 rounded font-mono text-xs">Ca(OH)₂ + CO₂ → CaCO₃ (White ppt) + H₂O</code>
+                    <p class="text-xs text-gray-500 mt-1">On passing excess CO₂, milkiness disappears: <span class="font-mono">CaCO₃ + H₂O + CO₂ → Ca(HCO₃)₂ (Soluble)</span></p>
+                </div>
+
+                <!-- Reaction 3 -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">C. Neutralization Reaction</h3>
+                    <div class="reaction-box p-4 rounded-r-lg mb-2">
+                        <p class="font-semibold text-blue-800">Acid + Base → Salt + Water</p>
+                    </div>
+                    <code class="block bg-gray-800 text-green-400 p-3 rounded font-mono text-sm">HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)</code>
+                </div>
+
+                <!-- Reaction 4 -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">D. Reaction with Metal Oxides</h3>
+                    <p class="text-gray-700 mb-1">Metal oxides are <span class="text-blue-600 font-bold">Basic</span> in nature.</p>
+                    <div class="reaction-box p-4 rounded-r-lg mb-2">
+                        <p class="font-semibold text-blue-800">Metal Oxide + Acid → Salt + Water</p>
+                    </div>
+                    <code class="block bg-gray-800 text-green-400 p-3 rounded font-mono text-sm">CuO (Black) + 2HCl → CuCl₂ (Blue-Green) + H₂O</code>
+                </div>
+            </section>
+
+            <!-- 4. Acids/Bases in Water -->
+            <section id="common-props" class="mb-12 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-blue-100 text-blue-600 p-2 rounded-lg mr-3 text-xl"><i class="fas fa-water"></i></span>
+                    4. Acids & Bases in Water
+                </h2>
+
+                <div class="important-note p-6 rounded-lg mb-6 shadow-sm">
+                    <h4 class="font-bold text-red-700 mb-2">⚠️ Why does acid conduct electricity in water?</h4>
+                    <p class="text-gray-700">Acids dissociate in water to produce <span class="chemical-formula">H⁺</span> ions. These ions are responsible for the conduction of electricity.</p>
+                    <p class="mt-2 text-sm"><strong>Note:</strong> Hydrogen ions cannot exist alone, they combine with water molecules to form Hydronium ions (<span class="chemical-formula">H₃O⁺</span>).</p>
+                    <div class="mt-2 font-mono text-sm bg-white bg-opacity-50 p-2 rounded">HCl + H₂O → H₃O⁺ + Cl⁻</div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                        <h4 class="font-bold text-orange-800 mb-2">🔥 Dilution is Exothermic!</h4>
+                        <p class="text-sm text-gray-700">The process of dissolving an acid or a base in water is highly exothermic (releases heat).</p>
+                    </div>
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <h4 class="font-bold text-blue-800 mb-2">💧 The Golden Rule</h4>
+                        <p class="text-sm text-gray-700"><strong>Always add Acid to Water</strong> slowly with constant stirring. <br>Never add water to concentrated acid, as the heat generated may cause the mixture to splash and cause burns.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. pH Scale -->
+            <section id="ph-scale" class="mb-12 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-purple-100 text-purple-600 p-2 rounded-lg mr-3 text-xl"><i class="fas fa-sort-numeric-down"></i></span>
+                    5. The pH Scale
+                </h2>
+                <p class="mb-4 text-gray-600">A scale for measuring hydrogen ion concentration in a solution. (p = 'potenz' in German, meaning power).</p>
+                
+                <!-- pH Visualizer -->
+                <div class="relative h-16 w-full rounded-full bg-gradient-to-r from-red-500 via-green-400 to-blue-600 mb-4 shadow-inner flex items-center justify-between px-4 text-white font-bold text-sm">
+                    <span>0 (Acidic)</span>
+                    <span>7 (Neutral)</span>
+                    <span>14 (Basic)</span>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-4 text-center mb-6">
+                    <div class="p-4 bg-red-50 rounded border border-red-100">
+                        <h4 class="font-bold text-red-600">pH < 7</h4>
+                        <p class="text-sm">Acidic Solution</p>
+                        <p class="text-xs text-gray-500">More H⁺ ions</p>
+                    </div>
+                    <div class="p-4 bg-green-50 rounded border border-green-100">
+                        <h4 class="font-bold text-green-600">pH = 7</h4>
+                        <p class="text-sm">Neutral Solution</p>
+                        <p class="text-xs text-gray-500">Pure Water, Blood (7.4)</p>
+                    </div>
+                    <div class="p-4 bg-blue-50 rounded border border-blue-100">
+                        <h4 class="font-bold text-blue-600">pH > 7</h4>
+                        <p class="text-sm">Basic Solution</p>
+                        <p class="text-xs text-gray-500">More OH⁻ ions</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. pH in Everyday Life -->
+            <section id="everyday-ph" class="mb-12 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-pink-100 text-pink-600 p-2 rounded-lg mr-3 text-xl"><i class="fas fa-heartbeat"></i></span>
+                    6. Importance of pH in Everyday Life
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-green-400">
+                        <h3 class="font-bold text-lg mb-2">🌿 Plants & Animals</h3>
+                        <p class="text-sm text-gray-600">Our body works within pH 7.0 to 7.8. Acid rain (pH < 5.6) makes river water acidic, endangering aquatic life.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-yellow-400">
+                        <h3 class="font-bold text-lg mb-2">🦷 Tooth Decay</h3>
+                        <p class="text-sm text-gray-600">Starts when mouth pH < 5.5. Bacteria produce acid by degrading sugar. Toothpaste (basic) prevents decay.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-red-400">
+                        <h3 class="font-bold text-lg mb-2">🍔 Digestion</h3>
+                        <p class="text-sm text-gray-600">Stomach produces HCl for digestion. Excess acid causes pain (Acidity). Antacids (Mg(OH)₂) neutralize it.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border-l-4 border-purple-400">
+                        <h3 class="font-bold text-lg mb-2">🐝 Self Defense</h3>
+                        <p class="text-sm text-gray-600">Bee sting leaves Methanoic acid (pain). Nettle leaves inject methanoic acid. Dock plant (basic) is the remedy.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. Salts -->
+            <section id="salts" class="mb-12 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg mr-3 text-xl"><i class="fas fa-cube"></i></span>
+                    7. More About Salts
+                </h2>
+                
+                <h3 class="text-xl font-semibold mb-3">pH of Salts</h3>
+                <div class="overflow-hidden rounded-lg border border-gray-200 mb-8">
+                    <table class="min-w-full text-sm">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-2 border-b">Acid Type</th>
+                                <th class="px-4 py-2 border-b">Base Type</th>
+                                <th class="px-4 py-2 border-b">Nature of Salt</th>
+                                <th class="px-4 py-2 border-b">Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="px-4 py-2 border-b">Strong</td>
+                                <td class="px-4 py-2 border-b">Strong</td>
+                                <td class="px-4 py-2 border-b font-bold text-green-600">Neutral (pH 7)</td>
+                                <td class="px-4 py-2 border-b">NaCl, K₂SO₄</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2 border-b">Strong</td>
+                                <td class="px-4 py-2 border-b">Weak</td>
+                                <td class="px-4 py-2 border-b font-bold text-red-600">Acidic (pH < 7)</td>
+                                <td class="px-4 py-2 border-b">NH₄Cl</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2 border-b">Weak</td>
+                                <td class="px-4 py-2 border-b">Strong</td>
+                                <td class="px-4 py-2 border-b font-bold text-blue-600">Basic (pH > 7)</td>
+                                <td class="px-4 py-2 border-b">Na₂CO₃</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 8. Chemicals from Common Salt -->
+            <section id="chemicals" class="mb-12 scroll-mt-20">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                    <span class="bg-teal-100 text-teal-600 p-2 rounded-lg mr-3 text-xl"><i class="fas fa-vial"></i></span>
+                    8. Chemicals from Common Salt (NaCl)
+                </h2>
+
+                <!-- 8.1 Chlor-Alkali -->
+                <div class="mb-8 bg-white p-6 rounded-xl shadow border border-gray-100">
+                    <h3 class="text-xl font-bold text-teal-700 mb-2">A. Sodium Hydroxide (NaOH)</h3>
+                    <p class="text-sm text-gray-500 mb-2 font-semibold">Process: Chlor-Alkali Process</p>
+                    <code class="block bg-gray-800 text-green-400 p-3 rounded font-mono text-sm mb-3">2NaCl(aq) + 2H₂O(l) → 2NaOH(aq) + Cl₂(g) + H₂(g)</code>
+                    <div class="grid grid-cols-3 gap-2 text-xs text-center">
+                        <div class="bg-gray-100 p-2 rounded"><span class="font-bold block">Cl₂ (Anode)</span>Water treatment, PVC</div>
+                        <div class="bg-gray-100 p-2 rounded"><span class="font-bold block">H₂ (Cathode)</span>Fuels, Ammonia</div>
+                        <div class="bg-gray-100 p-2 rounded"><span class="font-bold block">NaOH (Near Cathode)</span>Soaps, Paper</div>
+                    </div>
+                </div>
+
+                <!-- 8.2 Bleaching Powder -->
+                <div class="mb-8 bg-white p-6 rounded-xl shadow border border-gray-100">
+                    <h3 class="text-xl font-bold text-teal-700 mb-2">B. Bleaching Powder (CaOCl₂)</h3>
+                    <p class="text-gray-600 mb-2">Produced by action of chlorine on dry slaked lime.</p>
+                    <code class="block bg-gray-800 text-green-400 p-3 rounded font-mono text-sm mb-3">Ca(OH)₂ + Cl₂ → CaOCl₂ + H₂O</code>
+                    <p class="text-sm"><strong>Uses:</strong> Bleaching cotton/linen, Oxidizing agent, Disinfecting drinking water.</p>
+                </div>
+
+                <!-- 8.3 Baking Soda -->
+                <div class="mb-8 bg-white p-6 rounded-xl shadow border border-gray-100">
+                    <h3 class="text-xl font-bold text-teal-700 mb-2">C. Baking Soda (NaHCO₃)</h3>
+                    <p class="text-gray-600 mb-2">Chemical Name: Sodium Hydrogen Carbonate.</p>
+                    <code class="block bg-gray-800 text-green-400 p-3 rounded font-mono text-sm mb-3">NaCl + H₂O + CO₂ + NH₃ → NH₄Cl + NaHCO₃</code>
+                    <div class="bg-yellow-50 p-3 rounded text-sm mb-3">
+                        <strong>Action on heating:</strong><br>
+                        2NaHCO₃ → Na₂CO₃ + H₂O + CO₂ (This CO₂ makes cake fluffy!)
+                    </div>
+                    <p class="text-sm"><strong>Uses:</strong> Antacid, Fire extinguishers, Making baking powder (Baking soda + Tartaric acid).</p>
+                </div>
+
+                <!-- 8.4 Washing Soda -->
+                <div class="mb-8 bg-white p-6 rounded-xl shadow border border-gray-100">
+                    <h3 class="text-xl font-bold text-teal-700 mb-2">D. Washing Soda (Na₂CO₃.10H₂O)</h3>
+                    <p class="text-gray-600 mb-2">Recrystallization of sodium carbonate.</p>
+                    <code class="block bg-gray-800 text-green-400 p-3 rounded font-mono text-sm mb-3">Na₂CO₃ + 10H₂O → Na₂CO₃.10H₂O</code>
+                    <p class="text-sm"><strong>Uses:</strong> Glass, soap, paper industry. Cleaning agent. Removing permanent hardness of water.</p>
+                </div>
+
+                <!-- 8.5 POP -->
+                <div class="mb-8 bg-white p-6 rounded-xl shadow border border-gray-100">
+                    <h3 class="text-xl font-bold text-teal-700 mb-2">E. Plaster of Paris (CaSO₄.½H₂O)</h3>
+                    <p class="text-gray-600 mb-2">Obtained by heating Gypsum at 373K.</p>
+                    <div class="flex flex-col md:flex-row gap-4 items-center bg-blue-50 p-3 rounded mb-3">
+                        <div class="font-mono text-sm">CaSO₄.2H₂O (Gypsum) <i class="fas fa-arrow-right mx-2 text-red-500"></i> CaSO₄.½H₂O + 1½H₂O</div>
+                    </div>
+                    <p class="text-sm"><strong>Uses:</strong> Supporting fractured bones, Making toys, Decoration.</p>
+                    <p class="text-xs text-red-500 mt-2">⚠️ Must be stored in moisture-proof container to prevent it from turning back into Gypsum.</p>
+                </div>
+            </section>
+
+            <!-- Quiz Section -->
+            <section id="quiz" class="mb-12 py-8 border-t border-gray-200">
+                <h2 class="text-3xl font-bold text-purple-700 mb-6 text-center">🧠 Quick Revision Quiz</h2>
+                <div class="bg-white p-8 rounded-2xl shadow-lg max-w-2xl mx-auto">
+                    <div id="quiz-container">
+                        <!-- JS will inject questions here -->
+                    </div>
+                    <button id="next-btn" class="w-full mt-6 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition hidden">Next Question</button>
+                    <div id="result" class="mt-4 text-center font-bold text-xl hidden"></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-400 py-8 text-center mt-auto">
+        <p>Made with ❤️ for Class 10 Students.</p>
+        <p class="text-xs mt-2">All reactions and concepts aligned with CBSE NCERT.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Sidebar Toggle for Mobile
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        let isMenuOpen = false;
+
+        menuBtn.addEventListener('click', () => {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                sidebar.classList.remove('-translate-x-full');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+
+        // Close sidebar when clicking a link on mobile
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth < 1024) {
+                    sidebar.classList.add('-translate-x-full');
+                    isMenuOpen = false;
+                }
+            });
+        });
+
+        // Active Link Highlighting on Scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.sidebar-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Simple Quiz Logic
+        const questions = [
+            {
+                q: "What is the color of phenolphthalein in basic solution?",
+                options: ["Colorless", "Pink", "Red", "Blue"],
+                correct: 1
+            },
+            {
+                q: "Which gas is evolved when an acid reacts with a metal?",
+                options: ["Oxygen", "Carbon Dioxide", "Hydrogen", "Nitrogen"],
+                correct: 2
+            },
+            {
+                q: "What is the pH of a neutral solution?",
+                options: ["0", "14", "1", "7"],
+                correct: 3
+            },
+            {
+                q: "The chemical formula of Bleaching Powder is:",
+                options: ["Ca(OH)₂", "CaOCl₂", "CaCO₃", "CaCl₂"],
+                correct: 1
+            },
+            {
+                q: "What forms when acid reacts with metal oxide?",
+                options: ["Salt + Water", "Salt + H₂", "Base + Water", "Salt + CO₂"],
+                correct: 0
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        const quizContainer = document.getElementById('quiz-container');
+        const nextBtn = document.getElementById('next-btn');
+        const resultDiv = document.getElementById('result');
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            quizContainer.innerHTML = `
+                <h3 class="text-lg font-semibold mb-4 text-gray-800">${currentQuestion + 1}. ${q.q}</h3>
+                <div class="grid grid-cols-1 gap-3">
+                    ${q.options.map((opt, index) => `
+                        <button onclick="checkAnswer(${index})" class="option-btn w-full text-left p-3 rounded border border-gray-300 hover:bg-gray-50 transition">${opt}</button>
+                    `).join('')}
+                </div>
+            `;
+            nextBtn.classList.add('hidden');
+        }
+
+        function checkAnswer(selectedIndex) {
+            const options = document.querySelectorAll('.option-btn');
+            const correctIndex = questions[currentQuestion].correct;
+
+            if (selectedIndex === correctIndex) {
+                options[selectedIndex].classList.add('bg-green-100', 'border-green-500', 'text-green-700');
+                score++;
+            } else {
+                options[selectedIndex].classList.add('bg-red-100', 'border-red-500', 'text-red-700');
+                options[correctIndex].classList.add('bg-green-100', 'border-green-500', 'text-green-700');
+            }
+
+            // Disable all buttons
+            options.forEach(btn => btn.disabled = true);
+            nextBtn.classList.remove('hidden');
+        }
+
+        nextBtn.addEventListener('click', () => {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                quizContainer.innerHTML = '';
+                nextBtn.classList.add('hidden');
+                resultDiv.classList.remove('hidden');
+                let message = score === questions.length ? "🎉 Perfect Score! You're a Genius!" : `You scored ${score}/${questions.length}. Keep studying!`;
+                resultDiv.innerHTML = `
+                    <p class="text-4xl mb-2">🏁</p>
+                    <p class="text-purple-600">${message}</p>
+                    <button onclick="location.reload()" class="mt-4 text-sm underline text-gray-500">Restart</button>
+                `;
+            }
+        });
+
+        // Initialize Quiz
+        loadQuestion();
+
+    </script>
+</body>
+</html>
+
