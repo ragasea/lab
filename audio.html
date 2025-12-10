@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenPlayer: Smart Silence</title>
+    <style>
+        /* CSS: This makes the app look beautiful */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 { color: #2c3e50; margin-bottom: 5px; }
+        p { color: #7f8c8d; font-size: 0.9em; margin-bottom: 20px; }
+        
+        /* Buttons */
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: transform 0.1s;
+            width: 100%;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { background-color: #bdc3c7; cursor: not-allowed; }
+        .btn-file { background-color: #e67e22; }
+
+        /* Hidden File Input */
+        #audioInput { display: none; }
+
+        /* Status & Timer */
+        #status { font-weight: bold; margin-top: 15px; color: #2c3e50; }
+        #silence-overlay {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f6f3;
+            border: 2px solid #1abc9c;
+            border-radius: 10px;
+            color: #16a085;
+        }
+        .big-timer { font-size: 2em; font-weight: bold; display: block; }
+        
+        /* Progress Bar */
+        #progress-container {
+            width: 100%;
+            background-color: #ddd;
+            height: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: #3498db;
+            transition: width 0.1s linear;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>🧘 ZenPlayer</h1>
+        <p>Smart Meditation Player</p>
+
+        <button class="btn btn-file" onclick="document.getElementById('audioInput').click()">📂 Select Audio File</button>
+        <input type="file" id="audioInput" accept="audio/*" onchange="processAudio(this)">
+        
+        <div id="status">Select a file to begin...</div>
+
+        <div id="player-controls" style="display:none; margin-top:20px;">
+            <button id="playBtn" class="btn" onclick="togglePlay()">▶ Play Smart Audio</button>
+            
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+
+            <div id="silence-overlay">
+                🤫 Creating Space...
+                <span class="big-timer" id="silence-timer">00:10</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- JAVASCRIPT: The Brains of the App ---
+        let audioCtx;
+        let sourceNode;
+        let originalBuffer;
+        let smartBuffer; // The short audio without silence
+        let silenceMap = []; // Where the silence instructions are kept
+        let isPlaying = false;
+        let startTime = 0;
+        let pauseOffset = 0;
+        let animationFrame;
+        
+        // Settings
+        const SILENCE_THRESHOLD = 0.01; // Sensitivity (approx -40dB)
+        const MIN_SILENCE_DURATION = 1.0; // Seconds
+
+        async function processAudio(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            document.getElementById('status').innerText = "⏳ Processing... (Please wait)";
+            document.getElementById('player-controls').style.display = 'none';
+
+            // 1. Read File
+            const arrayBuffer = await file.arrayBuffer();
+            
+            // 2. Decode Audio (Convert to waveform)
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            originalBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+            // 3. Analyze and Cut Silence
+            document.getElementById('status').innerText = "🧠 Analyzing Silence...";
+            
+            // We do this in a timeout to let the UI update text first
+            setTimeout(() => {
+                const result = createSmartBuffer(originalBuffer);
+                smartBuffer = result.buffer;
+                silenceMap = result.map;
+
+                const savedTime = originalBuffer.duration - smartBuffer.duration;
+                document.getElementById('status').innerText = `✅ Ready! Saved ${savedTime.toFixed(0)} seconds of waiting.`;
+                document.getElementById('player-controls').style.display = 'block';
+            }, 100);
+        }
+
+        function createSmartBuffer(buffer) {
+            const rawData = buffer.getChannelData(0); // Analyze left channel
+            const sampleRate = buffer.sampleRate;
+            
+            let newChunks = []; // To store non-silent audio
+            let map = []; // To store silence instructions
+            
+            let isSilent = false;
+            let silenceStart = 0;
+            let lastSoundEnd = 0;
+            let currentNewTime = 0;
+
+            // Simple loop to find silence
+            // (Optimized for speed: checks every 1000th sample)
+            const step = 1000; 
+            
+            for (let i = 0; i < rawData.length; i += step) {
+                const amplitude = Math.abs(rawData[i]);
+                
+                if (amplitude < SILENCE_THRESHOLD) {
+                    if (!isSilent) {
+                        isSilent = true;
+                        silenceStart = i;
+                    }
+                } else {
+                    if (isSilent) {
+                        isSilent = false;
+                        const silenceDur = (i - silenceStart) / sampleRate;
+                        
+                        // Only cut if silence is long enough
+                        if (silenceDur > MIN_SILENCE_DURATION) {
+                            // Copy the sound before this silence
+                            const startSample = lastSoundEnd;
+                            const endSample = silenceStart;
+                            newChunks.push({start: startSample, end: endSample});
+                            
+                            // Calculate where this silence fits in the NEW timeline
+                            const chunkDuration = (endSample - startSample) / sampleRate;
+                            currentNewTime += chunkDuration;
+                            
+                            map.push({
+                                triggerAt: currentNewTime,
+                                duration: silenceDur
+                            });
+                            
+                            lastSoundEnd = i;
+                        }
+                    }
+                }
+            }
+            // Add the final chunk
+            newChunks.push({start: lastSoundEnd, end: rawData.length});
+
+            // Create the new shortened AudioBuffer
+            const totalSamples = newChunks.reduce((acc, chunk) => acc + (chunk.end - chunk.start), 0);
+            const newBuffer = audioCtx.createBuffer(buffer.numberOfChannels, totalSamples, sampleRate);
+
+            // Copy data into new buffer
+            let offset = 0;
+            for (let chunk of newChunks) {
+                const len = chunk.end - chunk.start;
+                for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+                    const oldData = buffer.getChannelData(channel);
+                    const newData = newBuffer.getChannelData(channel);
+                    // Fast copy
+                    newData.set(oldData.subarray(chunk.start, chunk.end), offset);
+                }
+                offset += len;
+            }
+
+            return { buffer: newBuffer, map: map };
+        }
+
+        function togglePlay() {
+            if (isPlaying) {
+                // Stop logic would go here (simplified for this demo to just Play/Reset)
+                location.reload(); 
+            } else {
+                playSmartAudio();
+                document.getElementById('playBtn').innerText = "⏹ Stop / Reset";
+                isPlaying = true;
+            }
+        }
+
+        function playSmartAudio() {
+            sourceNode = audioCtx.createBufferSource();
+            sourceNode.buffer = smartBuffer;
+            sourceNode.connect(audioCtx.destination);
+            
+            startTime = audioCtx.currentTime;
+            sourceNode.start(0);
+            
+            // Start the loop to check for silence triggers
+            requestAnimationFrame(trackProgress);
+        }
+
+        let currentSilenceIndex = 0;
+        let inSilenceMode = false;
+        let silenceResumeTime = 0;
+
+        function trackProgress() {
+            if (!isPlaying) return;
+
+            // Calculate current time in the SHORTENED file
+            // Note: audioCtx.currentTime keeps moving even if we suspend, 
+            // so we must calculate carefully or use suspend/resume.
+            // For simplicity in this web app: we suspend the context.
+            
+            if (inSilenceMode) return; // Don't track if we are waiting
+
+            const playedTime = audioCtx.currentTime - startTime;
+            
+            // Update Progress Bar
+            const pct = (playedTime / smartBuffer.duration) * 100;
+            document.getElementById('progress-bar').style.width = pct + "%";
+
+            // Check if we hit a silence bump
+            if (currentSilenceIndex < silenceMap.length) {
+                const trigger = silenceMap[currentSilenceIndex];
+                
+                // If we are within 0.1s of the silence trigger
+                if (playedTime >= trigger.triggerAt) {
+                    startSilence(trigger.duration);
+                }
+            }
+
+            if (playedTime < smartBuffer.duration) {
+                requestAnimationFrame(trackProgress);
+            } else {
+                document.getElementById('status').innerText = "✨ Session Complete";
+                isPlaying = false;
+            }
+        }
+
+        function startSilence(duration) {
+            inSilenceMode = true;
+            
+            // 1. Pause the audio engine
+            audioCtx.suspend();
+            
+            // 2. Show the UI
+            const overlay = document.getElementById('silence-overlay');
+            const timerText = document.getElementById('silence-timer');
+            overlay.style.display = 'block';
+            
+            let timeLeft = duration;
+            
+            // 3. Start a countdown timer
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                timerText.innerText = new Date(timeLeft * 1000).toISOString().substr(14, 5);
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endSilence();
+                }
+            }, 1000);
+        }
+
+        function endSilence() {
+            // Resume Audio
+            audioCtx.resume();
+            
+            // Hide UI
+            document.getElementById('silence-overlay').style.display = 'none';
+            
+            inSilenceMode = false;
+            currentSilenceIndex++;
+            requestAnimationFrame(trackProgress);
+        }
+    </script>
+</body>
+</html>
