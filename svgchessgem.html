@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anurag Chess Academy | Master the 64 Squares</title>
+    <style>
+        :root {
+            --board-light: #eeeed2;
+            --board-dark: #769656;
+            --piece-white: #ffffff;
+            --piece-dark: #444444;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #e9ecef;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        /* 3D Container */
+        .chess-stage {
+            perspective: 800px;
+            width: 100%;
+            height: 320px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .board-3d {
+            width: 300px;
+            height: 300px;
+            background: var(--board-light);
+            transform: rotateX(45deg) rotateZ(-15deg);
+            transform-style: preserve-3d;
+            box-shadow: -10px 10px 20px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        /* Realistic piece style using SVG gradients */
+        .piece {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            filter: drop-shadow(5px 15px 5px rgba(0,0,0,0.3));
+        }
+
+        #pawn {
+            top: 120px;
+            left: 120px;
+            animation: movePawn 4s infinite ease-in-out;
+        }
+
+        #rook {
+            top: 40px;
+            left: 40px;
+            animation: moveRook 6s infinite ease-in-out;
+        }
+
+        @keyframes movePawn {
+            0%, 100% { transform: translateZ(20px) translateY(0); }
+            50% { transform: translateZ(40px) translateY(-40px); }
+        }
+
+        @keyframes moveRook {
+            0%, 100% { transform: translateZ(25px) translateX(0); }
+            50% { transform: translateZ(25px) translateX(120px); }
+        }
+
+        h1 { color: #1a2a3a; margin: 20px 0 5px; font-size: 2.5rem; }
+        .tagline { color: #769656; font-weight: bold; font-size: 1.1rem; margin-bottom: 20px; }
+        
+        section {
+            background: #fff;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .course-card {
+            border-left: 4px solid #769656;
+            padding-left: 20px;
+            margin: 15px 0;
+        }
+
+        .contact-info {
+            background: linear-gradient(135deg, #1a2a3a 0%, #2c3e50 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        a { color: #ffd700; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+
+        .footer { text-align: center; padding: 30px; color: #777; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="chess-stage">
+            <div class="board-3d">
+                <svg width="300" height="300" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="8" height="8" fill="#eeeed2"/>
+                    <path d="M0 0h1v1H0zm2 0h1v1H2zm2 0h1v1H4zm2 0h1v1H6zM1 1h1v1H1zm2 1h1v1H3zm2 1h1v1H5zm2 1h1v1H7zM0 2h1v1H0zm2 2h1v1H2zm4 0h1v1H6z" fill="#769656" opacity="0.8"/>
+                </svg>
+
+                <div class="piece" id="pawn">
+                    <svg viewBox="0 0 100 100">
+                        <defs>
+                            <radialGradient id="gradWhite" cx="40%" cy="40%" r="50%">
+                                <stop offset="0%" style="stop-color:#ffffff" />
+                                <stop offset="100%" style="stop-color:#b5b5b5" />
+                            </radialGradient>
+                        </defs>
+                        <circle cx="50" cy="30" r="15" fill="url(#gradWhite)" />
+                        <path d="M35 80 Q50 70 65 80 L70 90 H30 Z" fill="url(#gradWhite)" />
+                        <ellipse cx="50" cy="55" rx="20" ry="25" fill="url(#gradWhite)" />
+                    </svg>
+                </div>
+
+                <div class="piece" id="rook">
+                    <svg viewBox="0 0 100 100">
+                        <defs>
+                            <radialGradient id="gradDark" cx="40%" cy="40%" r="50%">
+                                <stop offset="0%" style="stop-color:#666" />
+                                <stop offset="100%" style="stop-color:#111" />
+                            </radialGradient>
+                        </defs>
+                        <rect x="30" y="20" width="40" height="15" fill="url(#gradDark)" />
+                        <rect x="35" y="35" width="30" height="45" fill="url(#gradDark)" />
+                        <rect x="25" y="80" width="50" height="10" fill="url(#gradDark)" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        
+        <h1>Anurag Chess Academy</h1>
+        <p class="tagline">Master Strategy. Conquer the Board. ♟️</p>
+    </header>
+
+    <section>
+        <h2>🧠 Elevate Your Game</h2>
+        <p>Welcome to <strong>Anurag Chess Academy</strong>. Our training goes beyond the board, focusing on critical thinking, patience, and tactical foresight. Whether you are a beginner or a tournament player, we have the right move for you.</p>
+    </section>
+
+    <section>
+        <h2>📜 Curriculum & Fees</h2>
+        <div class="course-card">
+            <strong>Foundation (Pawn Level)</strong>
+            <p>Rules, basic notation, and elementary checkmate patterns.</p>
+        </div>
+        <div class="course-card">
+            <strong>Intermediate (Knight Level)</strong>
+            <p>Tactics training: Forks, Pins, Discovered Attacks, and Opening Principles.</p>
+        </div>
+        <div class="course-card">
+            <strong>Advanced (King Level)</strong>
+            <p>Deep endgame analysis, positional play, and high-level preparation.</p>
+        </div>
+        <p>💰 <strong>Monthly Fee:</strong> ₹2,500 🇮🇳 (Includes weekly tournaments)</p>
+    </section>
+
+    <div class="contact-info">
+        <h2>📞 Contact Information</h2>
+        <p>📍 Location: New Delhi, India 🇮🇳</p>
+        <p>📧 Email: <a href="mailto:contact@anuragclasses.in">contact@anuragclasses.in</a></p>
+        <p>🌐 Website: <a href="https://www.anuragchess.in" target="_blank">www.anuragchess.in</a></p>
+    </div>
+
+    <div class="footer">
+        <p>Generated on: 22nd February 2026 | 21:15 IST</p>
+        <p>&copy; 2026 Anurag Chess Academy. All moves reserved. ♟️</p>
+    </div>
+
+</body>
+</html>
