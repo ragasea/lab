@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Anurag Academy | Master the 64 Squares</title>
+    <style>
+        :root {
+            --board-light: #eeeed2;
+            --board-dark: #769656;
+            --accent: #d4af37; /* Gold for Grandmasters */
+            --text-main: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Hero Section with 3D Board */
+        .hero {
+            background: linear-gradient(135deg, #1a2a3a 0%, #2c3e50 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            perspective: 1000px;
+        }
+
+        .board-container {
+            width: 320px;
+            height: 320px;
+            margin: 0 auto 40px;
+            transform: rotateX(35deg) rotateZ(-10deg);
+            transform-style: preserve-3d;
+            box-shadow: -20px 20px 50px rgba(0,0,0,0.5);
+            border: 10px solid #3e2723;
+        }
+
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .square { width: 40px; height: 40px; }
+        .light { background-color: var(--board-light); }
+        .dark { background-color: var(--board-dark); }
+
+        /* Realistic Piece Positioning & Animation */
+        .piece-3d {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(4px 8px 4px rgba(0,0,0,0.4));
+            z-index: 10;
+        }
+
+        #pawn-white { 
+            bottom: 40px; left: 160px; 
+            animation: pawnMove 5s infinite ease-in-out;
+        }
+        #knight-dark { 
+            top: 40px; left: 240px; 
+            animation: knightJump 5s infinite ease-in-out;
+        }
+
+        @keyframes pawnMove {
+            0%, 100% { transform: translateZ(10px) translateY(0); }
+            50% { transform: translateZ(25px) translateY(-80px); }
+        }
+
+        @keyframes knightJump {
+            0%, 100% { transform: translateZ(15px) translate(0, 0); }
+            25% { transform: translateZ(50px) translate(-40px, 80px); }
+            50% { transform: translateZ(15px) translate(-40px, 80px); }
+            75% { transform: translateZ(50px) translate(0, 0); }
+        }
+
+        /* Content Styles */
+        .container { max-width: 800px; margin: -40px auto 40px; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .badge { background: var(--accent); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+        
+        .section-title { border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        
+        .grid-sessions { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .card { border: 1px solid #eee; padding: 20px; border-radius: 10px; transition: transform 0.3s; }
+        .card:hover { transform: translateY(-5px); border-color: var(--board-dark); }
+
+        .btn { display: inline-block; padding: 12px 25px; background: #25D366; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 15px; }
+        .contact-box { background: #f1f8e9; padding: 30px; border-radius: 10px; text-align: center; border: 1px dashed var(--board-dark); }
+
+        @media (max-width: 600px) {
+            .grid-sessions { grid-template-columns: 1fr; }
+            .board-container { width: 240px; height: 240px; }
+            .square { width: 30px; height: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="board-container">
+            <div class="chess-board">
+                <script>
+                    const board = document.querySelector('.chess-board');
+                    for (let i = 0; i < 64; i++) {
+                        const square = document.createElement('div');
+                        square.className = 'square ' + ((Math.floor(i / 8) + i) % 2 === 0 ? 'light' : 'dark');
+                        board.appendChild(square);
+                    }
+                </script>
+
+                <svg id="pawn-white" class="piece-3d" viewBox="0 0 100 100">
+                    <defs>
+                        <radialGradient id="pawnShine" cx="30%" cy="30%" r="70%">
+                            <stop offset="0%" stop-color="#fff"/>
+                            <stop offset="60%" stop-color="#dee2e6"/>
+                            <stop offset="100%" stop-color="#adb5bd"/>
+                        </radialGradient>
+                    </defs>
+                    <circle cx="50" cy="25" r="18" fill="url(#pawnShine)"/>
+                    <path d="M35 85 Q50 75 65 85 L75 95 H25 Z" fill="url(#pawnShine)"/>
+                    <ellipse cx="50" cy="55" rx="22" ry="30" fill="url(#pawnShine)"/>
+                    <rect x="30" y="75" width="40" height="5" rx="2" fill="#999"/>
+                </svg>
+
+                <svg id="knight-dark" class="piece-3d" viewBox="0 0 100 100">
+                    <defs>
+                        <radialGradient id="knightShine" cx="40%" cy="30%" r="80%">
+                            <stop offset="0%" stop-color="#555"/>
+                            <stop offset="100%" stop-color="#111"/>
+                        </radialGradient>
+                    </defs>
+                    <path d="M30 90 H70 L65 70 C65 50 85 40 85 25 C85 10 70 5 55 5 C40 5 25 15 25 35 Q25 45 40 50 Q30 60 30 90" fill="url(#knightShine)"/>
+                    <circle cx="65" cy="20" r="3" fill="#ffd700" /> <rect x="30" y="85" width="40" height="8" rx="2" fill="#000"/>
+                </svg>
+            </div>
+        </div>
+        <h1>Chess Anurag Academy</h1>
+        <span class="badge">ESTD. 2025</span>
+        <p style="font-size: 1.2rem; opacity: 0.9;">Master the 64 Squares with Anurag Sharma</p>
+    </header>
+
+    <div class="container">
+        <section id="about">
+            <h2 class="section-title"><span>🎯</span> About The Academy</h2>
+            <p>Founded by <strong>Anurag Sharma</strong>, an expert with over 15 years of competitive experience. Our mission is to instill a love for the game while cultivating critical thinking, patience, and foresight in every student. We believe chess is the ultimate workout for the brain! 🧠</p>
+        </section>
+
+        <section id="sessions">
+            <h2 class="section-title"><span>♟️</span> Our Training Sessions</h2>
+            <div class="grid-sessions">
+                <div class="card">
+                    <h3>Group Online</h3>
+                    <p>Learn in a fun, interactive, and competitive group environment. Perfect for collaboration.</p>
+                    <a href="https://wa.me/916283266268" class="btn">Enroll Now</a>
+                </div>
+                <div class="card">
+                    <h3>Individual One-on-One</h3>
+                    <p>Personalized coaching tailored to your specific strengths and weaknesses. Fast-track your progress.</p>
+                    <a href="https://wa.me/916283266268" class="btn">Enroll Now</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2 class="section-title"><span>📞</span> Make Your Move</h2>
+            <div class="contact-box">
+                <p>Ready to unlock your strategic potential?</p>
+                <p><strong>Phone/WhatsApp:</strong> +91 62832 66268 🇮🇳</p>
+                <p><strong>Location:</strong> <a href="https://share.google/XMdPLA5F0EuHWsgq3" target="_blank" style="color: var(--board-dark);">View on Google Maps</a></p>
+                <a href="tel:+916283266268" class="btn" style="background: #2c3e50;">Call Us Now</a>
+            </div>
+        </section>
+
+        <footer style="text-align: center; margin-top: 40px; color: #888; font-size: 0.8rem;">
+            <p>Generated on 22nd February 2026 | 21:18 IST</p>
+            <p>© 2026 Chess Anurag Academy. All Rights Reserved. Checkmate! 🏁</p>
+        </footer>
+    </div>
+
+</body>
+</html>
