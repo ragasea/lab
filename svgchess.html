@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anurag Chess Academy | Master the 64 Squares</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .hero-svg {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            margin: 0 auto;
+        }
+        h1 { color: #2c3e50; margin-top: 10px; }
+        .tagline { color: #769656; font-weight: bold; font-size: 1.2rem; }
+        
+        section {
+            background: #fff;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #769656;
+        }
+        h2 { color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        .contact-info {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 40px;
+        }
+        a { color: #fff; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="hero-svg">
+            <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <clipPath id="board-clip">
+                        <rect x="50" y="50" width="300" height="300" rx="10" />
+                    </clipPath>
+                </defs>
+                <g clip-path="url(#board-clip)">
+                    <rect x="50" y="50" width="300" height="300" fill="#eeeed2" />
+                    <path d="M50 50h37.5v37.5H50zM125 50h37.5v37.5H125zM200 50h37.5v37.5H200zM275 50h37.5v37.5H275zM87.5 87.5H125V125H87.5zM162.5 87.5H200V125H162.5zM237.5 87.5H275V125H237.5zM312.5 87.5H350V125H312.5zM50 125h37.5v37.5H50zM125 125h37.5v37.5H125zM200 125h37.5v37.5H200zM275 125h37.5v37.5H275zM87.5 162.5H125V200H87.5zM162.5 162.5H200V200H162.5zM237.5 162.5H275V200H237.5zM312.5 162.5H350V200H312.5zM50 200h37.5v37.5H50zM125 200h37.5v37.5H125zM200 200h37.5v37.5H200zM275 200h37.5v37.5H275zM87.5 237.5H125V275H87.5zM162.5 237.5H200V275H162.5zM237.5 237.5H275V275H237.5zM312.5 237.5H350V275H312.5zM50 275h37.5v37.5H50zM125 275h37.5v37.5H125zM200 275h37.5v37.5H200zM275 275h37.5v37.5H275zM87.5 312.5H125V350H87.5zM162.5 312.5H200V350H162.5zM237.5 312.5H275V350H237.5zM312.5 312.5H350V350H312.5z" fill="#769656" />
+                </g>
+                <g id="knight">
+                    <path d="M200 280c-20 0-35-15-35-35 0-15 10-25 15-40-5-5-15-5-20 5s-10 20-10 20l-10-5s5-15 10-25c5-10 20-20 40-20s30 10 30 30c0 20-10 35-10 45 15 0 25 10 25 25h-45z" fill="#222">
+                        <animateTransform 
+                            attributeName="transform" 
+                            type="translate" 
+                            values="0,0; 75,-75; 0,0; -75,-75; 0,0" 
+                            dur="4s" 
+                            repeatCount="indefinite" 
+                            keyTimes="0; 0.25; 0.5; 0.75; 1"
+                            calcMode="spline"
+                            keySplines="0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1; 0.42 0 0.58 1"
+                        />
+                    </path>
+                </g>
+            </svg>
+        </div>
+        <h1>Anurag Chess Academy</h1>
+        <p class="tagline">Where Grandmasters are Made 🏆</p>
+    </header>
+
+    <section>
+        <h2>📖 About Our Academy</h2>
+        <p>At <strong>Anurag Chess Academy</strong>, we believe chess is more than just a game—it's a workout for the brain. From beginners learning the names of pieces to advanced players mastering the <em>Sicilian Defense</em>, we provide a structured curriculum designed for all ages.</p>
+    </section>
+
+    <section>
+        <h2>🎓 Our Courses</h2>
+        <ul>
+            <li><strong>Pawn Level:</strong> For beginners (Movement, Rules, Basic Mates).</li>
+            <li><strong>Knight Level:</strong> Intermediate tactics (Forks, Pins, Skewers).</li>
+            <li><strong>Grandmaster Level:</strong> Advanced theory, Endgames, and Tournament prep.</li>
+        </ul>
+        <p><strong>Fee Structure:</strong> Starting from ₹2,500 per month 🇮🇳</p>
+    </section>
+
+    <section>
+        <h2>🌟 Why Choose Us?</h2>
+        <p>✅ Personalized 1-on-1 coaching sessions.<br>
+        ✅ Weekly internal tournaments with prizes.<br>
+        ✅ Access to premium study materials and database analysis.</p>
+    </section>
+
+    <div class="contact-info">
+        <h2>📞 Ready to Make a Move?</h2>
+        <p>Location: New Delhi, India 🇮🇳</p>
+        <p>Email: <a href="mailto:info@anuragchess.com">info@anuragchess.com</a></p>
+        <p>Visit us: <a href="https://www.chess.com" target="_blank">www.anuragchessacademy.in</a></p>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 Anurag Chess Academy. All rights reserved. ♟️</p>
+    </div>
+
+</body>
+</html>
