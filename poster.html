@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga Anurag Kharar Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Josefin+Sans:wght@200;300&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: #0d1b2a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .poster {
+            width: 500px;
+            height: 700px;
+            background: linear-gradient(165deg, #1b263b 0%, #0d1b2a 50%, #1a1a2e 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.5);
+        }
+
+        /* Organic background shapes */
+        .circle-1 {
+            position: absolute;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(64, 168, 168, 0.08) 0%, transparent 70%);
+            top: -120px;
+            right: -80px;
+        }
+
+        .circle-2 {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(205, 136, 109, 0.06) 0%, transparent 70%);
+            bottom: -60px;
+            left: -60px;
+        }
+
+        .circle-3 {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(100, 180, 170, 0.1) 0%, transparent 70%);
+            top: 180px;
+            left: 40px;
+            opacity: 0.6;
+        }
+
+        /* Lotus icon using CSS */
+        .lotus-container {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 100px;
+        }
+
+        .petal {
+            position: absolute;
+            width: 30px;
+            height: 60px;
+            background: linear-gradient(180deg, rgba(205, 175, 149, 0.3) 0%, rgba(205, 175, 149, 0.05) 100%);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            transform-origin: bottom center;
+        }
+
+        .petal:nth-child(1) { left: 45px; top: 20px; transform: rotate(0deg); }
+        .petal:nth-child(2) { left: 45px; top: 20px; transform: rotate(-30deg); }
+        .petal:nth-child(3) { left: 45px; top: 20px; transform: rotate(30deg); }
+        .petal:nth-child(4) { left: 45px; top: 20px; transform: rotate(-60deg); }
+        .petal:nth-child(5) { left: 45px; top: 20px; transform: rotate(60deg); }
+        .petal:nth-child(6) { left: 45px; top: 20px; transform: rotate(-15deg); }
+        .petal:nth-child(7) { left: 45px; top: 20px; transform: rotate(15deg); }
+        .petal:nth-child(8) { left: 45px; top: 20px; transform: rotate(-45deg); }
+        .petal:nth-child(9) { left: 45px; top: 20px; transform: rotate(45deg); }
+
+        .lotus-center {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, rgba(205, 175, 149, 0.4) 0%, rgba(180, 140, 110, 0.2) 100%);
+            border-radius: 50%;
+            top: 55px;
+            left: 45px;
+        }
+
+        /* Content */
+        .content {
+            position: relative;
+            z-index: 10;
+            padding: 30px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 38px;
+            font-weight: 300;
+            color: #e8e4e1;
+            letter-spacing: 4px;
+            margin-top: 130px;
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+
+        .title span {
+            display: block;
+            font-size: 16px;
+            letter-spacing: 8px;
+            color: rgba(205, 175, 149, 0.7);
+            margin-top: 8px;
+            font-weight: 300;
+        }
+
+        .divider {
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(205, 175, 149, 0.5), transparent);
+            margin: 25px 0;
+        }
+
+        .tagline {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 200;
+            color: rgba(232, 228, 225, 0.5);
+            letter-spacing: 2px;
+            line-height: 1.8;
+        }
+
+        .since {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 11px;
+            color: rgba(205, 175, 149, 0.6);
+            letter-spacing: 3px;
+            margin-top: 30px;
+        }
+
+        .instructor {
+            margin-top: 20px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            font-weight: 400;
+            color: rgba(232, 228, 225, 0.7);
+            font-style: italic;
+        }
+
+        .services {
+            margin-top: 25px;
+            padding: 20px 0;
+            border-top: 1px solid rgba(205, 175, 149, 0.15);
+            border-bottom: 1px solid rgba(205, 175, 149, 0.15);
+            width: 100%;
+        }
+
+        .services-list {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 10px;
+            color: rgba(232, 228, 225, 0.45);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            line-height: 2.2;
+        }
+
+        .contact {
+            margin-top: 25px;
+        }
+
+        .phone {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 300;
+            color: #cd886b;
+            letter-spacing: 2px;
+        }
+
+        .location {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 10px;
+            color: rgba(232, 228, 225, 0.4);
+            letter-spacing: 3px;
+            margin-top: 8px;
+            text-transform: uppercase;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 9px;
+            color: rgba(232, 228, 225, 0.25);
+            letter-spacing: 2px;
+        }
+
+        /* Decorative line */
+        .corner {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(205, 175, 149, 0.2);
+        }
+
+        .corner-tl { top: 25px; left: 25px; border-right: none; border-bottom: none; }
+        .corner-tr { top: 25px; right: 25px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 25px; left: 25px; border-right: none; border-top: none; }
+        .corner-br { bottom: 25px; right: 25px; border-left: none; border-top: none; }
+
+    </style>
+</head>
+<body>
+    <div class="poster">
+        <div class="circle-1"></div>
+        <div class="circle-2"></div>
+        <div class="circle-3"></div>
+        
+        <div class="lotus-container">
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="petal"></div>
+            <div class="lotus-center"></div>
+        </div>
+
+        <div class="content">
+            <h1 class="title">
+                Yoga Anurag
+                <span>Kharar Center</span>
+            </h1>
+            
+            <div class="divider"></div>
+            
+            <p class="tagline">
+                yoga &middot; meditation &middot; pranayama
+            </p>
+            
+            <p class="since">ESTABLISHED 2011</p>
+            
+            <p class="instructor">Anurag Sharma</p>
+            
+            <div class="services">
+                <p class="services-list">
+                    online sessions &middot; group sessions<br>
+                    personal training &middot; corporate programs
+                </p>
+            </div>
+            
+            <div class="contact">
+                <p class="phone">+91 62832 66268</p>
+                <p class="location">Kharar, Mohali, Punjab</p>
+            </div>
+            
+            <div class="footer">
+                <p class="footer-text">Government Certified Instructor</p>
+            </div>
+        </div>
+
+        <div class="corner corner-tl"></div>
+        <div class="corner corner-tr"></div>
+        <div class="corner corner-bl"></div>
+        <div class="corner corner-br"></div>
+    </div>
+</body>
+</html>
