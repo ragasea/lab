@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;0,900;1,400&amp;family=Work+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "error-container": "#ffdad6",
+              "surface-variant": "#e4e4cc",
+              "tertiary-fixed-dim": "#cfc4c0",
+              "primary-container": "#5c403a",
+              "surface-bright": "#fbfbe2",
+              "surface-dim": "#dbdcc3",
+              "outline-variant": "#d4c3be",
+              "on-surface": "#1b1d0e",
+              "inverse-surface": "#303221",
+              "on-error-container": "#93000a",
+              "surface-container": "#efefd7",
+              "on-secondary-fixed-variant": "#5b4137",
+              "secondary-fixed-dim": "#e4beb2",
+              "inverse-on-surface": "#f2f2d9",
+              "on-error": "#ffffff",
+              "on-secondary-fixed": "#2b160f",
+              "on-primary-container": "#d3ada4",
+              "surface": "#fbfbe2",
+              "error": "#ba1a1a",
+              "primary-fixed": "#ffdad2",
+              "on-tertiary-container": "#bdb3af",
+              "on-secondary-container": "#795c51",
+              "tertiary-container": "#4c4542",
+              "outline": "#827470",
+              "surface-container-highest": "#e4e4cc",
+              "on-background": "#1b1d0e",
+              "surface-container-low": "#f5f5dc",
+              "surface-tint": "#755750",
+              "primary": "#432a25",
+              "on-tertiary-fixed": "#201a18",
+              "surface-container-high": "#eaead1",
+              "on-tertiary-fixed-variant": "#4c4542",
+              "secondary": "#75584d",
+              "on-primary-fixed": "#2b1611",
+              "inverse-primary": "#e5beb5",
+              "tertiary-fixed": "#ece0dc",
+              "on-tertiary": "#ffffff",
+              "on-primary-fixed-variant": "#5c403a",
+              "surface-container-lowest": "#ffffff",
+              "background": "#fbfbe2",
+              "on-secondary": "#ffffff",
+              "primary-fixed-dim": "#e5beb5",
+              "tertiary": "#352f2c",
+              "secondary-container": "#fed7ca",
+              "on-primary": "#ffffff",
+              "secondary-fixed": "#ffdbce",
+              "on-surface-variant": "#504441"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Noto Serif"],
+              "label": ["Work Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .chess-pattern {
+        background-color: #fbfbe2;
+        background-image:  linear-gradient(45deg, #f5f5dc 25%, transparent 25%), linear-gradient(-45deg, #f5f5dc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f5f5dc 75%), linear-gradient(-45deg, transparent 75%, #f5f5dc 75%);
+        background-size: 80px 80px;
+        background-position: 0 0, 0 40px, 40px -40px, -40px 0px;
+      }
+      .wood-gradient {
+        background: linear-gradient(15deg, #432a25 0%, #5c403a 100%);
+      }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 z-50 w-full bg-[#fbfbe2] dark:bg-[#1b1d0e] border-none">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="font-serif text-2xl font-black text-[#432a25] dark:text-[#fbfbe2]">Anurag Academy</div>
+<div class="hidden md:flex gap-10">
+<a class="font-serif text-lg tracking-tight font-bold text-[#432a25] dark:text-[#fbfbe2] border-b-2 border-[#432a25] dark:border-[#e5beb5] pb-1" href="#">Academy</a>
+<a class="font-serif text-lg tracking-tight font-bold text-[#75584d] dark:text-[#d4c3be] hover:text-[#432a25] transition-opacity duration-300" href="#">Courses</a>
+<a class="font-serif text-lg tracking-tight font-bold text-[#75584d] dark:text-[#d4c3be] hover:text-[#432a25] transition-opacity duration-300" href="#">Grandmasters</a>
+<a class="font-serif text-lg tracking-tight font-bold text-[#75584d] dark:text-[#d4c3be] hover:text-[#432a25] transition-opacity duration-300" href="#">Curriculum</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="font-label text-xs uppercase tracking-widest px-6 py-2 bg-primary text-on-primary hover:opacity-80 transition-all">Join Study</button>
+<div class="w-10 h-10 rounded-full border-2 border-primary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User avatar in mahogany frame" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYto51ADjhwf1yGgYN2VUlXu5FOJRtgncpqKVEgPDK8bHCgDSQ5E9ZjvO7t125BcH58ERmoLqgjIkq1BaP7WvUlDvesqIwGu94zitqkqAuqVeDgcMWUXvn7xKszXrudqkE5Vd_kvqeEY5sgq89OewFdI6spXVzhsrjsSwWDzzjKkHa8rukdCZmsQF6p8muVnobw97sOqv9y8zzQ0ujsK6Tm_FoDKtRQPTdUCm4I8uThaQkdSoL__UCHB1rpbB3Q0wXmNwXV7nKFSI"/>
+</div>
+</div>
+</div>
+</nav>
+<main class="pt-20">
+<!-- Hero Section -->
+<section class="relative min-h-[921px] flex items-center overflow-hidden">
+<div class="absolute inset-0 chess-pattern opacity-40"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent"></div>
+<div class="relative z-10 max-w-screen-2xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div class="space-y-10">
+<span class="font-label text-sm tracking-[0.2em] text-secondary uppercase">Established 1851</span>
+<h1 class="font-headline text-7xl md:text-8xl font-black text-primary leading-[0.9] tracking-tighter">
+                        The Art of <br/><span class="italic text-secondary">Strategic</span> Intent.
+                    </h1>
+<p class="text-xl text-on-surface-variant max-w-lg leading-relaxed">
+                        Step into the Grandmaster’s Study. We don't just teach moves; we cultivate the intellectual discipline required to master the world's most noble game.
+                    </p>
+<div class="flex flex-wrap gap-6 pt-4">
+<button class="wood-gradient text-on-primary px-10 py-5 font-label tracking-widest uppercase text-sm shadow-xl hover:opacity-90 transition-all">Enroll in the Academy</button>
+<button class="group flex items-center gap-3 text-primary font-bold">
+<span class="font-label tracking-widest uppercase text-sm">View Syllabus</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+<div class="relative hidden lg:block">
+<div class="aspect-square bg-surface-container-high rounded-lg p-4 shadow-2xl rotate-3">
+<img class="w-full h-full object-cover rounded shadow-inner" data-alt="Close up of hand-carved wooden chess pieces" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6F5zPhbGvQs8z8NshzH8AApL8fxvRypweW7sZsXviTpkCSrTOwT1fRTV-pWgmFAvnt8jLkpoJlSjc8Xs1FXyokWYLwKeLy05HWh04aH4s1gDhjt3CQoxBqOnQJK6FFHSIVglLjBSBfk7ZQKZ_Gy3n-SLpp2tFjoSyWiOrTUniwKxaMNIudlnPeS_D5a5VquxP_fPm0g_qT6nKX69MLwYxPPAzdJPJUudDKBbMwtV3lH2-zoHc3r3Kibu_9qQEFkL8T3LXhU4a5j8"/>
+</div>
+<div class="absolute -bottom-10 -left-10 w-64 aspect-[4/5] bg-surface-container-highest p-4 shadow-2xl -rotate-6">
+<img class="w-full h-full object-cover shadow-inner" data-alt="Vintage chess textbook on a dark wood table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClr2h3_bvkB96JOYqAsoTTvezPIxURU5qOZwLDRmw6A4w_CUPKmLAkJ2lCDx0PoeduzVumaRQtFbQ3MZINoGOR9zK8UsZx8YsaGFdodoBPKvzuTGfgPAYbEWc_17XnIbOoFo1btpBhLgyJTGYZx8xAfMOzVHVZ81wynsGurUM12Gb7DEJVZjlAICLUv67zObgdToRbiERBcOFBgEXCpVi-94dhVpisBLXsyMZea7rJvYaabMB4H2Vlj1rZCRvTBKxuW-0ox7AsJ1I"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Our Philosophy -->
+<section class="py-32 bg-surface-container-low">
+<div class="max-w-screen-2xl mx-auto px-8">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-16">
+<div class="md:col-span-5">
+<h2 class="font-headline text-5xl font-bold text-primary mb-8 leading-tight">Beyond the Board: <br/>Our Philosophy</h2>
+<div class="w-24 h-1 bg-secondary-container mb-8"></div>
+</div>
+<div class="md:col-span-7 space-y-8">
+<p class="font-headline text-2xl italic text-on-surface-variant leading-relaxed">
+                            "Chess is not a game of pieces, but a struggle between minds. Our mission is to prepare the mind for the weight of the crown."
+                        </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-12 pt-8">
+<div>
+<h3 class="font-label text-xs tracking-widest uppercase text-secondary mb-4">The Discipline</h3>
+<p class="text-on-surface-variant leading-relaxed">Rigorous mental conditioning through classical analysis and historical game deconstruction.</p>
+</div>
+<div>
+<h3 class="font-label text-xs tracking-widest uppercase text-secondary mb-4">The intuition</h3>
+<p class="text-on-surface-variant leading-relaxed">Developing the 'silent voice' that recognizes patterns before the conscious mind calculates them.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Curated Pathways (Bento Grid) -->
+<section class="py-32 px-8">
+<div class="max-w-screen-2xl mx-auto">
+<div class="mb-20 text-center">
+<span class="font-label text-xs tracking-[0.3em] uppercase text-secondary">The Curriculum</span>
+<h2 class="font-headline text-6xl font-black text-primary mt-4">Curated Pathways</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 grid-rows-2 gap-6 h-auto md:h-[800px]">
+<!-- Beginner -->
+<div class="md:col-span-4 md:row-span-2 bg-surface-container p-10 flex flex-col justify-between group cursor-pointer hover:bg-surface-container-high transition-colors">
+<div>
+<span class="font-label text-xs tracking-widest uppercase text-outline mb-6 block">Foundation</span>
+<h3 class="font-headline text-4xl font-bold text-primary mb-6">The Initiate</h3>
+<p class="text-on-surface-variant leading-relaxed">Master the geometry of the board and the fundamental laws of development. From zero to 1200 ELO.</p>
+</div>
+<div class="mt-12">
+<img class="w-full h-48 object-cover opacity-80 group-hover:opacity-100 transition-opacity grayscale hover:grayscale-0" data-alt="Minimalist birch wood chess pieces" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiZ67CStpY21HmHcwEhizt1kBi-P09TaEAE1DoRZdaTzR8iNh6ZkGpsXpTT8bDTDZR2Czy51Na7TitHJJsSIuikSkSFkqFUevWDAt4R0jtdS7BsqxGAV-owKz6VZTk4KtB8G48kMVqZrfWk8VPnm5ValSevHuqIBCJWqvqiG_fNmY6OwdJJRDgdKjkBMGx7tf8pgyGDN8pax0e9Ua4a9DBqzepvk_dZFpD5_DERi1tvJNvJKTN2O2-8hRgmalJ0V9YUHdpyn1wOsI"/>
+</div>
+</div>
+<!-- Intermediate -->
+<div class="md:col-span-8 md:row-span-1 bg-primary text-on-primary p-10 flex flex-col md:flex-row gap-10 items-center overflow-hidden">
+<div class="flex-1">
+<span class="font-label text-xs tracking-widest uppercase text-primary-fixed-dim mb-4 block">Execution</span>
+<h3 class="font-headline text-4xl font-bold mb-4">The Strategist</h3>
+<p class="text-on-primary-container leading-relaxed">Deep dives into positional play, pawn structures, and endgame technique. For players 1200-1800 ELO.</p>
+<button class="mt-8 border-b border-primary-fixed-dim pb-1 font-label text-xs uppercase tracking-widest">Explore Syllabus</button>
+</div>
+<div class="w-full md:w-1/3 h-full">
+<img class="w-full h-full object-cover" data-alt="Close up of a dark mahogany knight piece" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDVxnybILoEaPVS-rnTEojQ2EHEV96ewUpU25q4ZXeVzZXEtYm_wWg4qTeEyHZxGu3XE1rGKKFCWnG58zDkbzfpLV4UbQIrNH-waLYVvRE3T5ywvIXeM6P2ESglFmtaee_Rwe3MxYgGBBFwD4nJnWiXn_SluSQhaBBTGiEDou60bla5zaVYiv6OelhVgl2z0J2g0FRWGtZ6MOqUApcvOndr4268sJy_w_GxToLXoOPHxXHX0nPOwLiI9DftpYVnl4aLClVCRrYBFvo"/>
+</div>
+</div>
+<!-- Grandmaster -->
+<div class="md:col-span-4 md:row-span-1 bg-surface-container-highest p-10 flex flex-col justify-between">
+<div>
+<span class="font-label text-xs tracking-widest uppercase text-secondary mb-4 block">Elite Mastery</span>
+<h4 class="font-headline text-3xl font-bold text-primary">Master's Circle</h4>
+</div>
+<p class="text-on-surface-variant text-sm italic">Invitational only. Grandmaster-led seminars on hyper-modern theory.</p>
+</div>
+<!-- Specialized -->
+<div class="md:col-span-4 md:row-span-1 bg-secondary-container p-10 flex flex-col justify-between">
+<div>
+<span class="font-label text-xs tracking-widest uppercase text-on-secondary-container mb-4 block">Specialization</span>
+<h4 class="font-headline text-3xl font-bold text-on-secondary-container">Tactical Prowess</h4>
+</div>
+<div class="flex justify-end">
+<span class="material-symbols-outlined text-4xl text-on-secondary-container">psychology</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Elite Faculty -->
+<section class="py-32 bg-tertiary">
+<div class="max-w-screen-2xl mx-auto px-8">
+<div class="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+<div class="max-w-xl">
+<span class="font-label text-xs tracking-[0.3em] uppercase text-tertiary-fixed-dim">The Mentors</span>
+<h2 class="font-headline text-6xl font-black text-surface mt-4">Elite Faculty</h2>
+</div>
+<p class="text-tertiary-fixed-dim max-w-sm italic">Learning from those who have faced the pressure of the world stage.</p>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Faculty member 1 -->
+<div class="group">
+<div class="aspect-[3/4] overflow-hidden mb-6 bg-surface-container-low">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" data-alt="Portrait of an older man with intense eyes in a library" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBO1V3QrUpuHUujvp73eNHBQODNK0yoOXLylIPmVofDSGXPDzfChJzQ7F_5uioOE1uZ5ovv77MF9NQICARMXIoDYpC7gr9yvAfJxQrmrnqAfT9TCnqbeUAeZhh9TO2yohwR-x6_t68VdkI7dhSjzsFCkr9KTTi-9ONwXZsdVm2guHkXx9r9CLaidMjp8h1zdP9KXg90i9EpIJQZs-myUt2hl0brvgIspu0yANC9J30VxvzAQzNuuTzuAvLq3sFwsnqJoVg9cN6swM"/>
+</div>
+<h4 class="font-headline text-2xl font-bold text-surface">GM Viktor K.</h4>
+<span class="font-label text-xs uppercase tracking-widest text-secondary-fixed-dim">Endgame Specialist</span>
+</div>
+<!-- Faculty member 2 -->
+<div class="group">
+<div class="aspect-[3/4] overflow-hidden mb-6 bg-surface-container-low">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" data-alt="Portrait of a focused woman in a tailored suit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDi4c0cJtRJSFdZt-Pa2RhNuoiQOKYZqYMMSIl4xMe8ylRzFi-YGIkwNE9GA7wJK_5-xCkm1yg1qg0jW2y4yv6qjwl74JKzwvqXqyDGr_GWI25EHERb5JWVWlCKRFXG3yQLWuwUyMHWau8-ogUwzFnIKu6TGMScmrFC2TFrEKyzkBCJiMCTInZ2TJrzFuVUi0xM0tUwAG3PCxMcL0AzBfLJ1tsESwCEClXsg14RApgQ0pjfTPpu06A0wwQpuUdBPbmv7uSV09oKf4E"/>
+</div>
+<h4 class="font-headline text-2xl font-bold text-surface">WGM Elena S.</h4>
+<span class="font-label text-xs uppercase tracking-widest text-secondary-fixed-dim">Theory &amp; Openings</span>
+</div>
+<!-- Faculty member 3 -->
+<div class="group">
+<div class="aspect-[3/4] overflow-hidden mb-6 bg-surface-container-low">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" data-alt="Portrait of a young man with glasses and a serious expression" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQenyg5yvO7TWum-9wz-B1Nsb0wAEz4uFjqO1LKGAkg5HZ6paktR17ZC6vS5A0-K8wzDX7o4lLxwHiQXz8VWGjQcp4dIM4UqLDaPYUaR5E4eKfZQ8PestMlI4n6EX6caZ3GyzOWpQckv8-sY_yeSzs8rIwlL2tYbZSspn3UpgkemklSMQIPrhPvXz72YDV0xYNvAU3pwEaigHL23K6MPjAordaVYDQREGYnyZZfyH1DKCiBHmisaKMf8LFmBLKNOnUh3Zviy9Gc5Y"/>
+</div>
+<h4 class="font-headline text-2xl font-bold text-surface">GM Julian M.</h4>
+<span class="font-label text-xs uppercase tracking-widest text-secondary-fixed-dim">Tactical Calculation</span>
+</div>
+<!-- Faculty member 4 -->
+<div class="group">
+<div class="aspect-[3/4] overflow-hidden mb-6 bg-surface-container-low">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" data-alt="Portrait of a middle-aged woman looking thoughtfully away" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_K-vlnia6pl9HHGcBDDmhfVpMnT9OawfLjbvLdJKTDFM98yh_SDLW57aidw5ksG2UiJ4Ka1y1q5P1l3GD1N0cziL-ar2FPvqIaftkH-nCnXzhigotsYEz4LMOEOmBhSNCpNnCTmO--pcM0sW8sc0huZtV5LkK0KA2ifS6SbyZYzT8q8FOoRo2z2f_Vj9mBFItCsI-5eE0OIKLUyYGlfc4YCjZPYkVqfRhucSQFr-jrYHhwXRYVm0z8XB1y61h4UWNQH_3w9H77bo"/>
+</div>
+<h4 class="font-headline text-2xl font-bold text-surface">WIM Sarah T.</h4>
+<span class="font-label text-xs uppercase tracking-widest text-secondary-fixed-dim">Psychology of Play</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-[#352f2c] dark:bg-[#000000] text-[#fbfbe2]">
+<div class="w-full py-12 px-8 flex flex-col md:flex-row justify-between items-center gap-6 max-w-screen-2xl mx-auto">
+<div class="flex flex-col gap-2">
+<span class="font-serif italic text-lg text-[#fed7ca]">Anurag Academy</span>
+<p class="font-sans text-xs uppercase tracking-widest text-[#d4c3be]">© 1851 Anurag Chess Academy. Hand-crafted Excellence.</p>
+</div>
+<div class="flex gap-8">
+<a class="font-sans text-xs uppercase tracking-widest text-[#d4c3be] hover:text-[#ffffff] transition-colors" href="#">The Rules</a>
+<a class="font-sans text-xs uppercase tracking-widest text-[#d4c3be] hover:text-[#ffffff] transition-colors" href="#">History of the Craft</a>
+<a class="font-sans text-xs uppercase tracking-widest text-[#d4c3be] hover:text-[#ffffff] transition-colors" href="#">Privacy</a>
+<a class="font-sans text-xs uppercase tracking-widest text-[#d4c3be] hover:text-[#ffffff] transition-colors" href="#">Terms</a>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined cursor-pointer hover:opacity-70 transition-opacity">share</span>
+<span class="material-symbols-outlined cursor-pointer hover:opacity-70 transition-opacity">mail</span>
+</div>
+</div>
+</footer>
+</main>
+</body></html>
