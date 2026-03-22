@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure CSS Female Portrait</title>
+    <style>
+        body {
+            background-color: #f0e6ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .canvas {
+            position: relative;
+            width: 300px;
+            height: 400px;
+        }
+
+        /* Hair - Back Layer */
+        .hair-back {
+            position: absolute;
+            width: 180px;
+            height: 250px;
+            background: #2d1a12;
+            border-radius: 90px 90px 20px 20px;
+            left: 60px;
+            top: 40px;
+        }
+
+        /* Face Shape */
+        .face {
+            position: absolute;
+            width: 120px;
+            height: 160px;
+            background: #ffdbac; /* Fair skin tone */
+            border-radius: 60px 60px 50px 50px;
+            left: 90px;
+            top: 80px;
+            z-index: 2;
+        }
+
+        /* Eyes */
+        .eye {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            top: 140px;
+            z-index: 3;
+        }
+        
+        .eye::after {
+            content: '';
+            position: absolute;
+            width: 7px;
+            height: 7px;
+            background: #333;
+            border-radius: 50%;
+            left: 4px;
+            top: 4px;
+        }
+
+        .eye.left { left: 115px; }
+        .eye.right { left: 170px; }
+
+        /* Smile */
+        .mouth {
+            position: absolute;
+            width: 40px;
+            height: 20px;
+            border-bottom: 3px solid #e25050;
+            border-radius: 50%;
+            left: 130px;
+            top: 190px;
+            z-index: 3;
+        }
+
+        /* Hair - Front/Bangs */
+        .hair-front {
+            position: absolute;
+            width: 140px;
+            height: 80px;
+            background: #2d1a12;
+            border-radius: 70px 70px 0 0;
+            left: 80px;
+            top: 60px;
+            z-index: 4;
+        }
+
+        /* Neck */
+        .neck {
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            background: #f1c27d;
+            left: 135px;
+            top: 220px;
+            z-index: 1;
+        }
+
+        /* Dress */
+        .shoulders {
+            position: absolute;
+            width: 160px;
+            height: 100px;
+            background: #6c5ce7;
+            border-radius: 50px 50px 0 0;
+            left: 70px;
+            top: 250px;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas">
+        <div class="hair-back"></div>
+        <div class="neck"></div>
+        <div class="shoulders"></div>
+        <div class="face"></div>
+        <div class="hair-front"></div>
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
+    </div>
+
+</body>
+</html>
