@@ -1,0 +1,194 @@
+<!-- 
+Prompt: Blog with header + scroll to top
+Date: 27 March 2026, India Time
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Anurag Blog</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth; /* smooth scroll */
+    }
+
+    /* ================= HEADER ================= */
+    header {
+      position: sticky;
+      top: 0;
+      background: #222;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    header:hover {
+      background: #444;
+    }
+
+    /* ================= BLOG ================= */
+    .blog-container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 10px;
+    }
+
+    .post {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .content {
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+
+    .collapsed {
+      max-height: 60px;
+    }
+
+    .expanded {
+      max-height: 1000px;
+    }
+
+    .read-more {
+      color: blue;
+      cursor: pointer;
+      margin-top: 10px;
+      display: inline-block;
+    }
+
+    /* ================= SCROLL TO TOP BUTTON ================= */
+    #topBtn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      font-size: 20px;
+      cursor: pointer;
+      display: none; /* hidden initially */
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    #topBtn:hover {
+      background: #444;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+<header onclick="goHome()">
+  Anurag Home Page
+</header>
+
+
+<div class="blog-container">
+
+  <!-- POST 1 -->
+  <div class="post">
+    <h2>Post 1 - Full Visible</h2>
+    <div class="content expanded">
+      <p>This is your main post. Fully visible.</p>
+      <p>Click header anytime to go to top.</p>
+    </div>
+  </div>
+
+  <!-- POST 2 -->
+  <div class="post">
+    <h2>Post 2</h2>
+    <div class="content collapsed">
+      <p>This post is collapsed initially.</p>
+      <p>Click Read More to expand.</p>
+    </div>
+    <span class="read-more" onclick="togglePost(this)">Read More</span>
+  </div>
+
+  <!-- POST 3 -->
+  <div class="post">
+    <h2>Post 3</h2>
+    <div class="content collapsed">
+      <p>Another expandable post.</p>
+      <p>You can duplicate this block.</p>
+    </div>
+    <span class="read-more" onclick="togglePost(this)">Read More</span>
+  </div>
+
+</div>
+
+
+<!-- ================= TOP BUTTON ================= -->
+<button id="topBtn" onclick="scrollToTop()">⬆️</button>
+
+
+<script>
+
+  /* ========= EXPAND / COLLAPSE POSTS ========= */
+  function togglePost(button) {
+    let content = button.previousElementSibling;
+
+    if (content.classList.contains("collapsed")) {
+      content.classList.remove("collapsed");
+      content.classList.add("expanded");
+      button.innerText = "Read Less";
+    } else {
+      content.classList.remove("expanded");
+      content.classList.add("collapsed");
+      button.innerText = "Read More";
+    }
+  }
+
+
+  /* ========= GO TO HOME (TOP) ========= */
+  function goHome() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+
+  /* ========= SHOW BUTTON WHEN SCROLL DOWN ========= */
+  window.onscroll = function () {
+    let btn = document.getElementById("topBtn");
+
+    if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+      btn.style.display = "block";
+    } else {
+      btn.style.display = "none";
+    }
+  };
+
+
+  /* ========= SCROLL TO TOP ========= */
+  function scrollToTop() {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+</script>
+
+</body>
+</html>
