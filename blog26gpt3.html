@@ -1,0 +1,159 @@
+<!-- 
+Prompt: Blog page with expandable posts
+Date: 27 March 2026, India Time
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Blog</title>
+
+  <!-- Basic styling -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    .blog-container {
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .post {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .post h2 {
+      margin-top: 0;
+    }
+
+    .content {
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+
+    .collapsed {
+      max-height: 60px; /* shows ~2 lines */
+    }
+
+    .expanded {
+      max-height: 1000px; /* enough for full content */
+    }
+
+    .read-more {
+      color: blue;
+      cursor: pointer;
+      margin-top: 10px;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="blog-container">
+
+  <!-- ========================= -->
+  <!-- POST 1 (FULLY VISIBLE) -->
+  <!-- ========================= -->
+  <div class="post">
+    <h2>Post 1 - Full Visible</h2>
+
+    <!-- No collapsed class → fully visible -->
+    <div class="content expanded">
+      <p>
+        This is your first blog post. It is fully visible by default.
+        You can write anything here — long articles, ideas, tutorials.
+      </p>
+      <p>
+        Since this is the top post, users don’t need to click anything.
+        Just replace this content with your own.
+      </p>
+    </div>
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- POST 2 (COLLAPSIBLE) -->
+  <!-- ========================= -->
+  <div class="post">
+    <h2>Post 2 - Expandable</h2>
+
+    <!-- Starts collapsed -->
+    <div class="content collapsed">
+      <p>
+        This is the second blog post. Only a small portion is visible at first.
+        When user clicks "Read More", full content will expand.
+      </p>
+      <p>
+        Add as much content as you want here. It will expand smoothly.
+      </p>
+    </div>
+
+    <!-- Button -->
+    <span class="read-more" onclick="togglePost(this)">Read More</span>
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- POST 3 (COLLAPSIBLE) -->
+  <!-- ========================= -->
+  <div class="post">
+    <h2>Post 3 - Expandable</h2>
+
+    <div class="content collapsed">
+      <p>
+        This is your third post. Same logic applies.
+        Initially collapsed → expands when clicked.
+      </p>
+      <p>
+        You can duplicate this block to add unlimited posts.
+      </p>
+    </div>
+
+    <span class="read-more" onclick="togglePost(this)">Read More</span>
+  </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- JAVASCRIPT -->
+<!-- ========================= -->
+<script>
+  /*
+    Function: togglePost
+    Purpose: Expand or collapse post content
+  */
+  function togglePost(button) {
+
+    // Get the content div just above the button
+    let content = button.previousElementSibling;
+
+    // Check if currently collapsed
+    if (content.classList.contains("collapsed")) {
+
+      content.classList.remove("collapsed");
+      content.classList.add("expanded");
+
+      button.innerText = "Read Less";
+
+    } else {
+
+      content.classList.remove("expanded");
+      content.classList.add("collapsed");
+
+      button.innerText = "Read More";
+    }
+  }
+</script>
+
+</body>
+</html>
