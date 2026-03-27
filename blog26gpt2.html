@@ -1,0 +1,210 @@
+<!-- 
+Prompt: Advanced blog UI (Twitter-like + focus mode + navigation)
+Date (India): 27 March 2026
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Next-Level Blog</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: white;
+    margin: 0;
+    padding: 20px;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  /* TOP CONTROLS */
+  .controls {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  button {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 20px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+  }
+
+  /* POSTS CONTAINER */
+  .container {
+    max-width: 600px;
+    margin: auto;
+  }
+
+  /* POST CARD */
+  .post {
+    background: #1e293b;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    transition: 0.3s;
+  }
+
+  .post.hidden {
+    display: none;
+  }
+
+  .title {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .date {
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  /* CONTENT PREVIEW */
+  .content {
+    margin-top: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .content.expanded {
+    -webkit-line-clamp: unset;
+  }
+
+  .read-more {
+    color: #60a5fa;
+    cursor: pointer;
+    margin-top: 5px;
+    display: inline-block;
+  }
+
+  /* NAVIGATION */
+  .nav {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+</style>
+</head>
+
+<body>
+
+<h1>🔥 My Blog</h1>
+
+<div class="controls">
+  <button onclick="showAll()">All Posts</button>
+  <button onclick="focusMode()">Focus Mode</button>
+</div>
+
+<div class="container" id="container">
+
+  <!-- POST 1 -->
+  <div class="post">
+    <div class="title">🚀 Post 1: Start</div>
+    <div class="date">27 March 2026</div>
+
+    <div class="content">
+      This is your first post. Think of this like Twitter but longer. 
+      You can write anything here. This preview shows only 2 lines 
+      until user clicks to expand.
+    </div>
+
+    <span class="read-more" onclick="toggleContent(this)">Read more ▼</span>
+  </div>
+
+  <!-- POST 2 -->
+  <div class="post">
+    <div class="title">💡 Post 2: Learning</div>
+    <div class="date">26 March 2026</div>
+
+    <div class="content">
+      Learning HTML, CSS, and JavaScript opens doors to building 
+      powerful interfaces. Practice consistently and build small projects.
+    </div>
+
+    <span class="read-more" onclick="toggleContent(this)">Read more ▼</span>
+  </div>
+
+  <!-- POST 3 -->
+  <div class="post">
+    <div class="title">🧠 Post 3: Thoughts</div>
+    <div class="date">25 March 2026</div>
+
+    <div class="content">
+      Writing daily helps you clarify thinking. Blogging is not just 
+      content creation, it's self-improvement and expression.
+    </div>
+
+    <span class="read-more" onclick="toggleContent(this)">Read more ▼</span>
+  </div>
+
+</div>
+
+<!-- NAVIGATION BUTTONS -->
+<div class="nav">
+  <button onclick="prevPost()">⬅ Prev</button>
+  <button onclick="nextPost()">Next ➡</button>
+</div>
+
+<script>
+  let currentIndex = 0;
+  const posts = document.querySelectorAll(".post");
+
+  /*
+  EXPAND / COLLAPSE CONTENT
+  */
+  function toggleContent(btn) {
+    const content = btn.previousElementSibling;
+
+    content.classList.toggle("expanded");
+
+    btn.innerText = content.classList.contains("expanded")
+      ? "Show less ▲"
+      : "Read more ▼";
+  }
+
+  /*
+  SHOW ALL POSTS
+  */
+  function showAll() {
+    posts.forEach(post => post.classList.remove("hidden"));
+  }
+
+  /*
+  FOCUS MODE (ONLY ONE POST VISIBLE)
+  */
+  function focusMode() {
+    posts.forEach((post, i) => {
+      post.classList.toggle("hidden", i !== currentIndex);
+    });
+  }
+
+  /*
+  NEXT POST
+  */
+  function nextPost() {
+    currentIndex = (currentIndex + 1) % posts.length;
+    focusMode();
+  }
+
+  /*
+  PREVIOUS POST
+  */
+  function prevPost() {
+    currentIndex = (currentIndex - 1 + posts.length) % posts.length;
+    focusMode();
+  }
+
+</script>
+
+</body>
+</html>
