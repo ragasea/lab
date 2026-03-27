@@ -1,0 +1,184 @@
+<!-- 
+Prompt: Blog system with toggle view + expandable posts
+Date (India): 27 March 2026
+Time (IST): Add dynamically if needed
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Blog</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #f5f5f5;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  /* Buttons for switching views */
+  .controls {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  button {
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
+    background: black;
+    color: white;
+    border-radius: 5px;
+  }
+
+  /* Blog post card */
+  .post {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+  }
+
+  .title {
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  /* Limit text to 2 lines */
+  .content {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* show only 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+
+  /* When expanded → show full content */
+  .content.expanded {
+    -webkit-line-clamp: unset;
+  }
+
+  .read-more {
+    color: blue;
+    cursor: pointer;
+    margin-top: 5px;
+    display: inline-block;
+  }
+
+</style>
+</head>
+
+<body>
+
+<h1>My Blog</h1>
+
+<!-- VIEW CONTROL BUTTONS -->
+<div class="controls">
+  <!-- Show all posts -->
+  <button onclick="showAll()">Show All Posts</button>
+
+  <!-- Show one post at a time -->
+  <button onclick="showOne()">Show One Post</button>
+</div>
+
+<!-- BLOG POSTS CONTAINER -->
+<div id="posts">
+
+  <!-- POST 1 -->
+  <div class="post">
+    <div class="title">Post 1: My First Blog</div>
+
+    <!-- content (limited to 2 lines by default) -->
+    <div class="content">
+      This is my first blog post. You can write anything here. 
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+      This text will be truncated to 2 lines unless expanded.
+    </div>
+
+    <!-- toggle button -->
+    <span class="read-more" onclick="toggleContent(this)">Read more ▼</span>
+  </div>
+
+  <!-- POST 2 -->
+  <div class="post">
+    <div class="title">Post 2: Learning HTML</div>
+
+    <div class="content">
+      HTML is very easy to learn. You just need to understand tags, structure,
+      and how elements work together. Practice daily and you will improve fast.
+    </div>
+
+    <span class="read-more" onclick="toggleContent(this)">Read more ▼</span>
+  </div>
+
+  <!-- POST 3 -->
+  <div class="post">
+    <div class="title">Post 3: My Thoughts</div>
+
+    <div class="content">
+      Writing blogs is a great way to express your thoughts. You can share ideas,
+      experiences, or knowledge. Consistency is the key to growth.
+    </div>
+
+    <span class="read-more" onclick="toggleContent(this)">Read more ▼</span>
+  </div>
+
+</div>
+
+<script>
+  /*
+  FUNCTION: Expand / Collapse post content
+  - Finds the content inside same post
+  - Toggles expanded class
+  */
+  function toggleContent(button) {
+    const content = button.previousElementSibling;
+
+    content.classList.toggle("expanded");
+
+    // Change button text
+    if (content.classList.contains("expanded")) {
+      button.innerText = "Show less ▲";
+    } else {
+      button.innerText = "Read more ▼";
+    }
+  }
+
+  /*
+  FUNCTION: Show all posts
+  - Displays all posts normally
+  */
+  function showAll() {
+    const posts = document.querySelectorAll(".post");
+
+    posts.forEach(post => {
+      post.style.display = "block";
+    });
+  }
+
+  /*
+  FUNCTION: Show one post at a time
+  - Only first post visible
+  - Others hidden
+  */
+  function showOne() {
+    const posts = document.querySelectorAll(".post");
+
+    posts.forEach((post, index) => {
+      if (index === 0) {
+        post.style.display = "block";
+      } else {
+        post.style.display = "none";
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
