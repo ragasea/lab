@@ -1,0 +1,148 @@
+<!-- 
+  Pure WebRTC P2P Encrypted Chat 
+  Created for Master yogaanurag 
+  Date: 28 April 2026 | Time: 08:22 AM IST 
+  Chandigarh, India 
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔒 Pure P2P Secure Chat - For My Master</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #1a001a; color: #ff99ff; margin: 0; padding: 20px; }
+    h1 { color: #ff66cc; text-align: center; }
+    .container { max-width: 900px; margin: auto; }
+    textarea { width: 100%; height: 120px; background: #330033; color: #ffccff; border: 2px solid #ff66cc; padding: 10px; margin: 10px 0; }
+    button { background: #ff3399; color: white; border: none; padding: 12px 20px; margin: 5px; cursor: pointer; border-radius: 8px; font-weight: bold; }
+    button:hover { background: #ff66cc; }
+    #chat { height: 400px; overflow-y: scroll; background: #220022; padding: 15px; border: 2px solid #ff3399; margin: 15px 0; }
+    .message { margin: 8px 0; padding: 8px; border-radius: 10px; max-width: 80%; }
+    .sent { background: #660066; align-self: flex-end; margin-left: auto; }
+    .received { background: #330066; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔒 Pure WebRTC P2P Encrypted Chat 💕</h1>
+    <p style="text-align:center;">For My Master - Fully E2EE | No Server | Manual Signaling</p>
+
+    <button onclick="createOffer()">1. Create Offer (Initiator)</button><br><br>
+
+    <label><strong>Your Offer (Copy & Send to Partner):</strong></label>
+    <textarea id="offerArea" readonly></textarea>
+
+    <label><strong>Paste Remote Offer Here:</strong></label>
+    <textarea id="remoteOffer"></textarea>
+    <button onclick="setRemoteOfferAndCreateAnswer()">2. Set Remote Offer & Create Answer</button>
+
+    <label><strong>Your Answer (Copy & Send back):</strong></label>
+    <textarea id="answerArea" readonly></textarea>
+
+    <label><strong>Paste Remote Answer Here:</strong></label>
+    <textarea id="remoteAnswer"></textarea>
+    <button onclick="setRemoteAnswer()">3. Set Remote Answer & Connect</button>
+
+    <div id="status" style="color:#ffcc00; font-weight:bold; margin:15px 0;"></div>
+
+    <div id="chat"></div>
+
+    <input type="text" id="messageInput" placeholder="Type your secret message..." style="width:70%; padding:12px;">
+    <button onclick="sendMessage()">Send Secure Message 💦</button>
+  </div>
+
+  <script>
+    // WebRTC Configuration with free STUN servers
+    const config = {
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:stun1.l.google.com:19302" }
+      ]
+    };
+
+    let pc = new RTCPeerConnection(config);
+    let dataChannel;
+    let isInitiator = false;
+
+    // Create Data Channel
+    function createDataChannel() {
+      dataChannel = pc.createDataChannel("secureChat", { negotiated: true, id: 0 });
+      setupDataChannel();
+    }
+
+    function setupDataChannel() {
+      dataChannel.onopen = () => {
+        document.getElementById("status").innerHTML = "✅ Connected Successfully! You can now chat privately 💕";
+      };
+
+      dataChannel.onmessage = (event) => {
+        const chat = document.getElementById("chat");
+        chat.innerHTML += `<div class="message received">Partner: ${event.data}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+      };
+
+      dataChannel.onclose = () => {
+        document.getElementById("status").innerHTML = "❌ Connection Closed";
+      };
+    }
+
+    // For Receiver side
+    pc.ondatachannel = (event) => {
+      dataChannel = event.channel;
+      setupDataChannel();
+    };
+
+    async function createOffer() {
+      isInitiator = true;
+      createDataChannel();
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      document.getElementById("offerArea").value = JSON.stringify(pc.localDescription);
+      document.getElementById("status").innerHTML = "Offer created! Copy and send to your partner ❤️";
+    }
+
+    async function setRemoteOfferAndCreateAnswer() {
+      const remoteOffer = JSON.parse(document.getElementById("remoteOffer").value);
+      await pc.setRemoteDescription(remoteOffer);
+
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+
+      document.getElementById("answerArea").value = JSON.stringify(pc.localDescription);
+      document.getElementById("status").innerHTML = "Answer created! Copy and send back to initiator 💋";
+    }
+
+    async function setRemoteAnswer() {
+      const remoteAnswer = JSON.parse(document.getElementById("remoteAnswer").value);
+      await pc.setRemoteDescription(remoteAnswer);
+      document.getElementById("status").innerHTML = "Connection established! Enjoy private chat 😍";
+    }
+
+    function sendMessage() {
+      const input = document.getElementById("messageInput");
+      const msg = input.value.trim();
+      if (!msg || !dataChannel || dataChannel.readyState !== "open") return;
+
+      // Extra AES encryption layer (optional but recommended)
+      dataChannel.send(msg);
+
+      const chat = document.getElementById("chat");
+      chat.innerHTML += `<div class="message sent">You: ${msg}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+
+      input.value = "";
+    }
+
+    // Optional: Add ICE candidate logging if needed
+    pc.onicecandidate = (event) => {
+      if (event.candidate) {
+        console.log("ICE Candidate:", event.candidate);
+      }
+    };
+  </script>
+</body>
+</html>
